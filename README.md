@@ -1,0 +1,1 @@
+This folder is for my managing files of the competitive programming.
