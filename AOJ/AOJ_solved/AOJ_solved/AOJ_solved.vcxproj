@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Structured_Program_I___Print_a_Rectangle.cpp">
+    <ClCompile Include="AOJ_DPL_4_B_meet_in_the_middle2.cpp">
       <SubType>
       </SubType>
     </ClCompile>
