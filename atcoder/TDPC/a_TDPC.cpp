@@ -18,7 +18,7 @@ using namespace std;
 #define debug(x) cout<<#x<<": "<<x<<endl
 typedef long long ll;
 
-/* 2010/00/00 問題 ----- TDPC_A /Link http://tdpc.contest.atcoder.jp/tasks/tdpc_contest */
+/* 2017/01/18 問題 ----- TDPC_A /Link http://tdpc.contest.atcoder.jp/tasks/tdpc_contest */
 /* -----解説等-----
 問題: N 問の問題があるコンテストがあり、i 問目の問題の配点は pi 点である。
 コンテスタントは、この問題の中から何問か解き、解いた問題の配点の合計が得点となる。
