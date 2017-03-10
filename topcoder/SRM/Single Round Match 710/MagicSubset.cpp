@@ -35,11 +35,22 @@ int dx[8] = { 0,0,1,-1,1,1,-1,-1 };
 int dy[8] = { 1,-1,0,0,1,-1,1,-1 };
 
 #define foreach(itr,c) for(__typeof(c.begin()) itr=c.begin(); itr!=c.end(); itr++)
-/* -----  xtimex  Problem:  / Link:  ----- */
+/* -----  xtimex  Problem: SRM710 div2 easy / Link:  ----- */
 /* ------問題------
+
+You are given n stones labeled from 0 to n-1. Each stone has an integer value: the value of stone i is value[i]. 
+Note that some of those values may be negative or zero.
+You would like to choose a subset of stones such that the sum of their values is maximized. 
+(You are allowed to choose the empty subset. In that case, the sum of the values of the chosen stones is zero.)
+This would be an easy problem, but there is a catch: the stone labeled 0 has magical properties.
+ If you include this stone into your chosen subset, its entire sum is multiplied by -1. (The value of stone 0 still contributes to the sum. See Example 1.)
+You are given the int[] value containing n elements: the values of your stones. 
+Find and return the maximum sum of a subset of stones, given that the sum of any subset that contains stone 0 is negated.
 
 -----問題ここまで----- */
 /* -----解説等-----
+
+初めの石を混ぜると数値の符号が反転するのでそれを考慮した場合分けを行い、最大値をとればよい。
 
  ----解説ここまで---- */
 
