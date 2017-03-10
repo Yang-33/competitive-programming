@@ -1,1 +1,3 @@
-This folder is for my managing files of the competitive programming.
+#概要
+競技プログラミング用のフォルダ
+解法など
