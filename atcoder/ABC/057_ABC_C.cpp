@@ -2,7 +2,6 @@
 #include <vector>
 #include <algorithm>
 using namespace std;
-
 typedef long long ll;
 
 #define FOR(i, s, e) for (ll(i) = (s); (i) < (e); (i)++)
