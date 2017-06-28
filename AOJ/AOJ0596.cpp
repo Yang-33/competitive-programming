@@ -1,72 +1,126 @@
 #include "bits/stdc++.h"
 using namespace std;
+
 typedef long long ll;
+typedef pair<int, int> pii;
+typedef pair<ll, ll> pll;
 
 #define FOR(i, s, e) for (ll(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (ll(i) = (s); (i) > (e); (i)--)
 #define debug(x) cout << #x << ": " << x << endl
+#define mp make_pair
+#define pb push_back
+const ll MOD = 1000000007;
+const int INF = 1e9;
+const ll LINF = 1e16;
+const double PI = acos(-1.0);
+int dx[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };
+int dy[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-const ll MOD = 10007;
-
-/* -----  2017/07/07  Problem: AOJ 0596 JOI 2013 (NU contest 14 D)/ Link: http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=0595  ----- */
+/* -----  2017/06/28  Problem:  / Link:   ----- */
 /* ------問題------
 
-OI 高校のプログラミング部には，J 君と O 君と I 君の 3 人の部員がいる． プログラミング部では，部活のスケジュールを組もうとしている．
-
-今，N 日間の活動のスケジュールを決めようとしている．
-各活動日のスケジュールとして考えられるものは，各部員については活動に参加するかどうかの 2 通りがあり，部としては全部で 8 通りある．
-部室の鍵はただ 1 つだけであり，最初は J 君が持っている．
-各活動日には，その日の活動に参加する部員のうちのいずれか 1 人が鍵を持っている必要があり，活動後に参加した部員のいずれかが鍵を持って帰る．
-
-プログラミング部では，活動日には毎回必ず活動が行われるように，あらかじめ各活動日の責任者を定めた．
-責任者は，必ずその日の活動に出席しなければならない．
-
-スケジュールを決めようとしている日数と，各活動日の責任者が誰であるかの情報が与えられた時，
-すべての活動日に部活動を行うことができるようなスケジュール表として考えられるものの数を 10007 で割った余りを求めるプログラムを作成せよ．
-ただし，部活の終了時に鍵を持って帰る部員は，その日の活動に参加している部員の誰でもよく，最終日は誰が鍵を持って帰ってもよいものとする．
+koji is cool
 
 -----問題ここまで----- */
 /* -----解説等-----
 
-DP+7状態しかないbitDP?
-dp[ ある日にちi ][ 来る人の状態j ] := この日iにくる人の状態がjであるときの、今までの組み合わせの総和
-としてまわす。
-今日来ている人と次の日来る人の少なくとも一人は同じでかつ、ある日の担当が来ていないといけないのでこれをみたすものについて遷移させればよい。
+
 
 ----解説ここまで---- */
 
-ll N;
-int dp[10004][8];
-int a[10004];
+ll N,K;
+int c[5050];
+int r[5050];
 ll ans = 0LL;
+vector<pii>G[5050];
+vector<int>G2[5000];
+#define DijkV 5050
+int dijkd[DijkV];
+bool visited[DijkV];
 
+void Dijkstra( int s, int t) {
+	FOR(i, 0, DijkV)dijkd[i] = INF;//init
+	using TypeDijk = pii;
+	dijkd[s] = 0; // 頂点sを0で初期化
+	priority_queue<TypeDijk, vector<TypeDijk>, greater<TypeDijk>> que; //優先度付きqueue 降順(距離、頂点)
+	que.push(TypeDijk(0ll, s)); // push(距離,頂点)
+	
+	while (!que.empty()) {
+		TypeDijk p = que.top(); que.pop(); //queueのデータ構造
+		int v = p.second; // 頂点
+		int dist = p.first; // 頂点vまでの距離
+	
+		if (dist > dijkd[v]) continue; //最適でないならば考慮しない
+
+		FOR(i, 0, G[v].size()) { //頂点vからはi本の辺が存在
+			int nv = G[v][i].first;// v->nv
+			if (dijkd[nv] > dijkd[v] + G[v][i].second) {
+				dijkd[nv] = dijkd[v] + G[v][i].second;
+				que.push(TypeDijk(dijkd[nv], nv)); //push(距離,頂点) 
+			}
+		}
+	}
+}
 int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
-	cin >> N;
-	string s; cin >> s;
-	FOR(i, 0, s.size()) {
-		if (s[i] == 'J')a[i] = 0;
-		else if (s[i] == 'O')a[i] = 1;
-		else if (s[i] == 'I')a[i] = 2;
+	cin >> N>>K;
+	FOR(i, 0, N) {
+		cin >> c[i]>>r[i];
+	}
+	FOR(i, 0, K) {
+		int x, y;
+		cin >> x >> y;
+		x--; y--;
+		G2[x].pb(y);
+		G2[y].pb(x);
 	}
 
-	dp[0][1] = 1;
+	//辺を張る
+	/*FOR(i, 0, N) {
+		FOR(j, 0, DijkV)visited[j] = 0;
+		queue<pii>q;
+		q.push(pii(i, r[i] + 1));
+		while (!q.empty()) {
+			pii p = q.front(); q.pop();
+			int v = p.first;
+			int left = p.second;
+			if (left == 0)continue;
+			if (visited[v] == 1)continue;
+			visited[v] = 1;
+			if (i != v) {
+				G[i].push_back(pii(v, c[i]));
+			}
+			FOR(j, 0, G2[v].size()) {
+				q.push(pii(G2[v][j], left - 1));
+			}
+		}
+	}*/
 
-	FOR(i, 0, N) {
-		FOR(j, 1, 8) {
-			FOR(k, 1, 8) {
-				if ((j & k) && ((1 << a[i]) & k)) {
-					dp[i + 1][k] += dp[i][j];
-					dp[i + 1][k] %= MOD;
-				}
+	for (int i = 0; i < N; i++) {
+		FOR(j, 0, DijkV)visited[j] = 0;
+
+		queue<pii> que;
+		que.push(pii(i, r[i] + 1));
+		while (!que.empty()) {
+			pii p = que.front(); que.pop();
+			int v = p.first;
+			if (p.second == 0) continue;
+			if (visited[v]==1) continue;
+			visited[v] = true;
+
+			if (i != v) G[i].push_back(pii(v,c[i]));
+			for (int j = 0; j < G2[v].size(); j++) {
+				que.push(pii(G2[v][j], p.second - 1));
 			}
 		}
 	}
-	FOR(i, 1, 8) {
-		ans += dp[N][i];
-		ans %= MOD;
-	}
+
+	Dijkstra(0, 0);
+
+	ans = dijkd[N - 1];
 	cout << ans << endl;
 
 	return 0;
