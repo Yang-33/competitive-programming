@@ -1,0 +1,28 @@
+-- Example 0
+2
+01
+10
+
+Nice
+-- Example 1
+2
+01
+11
+
+Not nice
+-- Example 2
+3
+0100
+1011
+0100
+
+Nice
+-- Example 3
+5
+11
+10
+11
+11
+11
+
+Not nice
