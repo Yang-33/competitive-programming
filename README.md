@@ -1,4 +1,4 @@
-# たのしい概要
+# たのしい\:v:概要
 
 たのしい競技プログラミング用のフォルダ
 
@@ -8,7 +8,6 @@
 ### [AOJ [Aizu Online Judge]](http://judge.u-aizu.ac.jp/onlinejudge/index.jsp)
 
 日本語なのでたのしい　問題がたくさんあってたのしい
-
 
 
 ### [CSA [CS Academy]](https://csacademy.com/)
