@@ -1,0 +1,3 @@
+#!/bin/bash
+File=$1
+mv $1.cpp unuploaded/

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# USAGE !
+# ojdl {URL}
+
+# candetest [filename]
+cppfile=$1
+
+make ${cppfile} CXX=g++ CXXFLAGS=" -O2 -std=c++11 -Wall -Wextra -g">&2 && echo "compile is done.Check it now." >&2 
+#(cande ${cppfile});
+for f in test/*.in ;
+do
+	echo "-----start-----: case"$f
+	
+	echo "expect answer: "
+	cat ${f/.in/.out}
+	
+	echo "your answer:   "
+	./${cppfile} < $f
+	
+	echo "diff:"
+	diff -b <(./${cppfile} < $f) ${f/.in/.out}
+	echo "------fin------: case"$f
+done

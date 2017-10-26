@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# USAGE !
+# $uva 00100 => uva00100.cpp
+
+in_number=$1
+
+    cp mytemplate/ContestTemplate.cpp uva${in_number}.cpp
+    File=uva${in_number}.cpp
+    sed -i -e "s|__PROBLEM__|UVa __CONTEST_NUMBER__|g" ${File}
+    sed -i -e "s|__CONTEST_URL__|https://uva.onlinejudge.org/index.php?option=com_onlinejudge\&Itemid=8\&category=0|g" ${File}
+    sed -i -e "s|__CONTEST_NUMBER__|$in_number|g" ${File}
+    ptime=`date '+%Y/%m/%d'`
+    sed -i -e "s|__MAKE_TIME__|$ptime|g" ${File}
+

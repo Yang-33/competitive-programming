@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# USAGE ! ./poj 1102 -> poj1102.cpp
+
+
+in_number=$1
+
+cp mytemplate/ContestTemplate.cpp poj${in_number}.cpp
+
+File=poj${in_number}.cpp
+sed -i -e "s|__PROBLEM__|POJ $in_number|g" ${File}
+sed -i -e "s|__CONTEST_URL__|http://poj.org/problem?id=__CONTEST_NUMBER__|g" ${File}
+sed -i -e "s|__CONTEST_NUMBER__|$in_number|g" ${File}
+
+ptime=`date '+%Y/%m/%d'`
+sed -i -e "s|__MAKE_TIME__|$ptime|g" ${File}
+

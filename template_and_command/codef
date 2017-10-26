@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# USAGE ! codeforves #450 div2.
+# $codef 450 700 => 450_{a,b,c,d,e}_div2_codeforces.cpp(contest code is 700)
+
+
+in_number=$1
+contest_code=$2
+
+for alpha in {a,b,c,d,e}
+do
+    cp mytemplate/ContestTemplate.cpp ${in_number}_${alpha}_div2_codeforces.cpp
+    File=${in_number}_${alpha}_div2_codeforces.cpp
+    
+    sed -i -e "s|__PROBLEM__|CodeForces__CONTEST_NUMBER__ Big_Alpha div2|g" ${File}
+    sed -i -e "s|__CONTEST_URL__|http://codeforces.com/contest/__CONTEST_CODE__/problem/Big_Alpha|g" ${File}
+    
+    sed -i -e "s|__CONTEST_NUMBER__|$in_number|g" ${File}
+    bigalpha=$(echo "$alpha" | tr a-z A-Z )
+    sed -i -e "s|Big_Alpha|$bigalpha|g" ${File}
+    ptime=`date '+%Y/%m/%d'`
+    sed -i -e "s|__MAKE_TIME__|$ptime|g" ${File}
+    sed -i -e "s|__CONTEST_CODE__|$contest_code|g" ${File}
+done

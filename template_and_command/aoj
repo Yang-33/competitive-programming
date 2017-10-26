@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# USAGE !
+# $aoj 100 => aoj100.cpp
+
+in_number=$1
+    cp mytemplate/ContestTemplate.cpp aoj${in_number}.cpp
+    File=aoj${in_number}.cpp
+    
+    sed -i -e "s|__PROBLEM__|AOJ __CONTEST_NUMBER__|g" ${File}
+    sed -i -e "s|__CONTEST_URL__|http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=__CONTEST_NUMBER__|g" ${File}
+    
+    sed -i -e "s|__CONTEST_NUMBER__|$in_number|g" ${File}
+    ptime=`date '+%Y/%m/%d'`
+    sed -i -e "s|__MAKE_TIME__|$ptime|g" ${File}
+

@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# USAGE !
+# $cattemp1 {contest_name} 打刻とコンテスト名のみ
+
+contest_name=$1
+
+cp mytemplate/ContestTemplate.cpp ${contest_name}.cpp
+
+File=${contest_name}.cpp
+sed -i -e "s|__PROBLEM__|$contest_name|g" ${File}
+
+ptime=`date '+%Y/%m/%d'`
+sed -i -e "s|__MAKE_TIME__|$ptime|g" ${File}
+

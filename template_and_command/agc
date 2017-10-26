@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# USAGE !
+# $abc 100 => abc_100_{a,b,c,d}.cpp
+
+
+in_number=$1
+for alpha in {a,b,c,d}
+do
+    cp mytemplate/ContestTemplate.cpp ${in_number}_abc_${alpha}.cpp
+    File=${in_number}_abc_${alpha}.cpp
+    
+    sed -i -e "s|__CONTEST_URL__|http://agc__CONTEST_NUMBER__.contest.atcoder.jp/tasks/agc__CONTEST_NUMBER___Small_Alpha|g" ${File}
+    sed -i -e "s|__PROBLEM__|ABC __CONTEST_NUMBER__ Big_Alpha|g" ${File}
+    sed -i -e "s|__CONTEST_NUMBER__|$in_number|g" ${File}
+
+    sed -i -e "s|Small_Alpha|$alpha|g" ${File}
+    big=$(echo "$alpha" | tr a-z A-Z )
+    sed -i -e "s|Big_Alpha|$big|g" ${File}
+    ptime=`date '+%Y/%m/%d'`
+    sed -i -e "s|__MAKE_TIME__|$ptime|g" ${File}
+done
+
+
+#http://agc057.contest.atcoder.jp/tasks/agc057_a

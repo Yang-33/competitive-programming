@@ -1,0 +1,38 @@
+--- For Upload ---
+Usage: upcpp -DIRopt [ [-of a FILE] or [-cd] ]
+
+ATCODER      :: -a
+ABC          :: -b
+CODEFORCES   :: -c
+TDPC         :: -d
+DONT USE     :: -e
+CODECHEF     :: -f
+AGC          :: -g
+HACKERRANK   :: -h
+JOIOI        :: -j
+PROJECTEULAR :: -e!=>l(L)
+DONT USE     :: -n
+AOJ          :: -o
+POJ          :: -p
+ARC          :: -r
+SRM          :: -s
+TOPCODER     :: -t
+UVA          :: -u
+YUKICODER    :: -y
+OTHERS       :: -n!=>z
+
+--- update tm files ---
+./updatetm.sh
+
+--- For PreTest ---
+oj login URL
+oj dl URL
+cande FILE
+ojtest FILE
+
+--- For Select Emacs ---
+emn (emacs -nw)
+emx (emacs X windows)
+
+--- For make files ---
+./abc xxx etc...(check your dir by put ls command.)
