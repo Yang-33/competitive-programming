@@ -4,16 +4,23 @@
 
 自分のために解法などを載せる
 
+リンクが付いているので飛びたいページに飛べます
 
 ### [AOJ [Aizu Online Judge]](http://judge.u-aizu.ac.jp/onlinejudge/index.jsp)
 
 日本語なのでたのしい　問題がたくさんあってたのしい
 
 
-### [CSA [CS Academy]](https://csacademy.com/)
+### [CSA [CS Academy]](https://www.codechef.com/)
 
 問題文が簡潔でたのしい
 
+
+### [Codechef](https://csacademy.com/)
+
+インド？のコンテスト
+
+Cheflong とかいつものとは異なるちょっと長いコンテストをやっていてたのしい
 
 ### [HackerRank](https://www.hackerrank.com/)
 
