@@ -1,35 +1,28 @@
-#include <iostream>
-#include <algorithm>
-#include <cstdio>
-#include <cmath>
-#include <string>
-#include <cstring>
-#include <vector>
-#include <map>
-#include <list>
-#include <stack>
-#include <queue>
-#include <set>
-#include <climits> //INT_MIN/MAX
+#include "bits/stdc++.h"
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> pii;
-typedef pair<ll, ll> pll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-#define FOR(i, s, e) for (ll(i) = (s); (i) < (e); (i)++)
-#define FORR(i, s, e) for (ll(i) = (s); (i) > (e); (i)--)
-#define debug(x) cout << #x << ": " << x << endl
-#define mp make_pair
-#define pb push_back
-const ll MOD = 1000000007;
-const int INF = 1e9;
-const ll LINF = 1e16;
-const double PI = acos(-1.0);
-int dx[8] = {0, 0, 1, -1, 1, 1, -1, -1};
-int dy[8] = {1, -1, 0, 0, 1, -1, 1, -1};
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define PB push_back
+#define EB emplace_back
+#define MP make_pair
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+#define debug(x) cerr << #x << ": " << x << endl
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  xtimex  Problem:  / Link:   ----- */
+/* -----  __MAKE_TIME__  Problem: __PROBLEM__ / Link: __CONTEST_URL__  ----- */
 /* ------問題------
 
 
@@ -41,16 +34,16 @@ int dy[8] = {1, -1, 0, 0, 1, -1, 1, -1};
 
 ----解説ここまで---- */
 
-ll N;
+LL N;
 
-ll ans = 0LL;
+LL ans = 0LL;
 
 int main() {
-  cin.tie(0);
-  ios_base::sync_with_stdio(false);
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-  cin >> N;
-  cout << ans << endl;
+	cin >> N;
+	cout << ans << "\n";
 
-  return 0;
+	return 0;
 }
