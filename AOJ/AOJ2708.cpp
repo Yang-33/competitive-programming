@@ -1,41 +1,30 @@
 #include "bits/stdc++.h"
 using namespace std;
-
 typedef long long ll;
 typedef pair<int, int> pii;
-typedef pair<ll, ll> pll;
 
-#define FOR(i, s, e) for (ll(i) = (s); (i) < (e); (i)++)
-#define FORR(i, s, e) for (ll(i) = (s); (i) > (e); (i)--)
+#define FOR(i,s,e) for(int i = s;i < e;i++)
 #define debug(x) cout << #x << ": " << x << endl
-#define mp make_pair
-#define pb push_back
-const ll MOD = 1000000007;
-const int INF = 1e9;
-const ll LINF = 1e16;
-const double PI = acos(-1.0);
-int dx[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };
-int dy[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+const int INF = (1 << 30);
+const ll LINF = (1LL << 60);
 
-/* -----  2017/07/11  Problem: AOJ 2708  / Link: http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2708  ----- */
-/* ------å•é¡Œ------
+/* -----  2017/11/01  Problem: AOJ2708 / Link: http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2708  ----- */
+/* ------–â‘è------
 
+•¶Žš—ñ ABC ‚Å•\‚³‚ê‚éˆâ“`Žq”z—ñ‚ª‚ ‚éB‚ ‚È‚½‚ÍŽŸ‚Ì‘€ì‚ð‰½‰ñ‚©s‚¢A‚±‚Ìˆâ“`Žq”z—ñ‚ð‘‚«Š·‚¦‚Ä‚¢‚­‚±‚Æ‚ª‚Å‚«‚éB
+•¶Žš ACBCC ‚Ì‚¤‚¿ 1 ‚Â‚ð‘I‚ÔB‚±‚ê‚ð x ‚Æ‚¨‚­Bˆâ“`Žq”z—ñ‚ÉŠÜ‚Ü‚ê‚é‚·‚×‚Ä‚Ì x ‚ð‚»‚ê‚¼‚ê ABC ‚Ö“¯Žž‚É’u‚«Š·‚¦‚éB
+ACBCC ‚¾‚¯‚©‚ç‚È‚é•¶Žš—ñ S ‚ª—^‚¦‚ç‚ê‚éBˆâ“`Žq”z—ñ‚ð S ‚Éˆê’v‚³‚¹‚ç‚ê‚é‚©”»’è‚¹‚æB
 
+-----–â‘è‚±‚±‚Ü‚Å----- */
+/* -----‰ðà“™-----
 
------å•é¡Œã“ã“ã¾ã§----- */
-/* -----è§£èª¬ç­‰-----
+‚Í‚Ü‚è‘±‚¯‚½B
+‹t‚ðƒVƒ…ƒ~ƒŒ[ƒVƒ‡ƒ“‚µ‚½‚Æ‚«‚ÉABC‚É‚È‚ê‚Î‚æ‚¢B
+‚ªAˆê‰ñ’uŠ·‚ðs‚Á‚½Œã‚É‘I‘ð‚µ‚½•¶Žš—ñ‚ª‘¶Ý‚µ‚È‚¢‚©‚ðƒ`ƒFƒbƒN‚µ‚È‚¯‚ê‚Î‚È‚ç‚È‚©‚Á‚½I
 
-é€†é †ã«ãŸã©ã£ã¦ã„ãã€‚
-ä½œæˆã®éš›ã¯A,B,Cã®ã†ã¡ä»»æ„ã®æ–‡å­—ã‚’å…¨ã¦ABCã«ç½®æ›ã—ã¦ã„ãŸã€‚
-é€†ã®æ“ä½œã§ã¯ABCã‚’ä½•ã‹ã«ç½®ãæ›ãˆã¦ABCã«ç¸®ç´„ã§ãã‚‹ã‹ã‚’è¦‹ã‚Œã°ã‚ˆã„ã€‚
-æ„šç›´ã«ã‚„ã‚‹ã¨WAãªã‚ŠTLEã§ã€ãƒ€ãƒ¡ãªã‚±ãƒ¼ã‚¹ã‚’ã¯ã˜ã‹ãªã„ã¨ã„ã‘ãªã„ã€‚
-ä¸€åº¦ç¢ºèªã—ãªã„ã¨ã„ã‘ãªã„ã‚±ãƒ¼ã‚¹ãŒã‚ã‚‹ã£ã½ã„ï¼Ÿ
-
-----è§£èª¬ã“ã“ã¾ã§---- */
-
+----‰ðà‚±‚±‚Ü‚Å---- */
 string S;
 
-//S ã® fromã‚’toã«ç½®æ› ex:  string U = replace(S, "ABC", "X");
 string replace(string S, string from, string to) {
 	auto pos = S.find(from);
 	while (pos != string::npos) {
