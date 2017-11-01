@@ -3,102 +3,142 @@ using namespace std;
 
 typedef long long ll;
 typedef pair<int, int> pii;
-typedef pair<ll, ll> pll;
 
-#define FOR(i, s, e) for (ll(i) = (s); (i) < (e); (i)++)
-#define FORR(i, s, e) for (ll(i) = (s); (i) > (e); (i)--)
+#define FOR(i,s,e) for(int(i)=(s);(i) < (e);(i)++)
 #define debug(x) cout << #x << ": " << x << endl
-#define mp make_pair
-#define pb push_back
-const ll MOD = 1000000007;
+/* -----  2017/11/01  Problem: AOJ1155  / Link: http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1155   ----- */
+/* ------–â‘è------
+
+ŽO’l˜_—‚Í’l‚Æ‚µ‚Ä "^"C"‹U" ‚É‰Á‚¦ "–¢’m" ‚ð‹–‚·˜_—‘ÌŒn‚Å‚ ‚éD ˆÈ‰º‚Å‚ÍC"‹U"C"–¢’m"C"^" ‚ð 0, 1, 2 ‚Å‚»‚ê‚¼‚ê•\‚·D
+
+"-" ‚ð’P€‰‰ŽZŽqi‚·‚È‚í‚¿C’l‚Ð‚Æ‚Â‚ðŽó‚¯Žæ‚éŠÖ”‚ð•\‚·‹L†j‚Æ‚µC "*" ‚Æ "+" ‚ð“ñ€‰‰ŽZŽqi‚·‚È‚í‚¿C’l‚Ó‚½‚Â‚ðŽó‚¯Žæ‚éŠÖ”‚ð•\‚·‹L†j‚Æ‚·‚éD ‚±‚ê‚ç‚ÍC‚»‚ê‚¼‚ê”Û’è (NOT), ˜_—Ï (AND), ˜_—˜a (OR) ‚ð•\‚·‰‰ŽZŽq‚Å‚ ‚èC ŽO’l˜_—‚É‚¨‚¯‚é‚±‚ê‚ç‚Ì‰‰ŽZ‚Í•\ C-1 ‚ÉŽ¦‚·‚æ‚¤‚É’è‹`‚Å‚«‚éD
+
+•\ C-1: ŽO’l˜_—‰‰ŽZŽq‚Ì^—’l•\
+-X		(X*Y)		(X+Y)
+
+P, Q, R ‚ðŽO’l˜_—‚Ì•Ï”‚Æ‚·‚éD —^‚¦‚ç‚ê‚½˜_—Ž®‚ð–ž‘«‚·‚éC ‚Â‚Ü‚è˜_—Ž®‚Ì’l‚ª 2 ‚É‚È‚é‚æ‚¤‚È (P,Q,R) ‚ÌŽO‚Â‘g‚ª‰½’Ê‚è‚ ‚é‚©‚ð“š‚¦‚é‚Ì‚ª‚ ‚È‚½‚Ì–ðŠ„‚¾D ˜_—Ž®‚ÍˆÈ‰º‚Ì‚¢‚¸‚ê‚©‚ÌŒ`Ž®‚Å‚ ‚éi‚±‚±‚Å X, Y ‚Í‚Ü‚½˜_—Ž®‚Å‚ ‚é‚Æ‚·‚éjD
+
+’è”: 0, 1 ‚Ü‚½‚Í 2
+•Ï”: P, Q ‚Ü‚½‚Í R
+”Û’è: -X
+˜_—Ï: (X*Y)
+˜_—˜a: (X+Y)
+ã‹L‚Ì‚æ‚¤‚ÉC‚Ó‚½‚Â‚Ì˜_—Ž®‚Ì˜_—Ï‚â˜_—˜a‚Í•K‚¸Š‡ŒÊ‚ÅˆÍ‚ÞD
+
+‚½‚Æ‚¦‚ÎC“ü—Í (P*Q) ‚É‘Î‚µ‚Ä‚ÍC(P,Q,R) ‚ª (2,2,0)C(2,2,1)C(2,2,2) ‚Ìê‡C ‚©‚Â‚»‚Ìê‡‚Ì‚ÝC‚±‚Ì˜_—Ž®‚Ì’l‚ª 2‚Æ‚È‚é‚Ì‚ÅC3‚ðo—Í‚·‚ê‚Î‚æ‚¢D
+
+-----–â‘è‚±‚±‚Ü‚Å----- */
+/* -----‰ðà“™-----
+
+\•¶‰ðÍB
+LL(1)‚È‚Ì‚Å‚±‚ê‚Í3^3’Ê‚è‚Ì‘g‚Ý‡‚í‚¹‚ð‘S•”ŒŸ¸‚·‚ê‚Î‚æ‚¢B
+
+----‰ðà‚±‚±‚Ü‚Å---- */
 const int INF = 1e9;
 const ll LINF = 1e16;
-const double PI = acos(-1.0);
-int dx[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };
-int dy[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+int N;
+string expr0(int &i, string &s);
+string expr1(int &i, string &s);
 
-/* -----  2017/07/08  Problem: AOJ 1155  / Link: http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1155  ----- */
-/* ------å•é¡Œ------
-
-
-
------å•é¡Œã“ã“ã¾ã§----- */
-/* -----è§£èª¬ç­‰-----
-
-æ§‹æ–‡è§£æž
-BNFã«ã—ãŸãŒã£ã¦æ›¸ãã€‚
-
-----è§£èª¬ã“ã“ã¾ã§---- */
-
-ll N;
-
-ll ans = 0LL;
-char c[3] = { '0','1','2' };
-string ch(string &s,int i,int j,int k) {
-	string ss=s;
-	FOR(a, 0, s.size()) {
-		if (s[a] == 'P') { ss[a] = c[i]; }
-		if (s[a] == 'Q') { ss[a] = c[j]; }
-		if (s[a] == 'R') { ss[a] = c[k]; }
+void changes(string &s, char a, char b, char c) {
+	FOR(i, 0, s.size()) {
+		if (s[i] == 'P') {
+			s[i] = a;
+		}
+		else	if (s[i] == 'Q') {
+			s[i] = b;
+		}
+		else	if (s[i] == 'R') {
+			s[i] = c;
+		}
 	}
-	return ss;
 }
 
-int factor(string &s, int &i) {
-	int ret = 0;
+string expr1(int &i, string &s) {
 	if (isdigit(s[i])) {
-		ret = s[i] - '0';
+		string num = to_string(s[i] - '0');
+		i++;
+		return num;
 	}
-	i++;
-	return ret;
-}
-
-int expr0(string &s, int &i) {
 	if (s[i] == '-') {
 		i++;
-		return 2 - expr0(s, i);
+		string num = expr1(i, s);
+		if (num == "2")return "0";
+		if (num == "0")return "2";
+		if (num == "1")return "1";
 	}
 	if (s[i] == '(') {
 		i++;
-		int ret = expr0(s, i);
-		if (s[i] == '*') {
-			i++;
-			ret = min(ret, expr0(s, i));
-		}
-		else if (s[i] == '+') {
-			i++;
-			ret = max(ret, expr0(s, i));
-		}
+		string num = expr0(i, s);
 		i++;
-		return ret;
+		return num;
 	}
-	else {
-		return factor(s, i);
+	return "";
+}
+
+string expr0(int &i, string &s) {
+	string num = expr1(i, s);
+	int flag = -1;
+	while (i < N && (s[i] == '+' || s[i] == '*')) {
+		char op = s[i];
+		i++;
+		if (op == '+') {
+			num += expr0(i, s);
+			flag = 1;
+		}
+		else if (op == '*') {
+			num += expr0(i, s);
+			flag = 2;
+		}
 	}
+
+	if (flag == 1) {
+		FOR(k, 0, num.size()) {
+			if (num[k] == '2')return "2";
+		}
+		FOR(k, 0, num.size()) {
+			if (num[k] == '1')return "1";
+		}
+		return "0";
+	}
+	else if (flag == 2) {
+		FOR(k, 0, num.size()) {
+			if (num[k] == '0')return "0";
+		}
+		FOR(k, 0, num.size()) {
+			if (num[k] == '1')return "1";
+		}
+		return  "2";
+	}
+	return num;
 
 }
 
 
-
 int main() {
-	cin.tie(0);
-	ios_base::sync_with_stdio(false);
-
-	while (1) {
-		string s;
-		cin >> s;
-		if (s[0] == '.')break;
-		ans = 0;
-		FOR(p, 0, 3) {
-			FOR(q, 0, 3) {
-				FOR(r, 0, 3) {
-					string ss = ch(s,p,q,r);
-					int id = 0;
-					if (expr0(ss, id) == 2)ans++;
+	cin.tie(0); ios::sync_with_stdio(false);
+	while (true) {
+		string S; cin >> S;
+		if (S[0] == '.')break;
+		int ans = 0;
+		N = S.size();
+		FOR(i, 0, 3) {
+			FOR(j, 0, 3) {
+				FOR(k, 0, 3) {
+					string ss = S;
+					changes(ss, '0' + i, '0' + j, '0' + k);
+					int p = 0;
+					if (expr0(p, ss) == "2") {
+						ans++;
+					}
 				}
 			}
 		}
+
+
 		cout << ans << endl;
 	}
+
+
 	return 0;
 }
