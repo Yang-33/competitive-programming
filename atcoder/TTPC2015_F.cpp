@@ -22,7 +22,7 @@ const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/11/19  Problem: ttpc2015_f / Link: __CONTEST_URL__  ----- */
+/* -----  2017/11/19  Problem: ttpc2015_f / Link: https://ttpc2015.contest.atcoder.jp/tasks/ttpc2015_f  ----- */
 /* ------問題------
 
 太郎君はA円の買い物をした。 太郎君はX≥Aを満たす任意のX円を支払うことができる。 買い物の金額A、支払額X、お釣り(X−A)の3つの整数について10進数表記にしたとき、3つの数字が揃う桁の数を最大にしたい。
