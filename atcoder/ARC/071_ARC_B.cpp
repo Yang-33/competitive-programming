@@ -1,77 +1,83 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> pii;
-typedef pair<ll, ll> pll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-#define FOR(i, s, e) for (ll(i) = (s); (i) < (e); (i)++)
-#define FORR(i, s, e) for (ll(i) = (s); (i) > (e); (i)--)
-#define debug(x) cout << #x << ": " << x << endl
-#define mp make_pair
-#define pb push_back
-const ll MOD = 1000000007;
-const int INF = 1e9;
-const ll LINF = 1e16;
-const double PI = acos(-1.0);
-int dx[8] = {0, 0, 1, -1, 1, 1, -1, -1};
-int dy[8] = {1, -1, 0, 0, 1, -1, 1, -1};
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define PB push_back
+#define EB emplace_back
+#define MP make_pair
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+#define debug(x) cerr << #x << ": " << x << endl
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/06/10  Problem: ARC 071 B / Link: http://arc071.contest.atcoder.jp/tasks/arc071_b  ----- */
+/* -----  2017/11/29  Problem: 071_arc_b / Link: https://arc071.contest.atcoder.jp/tasks/arc071_b  ----- */
 /* ------問題------
 
-2 次元平面上に x 軸と平行な直線が m 本と y 軸と平行な直線が n 本引いてあります。 
-x 軸と平行な直線のうち下から i 番目は y=yi で表せます。 y 軸と平行な直線のうち左から i 番目は x=xi で表せます。
-
+2 次元平面上に x 軸と平行な直線が m 本と y 軸と平行な直線が n 本引いてあります。 x 軸と平行な直線のうち下から i 番目は y=yi で表せます。 y 軸と平行な直線のうち左から i 番目は x=xi で表せます。
 この中に存在しているすべての長方形についてその面積を求め、 合計を 109+7 で割ったあまりを出力してください。
-
-つまり、1≤i<j≤n と 1≤k<l≤m を満たすすべての組 (i,j,k,l) について、 直線 x=xi, x=xj, y=yk, y=yl で囲まれる 長方形の面積を求め、
-合計を 109+7 で割ったあまりを出力してください。
+つまり、1≤i<j≤n と 1≤k<l≤m を満たすすべての組 (i,j,k,l) について、 直線 x=xi, x=xj, y=yk, y=yl で囲まれる 長方形の面積を求め、合計を 109+7 で割ったあまりを出力してください。
 
 -----問題ここまで----- */
 /* -----解説等-----
 
-(問題) = Σ[1≦i,j≦W][1≦k,l≦H](Xj-Xj)(Yl-Yk) である。
+まず、式変形をすると各軸独立にやればいいことが分かる。
+各軸について愚直にやるとO(N^2)なのでこれを改善する。(できそうなので)
 
-Σ[1≦i,j≦W](Xj-Xj) * Σ[1≦k,l≦H](Yl-Yk)
-の式を眺めていると左右独立に求められそうという気持ちになってくる。
-また、Σ[1≦i,j≦W](Xj-Xj) についてXiの登場回数を求められそうであることに気が付く。
-そこで変形してみると、
-Σ[1≦i,j≦W](Xj-Xj) = Σ[1≦s≦W]( Xs(s-1) - Xs(W-s) )
-と変形できる。これはXsが加算される回数と減算される回数がΣ[1≦i,j≦W]という制約からできるからである。
-したがってΣの中をＯ(H)で求められるようになり、この積をかければいいことになる。
+[1,i]の部分問題としてみると、i番目についてはi-1番目までの情報があれば値を求めることができる。
+形は包除っぽくやればよい。
+解説には+の数と-の数は決まるとあり、あーそれはそうという気持ちになった。
+↓
+sigma [1,i,j,N] (x[j]-x[i]) -> 
 
-本番で解けなかった。
+FOR(k,1,N+1) sum += ( (k-1)x[k] - (N-k)x[k] )
 
 ----解説ここまで---- */
 
+LL W, H;
 
-
-ll W,H;
-ll x[100010];
-ll y[100010];
-ll ans = 0LL;
+LL ans = 0LL;
 
 int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
-	cin >> W>>H;
-	FOR(i, 1, W+1)cin >> x[i];
-	FOR(i, 1, H+1)cin >> y[i];
-
-	ll Xsum = 0;
-	FOR(i, 1, W + 1) {
-		Xsum += x[i] * ((i - 1) - (W - i))%MOD;
+	cin >> W >> H;
+	VL x(W);
+	FOR(i, 0, W) {
+		cin >> x[i];
 	}
-	ll Ysum = 0;
-	FOR(i, 1, H + 1) {
-		Ysum += y[i] * ((i - 1) - (H - i))%MOD;
+	VL y(H);
+	FOR(i, 0, H) {
+		cin >> y[i];
 	}
 
-	ans = (Xsum*Ysum)%MOD;
+	LL xsum = 0, bef;
+	FOR(i, 1, W) {
+		(xsum += bef) %= MOD;
+		(xsum += (x[i] - x[i - 1])*i % MOD) %= MOD;
+		(bef += (x[i] - x[i - 1])*i % MOD) %= MOD;
+	}
+	bef = 0;
+	LL ysum = 0;
+	FOR(i, 1, H) {
+		(ysum += bef) %= MOD;
+		(ysum += (y[i] - y[i - 1])*i % MOD) %= MOD;
+		(bef += (y[i] - y[i - 1])*i % MOD) %= MOD;
+	}
+	ans = (xsum*ysum) % MOD;
+	cout << ans << "\n";
 
-	cout << ans << endl;
-	
 	return 0;
 }
