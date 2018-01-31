@@ -5,7 +5,7 @@
 
 in_number=$1
 
-cp mytemplate/ContestTemplate.cpp poj${in_number}.cpp
+cp mytemplate/poj_template_new.cpp poj${in_number}.cpp
 
 File=poj${in_number}.cpp
 sed -i -e "s|__PROBLEM__|POJ $in_number|g" ${File}

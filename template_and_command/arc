@@ -7,8 +7,8 @@
 in_number=$1
 for alpha in {a,b,c,d}
 do
-    cp mytemplate/ContestTemplate.cpp ${in_number}_abc_${alpha}.cpp
-    File=${in_number}_abc_${alpha}.cpp
+    cp mytemplate/ContestTemplate.cpp ${in_number}_arc_${alpha}.cpp
+    File=${in_number}_arc_${alpha}.cpp
     
     sed -i -e "s|__CONTEST_URL__|http://arc__CONTEST_NUMBER__.contest.atcoder.jp/tasks/arc__CONTEST_NUMBER___Small_Alpha|g" ${File}
     sed -i -e "s|__PROBLEM__|ABC __CONTEST_NUMBER__ Big_Alpha|g" ${File}
