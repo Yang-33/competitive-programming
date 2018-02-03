@@ -5,6 +5,12 @@ libralycpp/
 cmakelists.txt
 topcoder/Greed-2.0-RC-7.1.0.jar
 topcoder/SRM/greed.conf
+atcoder/ABC_solve/
+atcoder/ARC_solve/
+atcoder/solve_TDPC/
+AOJ/AOJ_solve/
+
+
 
 
 ## Ignore Visual Studio temporary files, build results, and
