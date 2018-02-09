@@ -11,6 +11,11 @@ atcoder/solve_TDPC/
 AOJ/AOJ_solve/
 RUPC2017/.vscode/
 .TM.d/
+atcoder/Marathons/Marathons.sln
+atcoder/Marathons/Marathons/Marathons.vcxproj
+atcoder/Marathons/Marathons/Marathons.vcxproj.filters
+
+
 
 
 ## Ignore Visual Studio temporary files, build results, and
