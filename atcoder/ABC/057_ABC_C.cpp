@@ -1,16 +1,29 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
+#include <bits/stdc++.h>
 using namespace std;
-typedef long long ll;
 
-#define FOR(i, s, e) for (ll(i) = (s); (i) < (e); (i)++)
-const int INF = 1e9;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/03/27  Problem: ABC 057 C / Link:
- * http://abc057.contest.atcoder.jp/tasks/abc057_d ----- */
-/* -----  2017/03/27  Problem: ABC 057 C / Link: http://abc057.contest.atcoder.jp/tasks/abc057_d ----- */
-/* ------蝠城｡---
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define PB push_back
+#define EB emplace_back
+#define MP make_pair
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+#define debug(x) cerr << #x << ": " << x << endl
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+
+/* -----  2018/02/14  Problem: 057_abc_c / Link: https://abc057.contest.atcoder.jp/tasks/abc057_c?lang=en  ----- */
+/* ------問題------
 
 整数 N が与えられます。
 ここで、2 つの正の整数 A,B に対して、F(A,B) を「10 進表記における、A の桁数と B の桁数のうち大きい方」と定義します。
@@ -20,46 +33,36 @@ const int INF = 1e9;
 -----問題ここまで----- */
 /* -----解説等-----
 
-いわれたとおりに実装する。
-Nの約数を列挙し、A*Bを復元したら各数の桁について調査し、
-その最大値の中から最小のものを選べばよい。
+Aを決めると反対側の数値も決定できるので、O(√N)とかで計算できる。
+あとは書かれているとおりに計算を行う。
 
 ----解説ここまで---- */
 
-ll N;
+LL N;
 
-ll ans = INF;
+LL ans = 0LL;
 
-ll sss(ll a) {
-  ll cnt = 0;
-  while (a > 0) {
-    a /= 10;
-    cnt++;
-  }
-  return cnt;
+LL f(LL i) {
+	int ret=0;
+	while (i) {
+		i /= 10;
+		ret++;
+	}
+	return ret;
 }
 
 int main() {
-  cin.tie(0);
-  ios_base::sync_with_stdio(false);
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-  cin >> N;
-  vector<ll> v;
-  FOR(i, 1, sqrt(N) + 1) {
-    if (N % i == 0) {
-      v.push_back(i);
-    }
-  }
-  FOR(i, 0, v.size()) {
-    ll a = v[i];
-    ll b = N / a;
-    ll aa = sss(a);
-    ll bb = sss(b);
-    ll temp = max(aa, bb);
-    ans = min(temp, ans);
-  }
+	cin >> N;
+	ans = LLONG_MAX;
+	for (LL i = 1; i*i <= N; i++) {
+		if (N%i == 0) {
+			ans = min(ans, max(f(i), f(N / i)));
+		}
+	}
+	cout << ans << "\n";
 
-  cout << ans << endl;
-
-  return 0;
+	return 0;
 }
