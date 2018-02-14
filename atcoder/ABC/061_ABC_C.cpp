@@ -1,4 +1,4 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
 using VS = vector<string>;    using LL = long long;
@@ -22,7 +22,7 @@ const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/10/16  Problem: nagoya_19_05 ABC061 C / Link: https://abc061.contest.atcoder.jp/tasks/abc061_c  ----- */
+/* -----  2018/02/14  Problem: 061_abc_c / Link: https://abc061.contest.atcoder.jp/tasks/abc061_c?lang=en  ----- */
 /* ------問題------
 
 空の配列が 1 つあります。
@@ -34,7 +34,7 @@ N 回の挿入操作後の配列の中で、K 番目に小さい数を求めて�
 -----問題ここまで----- */
 /* -----解説等-----
 
-実際にシュミレーションしたくなったので、pairで管理して値を小さい順に作っていった。
+sortして中身を計算すれば良い。
 
 ----解説ここまで---- */
 
@@ -46,22 +46,24 @@ int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
-	cin >> N>>K;
-	vector<PLL>v;
+	cin >> N >> K;
+	vector<PII>v;
 	FOR(i, 0, N) {
-		LL a, b; cin >> a >> b;
-		v.push_back(PLL(a, b));
+		int a, b; cin >> a >> b;
+		v.push_back(PII(a, b));
 	}
 	SORT(v);
-	FOR(i, 0, N) {
-		LL val, num;
-		val = v[i].first;
-		num = v[i].second;
-		ans += num;
-		if (K <= ans) {
-			cout << val << endl; return 0;
+	LL cnt = 0;
+	FOR(i, 0, SZ(v)) {
+		PII a = v[i];
+
+		cnt += a.second;
+		if (cnt >= K) {
+			ans = a.first;
+			break;
 		}
 	}
+	cout << ans << "\n";
 
 	return 0;
 }
