@@ -1,4 +1,4 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
 using VS = vector<string>;    using LL = long long;
@@ -22,25 +22,29 @@ const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/10/02  Problem: Nagoya_univ_contest16_b  / Link: https://abc070.contest.atcoder.jp/tasks/abc070_c  ----- */
-/* ------���------
+/* -----  2018/02/14  Problem: 070_abc_c / Link: https://abc070.contest.atcoder.jp/tasks/abc070_c?lang=en  ----- */
+/* ------問題------
 
+N 台の時計があり、i(1≦i≦N) 番目の時計の針はちょうど Ti 秒で時計盤を 1 周します。
+最初、全ての時計の針は真っ直ぐ上に向いており、止まっています。
+イルカは、全ての時計の針を同時に動かし始めました。
+再び、全ての時計の針が真っ直ぐ上に向くのは何秒後でしょうか?
 
+-----問題ここまで----- */
+/* -----解説等-----
 
------��肱���܂�----- */
-/* -----�����-----
+LCMだね
 
-�ŏ����{��
-
-----��������܂�---- */
+----解説ここまで---- */
 
 LL N;
-LL t[102];
+
 LL ans = 0LL;
-
+/*最大公約数を求める関数(再帰版ユーグリッドの互除法)*/
 long long  gcd(long long  a, long long  b) { return b ? gcd(b, a%b) : a; }
-long long  lcm(long long  a, long long  b) { return a / gcd(a, b) * b; }
 
+/*最小公倍数を求める関数。最小公倍数の性質( a×b÷[aとbの最大公約数] )を利用。*/
+long long  lcm(long long  a, long long  b) { return a / gcd(a, b) * b; }
 
 int main() {
 	cin.tie(0);
@@ -49,14 +53,9 @@ int main() {
 	cin >> N;
 	ans = 1;
 	FOR(i, 0, N) {
-		cin >> t[i];
+		LL c; cin >> c;
+		ans = lcm(ans, c);
 	}
-	ans = lcm(ans, t[0]);
-	FOR(i, 1, N) {
-		ans = lcm(ans, t[i]);
-	}
-
-
 	cout << ans << "\n";
 
 	return 0;
