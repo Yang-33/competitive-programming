@@ -1,93 +1,94 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> pii;
-typedef pair<ll, ll> pll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-#define FOR(i, s, e) for (ll(i) = (s); (i) < (e); (i)++)
-#define FORR(i, s, e) for (ll(i) = (s); (i) > (e); (i)--)
-#define debug(x) cout << #x << ": " << x << endl
-#define mp make_pair
-#define pb push_back
-const ll MOD = 1000000007;
-const int INF = 1e9;
-const ll LINF = 1e16;
-const double PI = acos(-1.0);
-int dx[8] = {0, 0, 1, -1, 1, 1, -1, -1};
-int dy[8] = {1, -1, 0, 0, 1, -1, 1, -1};
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define PB push_back
+#define EB emplace_back
+#define MP make_pair
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+#define debug(x) cerr << #x << ": " << x << endl
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/04/29  Problem: ARC 073 B / Link: http://arc073.contest.atcoder.jp/tasks/arc073_b  ----- */
+/* -----  2018/02/23  Problem: 073_arc_b / Link: https://arc073.contest.atcoder.jp/tasks/arc073_b?lang=en  ----- */
 /* ------問題------
 
-
+あなたは N 個の物と、強度 W のバッグを持っています。 i 個目の物は、重さが wi で価値が vi です。
+あなたは、物のうちいくつかを選び、バッグに入れます。 ただし、選んだ物の重さの和は W 以下でなくてはいけません。
+あなたは、バッグに入れた物の価値の総和を最大化したいです。
 
 -----問題ここまで----- */
 /* -----解説等-----
 
-dp[現在選択可能な範囲][現在の重さ][現在選んだ個数]としてdpを回す。
-これだけでは重さの制限に引っかかってしまうので、重さに着目するとW0に対して＋３の範囲内になることがわかる。
-したがってw0ぐらい引いておいた状態を見ればオーダーがい感じに落ちる。
-答えは選択可能な個数をi個として、
-dp[N][j][i] ただしW-W0*i+j≧0を満たすもののうちの最大値。
+昔はDPを気合で解いていたけど、これはw[0] からの値が4種類しかないのでどれを何個使うかで全探索できる。
+dpのときはdp(i,j,k):=i個目まで見てj個選択し,余計な重さがkのときの最大値として、
+O(N^3)で解ける。
 
 ----解説ここまで---- */
 
-ll N;
+LL N, W;
 
-ll ans = 0LL;
-ll dp[200][600][200];
+LL ans = 0LL;
+
 int main() {
-  cin.tie(0);
-  ios_base::sync_with_stdio(false);
-  ll W;
-  ll w[105];
-  ll v[105];
-  cin >> N>>W;
-  FOR(i, 0, N) {
-	  cin >> w[i] >> v[i];
-  }
-  ll ww = w[0];
-  FORR(i, N-1, -1) {
-	  w[i] -= (ww);
-	 // cout << w[i] << endl;
-  }
-  //w
-  
-  FOR(i, 0, N) {//new
-	  FOR(j, 0, 350) {
-		  FOR(k, 0, N+1) {
-			  if (j - w[i] < 0 || k - 1 < 0) {
-				  dp[i + 1][j][k] = dp[i][j][k];
-			  }
-			  else {
-				  dp[i + 1][j][k] = max(dp[i][j][k], dp[i][j - w[i]][k - 1] + v[i]);
-			  }
-		  }
-	  }
-  }
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-  //FOR(i, 0, N) {
-	 // FOR(j, 0, 405) {
-		//  if (j - w[i] >= 0) {
-		//	  dp[i + 1][j] = max(dp[i + 1][j], dp[i][j - w[i]] + v[i]);
-		//  }
-		//  else {
-		//	  dp[i + 1][j] = dp[i][j];
-		//  }
-	 // }
-  //}
-  ans = -1;
+	cin >> N >> W;
+	VL w(N), v(N);
 
-  FOR(i, 1, N + 1) {
-	  FOR(j, 0, i * 3 + 1) {
-		  ll k = (ww )*i + j;
-		  if (W - k >= 0)
-			  ans = max(ans, dp[N][j][i]);
-	  }
-  }
-  if (ans == -1)ans = 0;
-  cout << ans << endl;
+	VVL s(4,VL());
+	LL baseW;
+	FOR(i, 0, N) {
+		cin >> w[i] >> v[i];
+		if (i == 0)baseW = w[i];
+		int id = w[i] - baseW;
+		s[id].push_back(v[i]);
+	}
+	FOR(i, 0, 4)RSORT(s[i]);
 
-  return 0;
+
+	FOR(i, 0, SZ(s[0])+1) {
+		FOR(j, 0, SZ(s[1])+1) {
+			FOR(k, 0, SZ(s[2])+1) {
+				FOR(l, 0, SZ(s[3])+1) {
+
+					LL Vs = 0;
+					LL Ws = 0;
+					FOR(a, 0, i) {
+						Ws += baseW;
+						Vs += s[0][a];
+					}FOR(a, 0, j) {
+						Ws += baseW+1;
+						Vs += s[1][a];
+					}FOR(a, 0, k) {
+						Ws += baseW+2;
+						Vs += s[2][a];
+					}FOR(a, 0, l) {
+						Ws += baseW+3;
+						Vs += s[3][a];
+					}
+					if (W >= Ws) {
+						ans = max(ans, Vs);
+					}
+
+				}
+			}
+		}
+	}
+	cout << ans << "\n";
+
+	return 0;
 }
