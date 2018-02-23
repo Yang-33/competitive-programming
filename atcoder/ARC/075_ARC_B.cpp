@@ -1,72 +1,79 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-#define FOR(i, s, e) for (ll(i) = (s); (i) < (e); (i)++)
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/06/03  Problem: ARC 075 B / Link: http://arc075.contest.atcoder.jp/tasks/arc075_b  ----- */
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define PB push_back
+#define EB emplace_back
+#define MP make_pair
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+#define debug(x) cerr << #x << ": " << x << endl
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+
+/* -----  2018/02/23  Problem: 075_arc_b / Link: https://abc063.contest.atcoder.jp/tasks/arc075_b?lang=en  ----- */
 /* ------問題------
 
-N(≦10^5)体の敵がいてそれぞれの体力がh(i)(≦10^9)である。
-あなたは魔法で直接選択した敵1体に対してA、それ以外の敵にBのダメージを与えることができ、この動作を合わせて一回の攻撃とする。
-(10^9>)A>Bのとき、最小の攻撃回数で倒すには何回攻撃をすればいいか。
+あなたが散歩していると、突然 N 体の魔物が出現しました。それぞれの魔物は 体力 という値を持ち、i 体目の魔物の出現時の体力は hi です。体力が 0 以下となった魔物は直ちに消滅します。
+幸い、あなたは熟練の魔法使いであり、爆発を引き起こして魔物を攻撃できます。一回の爆発では、以下のように魔物の体力を減らすことができます。
+生存している魔物を一体選び、その魔物を中心に爆発を引き起こす。爆発の中心となる魔物の体力は A 減り、その他の魔物の体力はそれぞれ B 減る。ここで、A と B はあらかじめ定まった値であり、A>B である。
+すべての魔物を消し去るためには、最小で何回の爆発を引き起こす必要があるでしょうか？
 
 -----問題ここまで----- */
 /* -----解説等-----
 
-敵を選択しなくても確定でBの攻撃、一体に限ってA-Bのダメージを与えると考えれば、何回攻撃をするかを決めた際に
-敵の体力を一様にBだけ削ってからA-Bの攻撃をして倒せるかを判定すればいいことになる。
-また選択する前の残りの体力についてみれば何回攻撃をすればいいかわかるので、必要な攻撃回数について二分探索をすればうれしくなる。
-探索は大きい回数で必ず倒せるので、(l,r]で探索し、答えについて ans = r となる。
+A>Bなので攻撃回数xがわかればB*xのダメージを与えることができる。
+のこったHPは削らないと行けないので中心として選択することでA-Bだけ減らすことができる。
+回数が大きいほど倒しやすく、これには単調性があるので解について二分探索できる。
+解空間は(L,R].
 
 ----解説ここまで---- */
 
-ll N,A,B;
-ll h[100010];
-ll a[100011];
+LL N,A,B;
 
-ll ans = 0LL;
+LL ans = 0LL;
 
 
-
-// x回で倒せるか
-bool f(ll x) {
-	FOR(i, 0, N)a[i] = h[i];
-	ll s = x;
-	FOR(i, 0, N)a[i] -= B*s;
-
-
-	ll cnt = 0;;
+bool f(LL x, VL &h) {// x回で倒せるか
+	LL cnt = 0;
 	FOR(i, 0, N) {
-		if (a[i] <= 0)continue;
-		cnt += (a[i]+A-B-1) / (A - B);
+		LL lefth = h[i] - x*B;
+		LL atk = (lefth+A-B-1)/(A-B);
+		if(lefth>0)cnt += atk;
 	}
-
-	if (cnt > s)return 0;
-	else return 1;
-	
-
+	return cnt <= x;
 }
-
 int main() {
-  cin.tie(0);
-  ios_base::sync_with_stdio(false);
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-  cin >> N>>A>>B;
-  FOR(i, 0, N)cin >> h[i];
+	cin >> N>>A>>B;
+	VL h(N);
+	FOR(i, 0, N) {
+		cin >> h[i];
+	}
+	RSORT(h);
 
-  sort(h, h + N);
+	LL L = 0; LL R = INF;
+	FOR(i, 0, 50) {
+		LL mid = (L + R) / 2;
+		if (f(mid, h)) {
+			R = mid;
+		}
+		else L = mid;
+	}
+	cout << R << endl;
 
-  ll l = 0; ll r = 1e10;
-  FOR(i, 0, 150) {
-	  ll mid = (r + l) / 2;
-	  if (f(mid))r = mid;
-	  else l = mid;
-  }
-
-//  cout << r << " " << l << endl;
-  ans = r;
-  cout << ans << endl;
-
-  return 0;
+	return 0;
 }
