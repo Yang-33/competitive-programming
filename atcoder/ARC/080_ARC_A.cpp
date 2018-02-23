@@ -22,7 +22,7 @@ const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/11/29  Problem: 080_arc_a / Link: https://arc080.contest.atcoder.jp/tasks/arc080_a  ----- */
+/* -----  2018/02/23  Problem: 080_arc_a / Link: https://abc069.contest.atcoder.jp/tasks/arc080_a?lang=en  ----- */
 /* ------問題------
 
 長さ N の数列 a=(a1,a2,…,aN) があります。 各 ai は正の整数です。
@@ -33,11 +33,7 @@ int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 
 -----問題ここまで----- */
 /* -----解説等-----
 
-4 だけならその個数をfour とすれば　2*four + 1だけの範囲をカバーしている。
-2 だけなら全ての値が 2 の倍数でなければならない。
-両方を考えるとき、fourのみでカバーできないときは左から詰めると考えたとき、
-最後の 4 の隣は2の倍数でなければならない。
-従って成立しないとき、 2* four + 1 < N  and 2*four + two < N
+4を奇数番目に置いて、2を4の隣に敷き詰められないときはこれを満たすことができない。
 
 ----解説ここまで---- */
 
@@ -49,17 +45,30 @@ int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
-	int four = 0, two = 0;
 	cin >> N;
+	VL a(N);
+	int cnt4 = 0;
+	int cnt2 = 0;
 	FOR(i, 0, N) {
-		int a; cin >> a;
-		if (a % 4 == 0)four++;
-		else if (a % 2 == 0)two++;
+		cin >> a[i];
+		if (a[i] % 4 == 0) {
+			cnt4++;
+		}
+		else if (a[i] % 2 == 0) {
+			cnt2++;
+		}
 	}
-	int ok = 1;
+	int f = 0;
+	if (cnt4 * 2 + 1 >= N) {
+		f = 1;
+	}
+	else if (cnt4 * 2 + cnt2  >= N) {
+		f = 1;
+	}
 
-	if (N > 2 * four + 1 && N > 2 * four + two)ok = 0;
-	cout << (ok ? "Yes" : "No") << "\n";
+
+		string s[2] = { "No","Yes" };
+	cout << s[f] << "\n";
 
 	return 0;
 }
