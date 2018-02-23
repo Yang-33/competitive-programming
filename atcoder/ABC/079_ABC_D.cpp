@@ -1,4 +1,4 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
 using VS = vector<string>;    using LL = long long;
@@ -22,7 +22,7 @@ const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/11/18  Problem: ABC 079 D / Link: http://abc079.contest.atcoder.jp/tasks/abc079_d  ----- */
+/* -----  2018/02/23  Problem: 079_abc_d / Link: https://abc079.contest.atcoder.jp/tasks/abc079_d  ----- */
 /* ------問題------
 
 魔法少女のjoisinoお姉ちゃんは、この世にあるすべての数字を 1 に変えてやろうと思い立ちました。
@@ -32,13 +32,13 @@ int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 
 Ai,j≠−1 の場合はマスに Ai,j が書かれている
 Ai,j=−1 の場合はマスに数字が書かれていない
 ことを意味します。
+
 この壁に書かれている数字を最終的に全て 1 に変えるのに必要な魔力の最小量を求めてください。
 
 -----問題ここまで----- */
 /* -----解説等-----
 
-ワーシャルフロイドのノリでやるとsome->1への最小コストが求まる。
-これがわかればあとはクエリが飛んでくるみたいになるのであとは最小コストの和を求めればよい。
+制約が小さいことを活かしてワーシャルフロイドのノリで解ける。
 
 ----解説ここまで---- */
 
@@ -46,38 +46,25 @@ LL H,W;
 
 LL ans = 0LL;
 
-
 int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
 	cin >> H>>W;
-	VVI d(10, VI(10, 0));
-	FOR(i, 0, 10) {
-		FOR(j, 0, 10) {
-			cin >> d[i][j];
-		}
-	}int V = 10;
-	FOR(k, 0, V) {
-		FOR(i, 0, V) {
-			if (d[i][k] == LINF)continue;
-			FOR(j, 0, V) {
-				if (d[k][j] == LINF)continue;
-				if (d[i][j] > d[i][k] + d[k][j]) {
-					d[i][j] = d[i][k] + d[k][j];
-				}
-			}
-		}
+	VVI c(10, VI(10, 0));
+	FOR(i, 0, 10)FOR(j, 0, 10) {
+		cin >> c[i][j];
 	}
-
-
-
-	VVI a(H, VI(W, 0));
+	int N = 10;
+	FOR(k, 0, N)FOR(i, 0, N)FOR(j, 0, N) {
+		c[i][j] = min(c[i][j], c[i][k] + c[k][j]);
+	}
 	FOR(i, 0, H) {
 		FOR(j, 0, W) {
-			cin >> a[i][j];
-			if (a[i][j] != -1) {
-				ans += d[a[i][j]][1];
+			int a;
+			cin >> a;
+			if (a != -1) {
+				ans += c[a][1];
 			}
 		}
 	}
