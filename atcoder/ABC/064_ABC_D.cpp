@@ -1,23 +1,28 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> pii;
-typedef pair<ll, ll> pll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-#define FOR(i, s, e) for (ll(i) = (s); (i) < (e); (i)++)
-#define FORR(i, s, e) for (ll(i) = (s); (i) > (e); (i)--)
-#define debug(x) cout << #x << ": " << x << endl
-#define mp make_pair
-#define pb push_back
-const ll MOD = 1000000007;
-const int INF = 1e9;
-const ll LINF = 1e16;
-const double PI = acos(-1.0);
-int dx[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };
-int dy[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define PB push_back
+#define EB emplace_back
+#define MP make_pair
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+#define debug(x) cerr << #x << ": " << x << endl
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/06/10  Problem: ABC 064 D / Link: http://abc064.contest.atcoder.jp/tasks/abc064_d  ----- */
+/* -----  2018/02/15  Problem: 064_abc_d / Link: https://abc064.contest.atcoder.jp/tasks/abc064_d?lang=en ----- */
 /* ------問題------
 
 ( と ) で構成される N 文字の文字列 S が与えられる。S にいくつかの ( または ) を挿入することで正しい括弧列を作りたい。
@@ -32,49 +37,42 @@ X、Y が正しい括弧列であるとき、X と Y をこの順につなげた
 -----問題ここまで----- */
 /* -----解説等-----
 
-辞書順最小だけど、括弧の対応を考えれば1通りしかない。
-したがって完璧な括弧を作ればよい。
+存在する数はDPでできるけど、辞書順最小なので前に（を、後ろに）をたくさんつけたほうがいい感じになる。
 
 ----解説ここまで---- */
 
-ll N;
+LL N;
 
-ll ans = 0LL;
+LL ans = 0LL;
 
 int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
-	string S;
 
 	cin >> N;
-	cin >> S;
-	int cnt1 = 0;
-	int cnt2 = 0;
-	int f = 0;
-	stack<char>s1;
-	stack<char>s2;
-	FOR(i, 0, S.size()) {
-		if (S[i] == '(') {
-			s1.push(')');
+	string s;
+	cin >> s;
+	stack<int>st1; // (
+	stack<int>st2; // )
+	FOR(i, 0, N) {
+		if (s[i] == '(') {
+			st1.push(1);
 		}
-		else if (S[i] == ')') {
-			if (s1.size() >= 1)s1.pop();
-			else s2.push('(');
+		else { // )
+			if (SZ(st1))st1.pop();
+			else st2.push(1);
 		}
-
-
 	}
-	int x = s2.size();
-	FOR(i, 0, x) {
-		cout << '(';
+	FOR(i, 0, SZ(st2)) {
+		cout << "(";
 	}
-	cout << S;
-	
-	 x = s1.size();
-	FOR(i, 0, x) {
-		cout << ')';
+	cout << s;
+	FOR(i, 0, SZ(st1)) {
+		cout << ")";
 	}
 	cout << endl;
+
+
 
 	return 0;
 }
