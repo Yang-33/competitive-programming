@@ -1,71 +1,74 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> pii;
-typedef pair<ll, ll> pll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-#define FOR(i, s, e) for (ll(i) = (s); (i) < (e); (i)++)
-#define FORR(i, s, e) for (ll(i) = (s); (i) > (e); (i)--)
-#define debug(x) cout << #x << ": " << x << endl
-#define mp make_pair
-#define pb push_back
-const ll MOD = 1000000007;
-const int INF = 1e9;
-const ll LINF = 1e16;
-const double PI = acos(-1.0);
-int dx[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };
-int dy[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define PB push_back
+#define EB emplace_back
+#define MP make_pair
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+#define debug(x) cerr << #x << ": " << x << endl
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/05/20  Problem: ARC 074 A / Link: http://arc074.contest.atcoder.jp/tasks/arc074_a  ----- */
+/* -----  2018/02/23  Problem: 074_arc_a / Link: https://abc062.contest.atcoder.jp/tasks/arc074_a?lang=en  ----- */
 /* ------問題------
 
-与えられた四角形を辺に平行な2直線のみで分割する際の最大値と最小値の差の最小値は。
+縦 H ブロック、横 W ブロックの板チョコがあります。 すぬけ君は、この板チョコをちょうど 3 つのピースに分割しようとしています。 ただし、各ピースはブロックの境目に沿った長方形でなければなりません。
+
+すぬけ君は、3 つのピースの面積 (ブロック数) をできるだけ均等にしようとしています。 具体的には、3 つのピースの面積の最大値を Smax、最小値を Smin としたとき、Smax−Smin を最小化しようとしています。 Smax−Smin の最小値を求めてください。
 
 -----問題ここまで----- */
 /* -----解説等-----
 
-縦横は同じ動作になるので以降基本的には縦に分割することを考える。
-縦に分割したときに片側の残りの面積は半分ぐらいに分割してあげたらうれしいという発想になる。
-値がどの面積についても負にならないことが確定したら、問題の条件に沿って最大の面積と最小の面積の差について、
-これが最小になるものの値をとればよい。
-面積が3の倍数で割り切れる場合には3つの面積を同じにできるので答えは０．
+一つ決めるとあとは全部決まるので、分割の仕方を全探索
 
 ----解説ここまで---- */
 
-ll H, W;
+LL H, W;
 
-ll ans = LINF;
+LL ans = 0LL;
 
 int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
 	cin >> H >> W;
-	ans = min(H, W);
-	FOR(w, 1, W) {
-		ll s = w*H;
-		ll x = (W - w)*(H / 2);
-		ll y = H*W - s - x;
-		if (y < 1)continue;
-		ll M = max(s, max(x, y));
-		ll m = min(s, min(x, y));
-		if (M - m < ans) {
-			ans = min(ans, M - m);
+
+	ans = LINF;
+	FOR(k, 0, 2) {
+		swap(H, W);
+		FOR(i, 1, W) {
+			LL a = i;
+			LL b = (W - i) / 2;
+			LL c = W - a - b;
+
+			LL Sx = a*H;
+			LL Sy = b*H;
+			LL Sz = c*H;
+			ans = min(ans, max({ Sx, Sy, Sz }) - min({ Sx, Sy, Sz }));
+
+			LL w = W - a;
+			LL bb = H / 2;
+			LL cc = H - bb;
+			Sy = bb*w;
+			Sz = cc*w;
+			ans = min(ans, max({ Sx, Sy, Sz }) - min({ Sx, Sy, Sz }));
+
 		}
 	}
-	swap(H, W);
-	FOR(w, 1, W) {
-		ll s = w*H;
-		ll x = (W - w)*(H / 2);
-		ll y = H*W - s - x;
-		ll M = max(s, max(x, y));
-		ll m = min(s, min(x, y));
-		ans = min(ans, M - m);
-	}
-
-	if (H % 3 == 0 || W % 3 == 0)ans = 0;
-	cout << ans << endl;
+	cout << ans << "\n";
 
 	return 0;
 }
