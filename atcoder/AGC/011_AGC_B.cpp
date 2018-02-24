@@ -1,4 +1,4 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
 using VS = vector<string>;    using LL = long long;
@@ -22,7 +22,7 @@ const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/10/11  Problem: N18_b AGC011 B / Link: https://agc011.contest.atcoder.jp/tasks/agc011_b  ----- */
+/* -----  2018/02/24  Problem: 011_agc_b / Link: https://agc011.contest.atcoder.jp/tasks/agc011_b?lang=en  ----- */
 /* ------問題------
 
 すぬけ君は，N 匹の変わった生き物を見つけました． それぞれの生き物には色と大きさが定まっており，i 番目の生き物の色は i，大きさは Ai で表されます．
@@ -32,14 +32,13 @@ int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 
 -----問題ここまで----- */
 /* -----解説等-----
 
-昇順に並べると一番右が勝ちなのは明らか。
-さらにその手前について考えると、自分よりも左側をすべて吸収して右を倒せればOKとなる。
-これを累積和をとってやればいいことになる。
-LLにしてなくて悲しい思いをした。
+昇順に並べ、ある個体に着目したときその個体より手前の体重の総和が次の個体の半分以上であればよい。
+この考えでは着目している個体の次の個体が生存できないといけないので、後ろからやれば良い。
 
 ----解説ここまで---- */
 
 LL N;
+
 LL ans = 0LL;
 
 int main() {
@@ -47,21 +46,22 @@ int main() {
 	ios_base::sync_with_stdio(false);
 
 	cin >> N;
-	VL a(N,0);
-	FOR(i, 0, N)cin >> a[i];
-	SORT(a);
-
-	VL sum(N + 1,0);
-	sum[0] = 0;
-	FOR(i, 1, N+1) {
-		sum[i] = sum[i - 1] + a[i-1];
+	VL a(N);
+	FOR(i, 0, N) {
+		cin >> a[i];
 	}
-	ans = 1;
-	int f = 1;
+	RSORT(a);
+	VL sum(N + 1, 0);
+	FOR(i, 0, N) {
+		sum[i + 1] += sum[i] + a[i];
+	}
 
-	FORR(i, N-2, -1) {
-		if (a[i+1] <= 2 * sum[i+1 ]&&f)ans++;
-		else f = 0;
+	ans = 1;
+	FOR(i, 1, N) {
+		if (2 * (sum[N] - sum[i]) >= a[i-1]) {
+			ans++;
+		}
+		else break;
 	}
 	cout << ans << "\n";
 
