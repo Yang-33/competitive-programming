@@ -1,4 +1,4 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
 using VS = vector<string>;    using LL = long long;
@@ -22,7 +22,7 @@ const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/10/11  Problem: N18_a ARC082 D  / Link: http://arc082.contest.atcoder.jp/tasks/arc082_b  ----- */
+/* -----  2018/02/23  Problem: 082_arc_b / Link: https://arc082.contest.atcoder.jp/tasks/arc082_b?lang=en  ----- */
 /* ------問題------
 
 1,2,..,N からなる順列 p1,p2,..,pN が与えられます。 次の操作を何回か (0回でもよい) 行うことが出来ます。
@@ -32,15 +32,13 @@ int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 
 -----問題ここまで----- */
 /* -----解説等-----
 
-やります。
-交換したい要素をB,そうでなくてもいものをAとすると、
-ABAAAAはどう交換してもAAAAAAになる。
-ABABABAも、同様でB*はどちらに交換しても必ずAAになる。したがってシュミレーションしたものが常に最小手数になる。
+片側からやっていくと最後の数以外が必ず条件を満たす。
+これは順序を入れ替えることで解決可能であるから、そのままチェックをかけるだけで良い。
 
 ----解説ここまで---- */
 
 LL N;
-int a[100005];
+
 LL ans = 0LL;
 
 int main() {
@@ -48,13 +46,18 @@ int main() {
 	ios_base::sync_with_stdio(false);
 
 	cin >> N;
-	FOR(i, 0, N)cin >> a[i], a[i]--;
-	FOR(i, 0, N - 1) {
-		if (a[i] == i)swap(a[i], a[i + 1]), ans++;
+	VL a(N);
+	FOR(i, 0, N) {
+		cin >> a[i];
 	}
 
-	if (a[N - 1] == N - 1)ans++;
-
+	FOR(i, 0, N-1) {
+		if (a[i] == i+1) {
+			swap(a[i], a[i + 1]);
+			ans++;
+		}
+	}
+	if (a[N - 1] == N)ans++;
 	cout << ans << "\n";
 
 	return 0;
