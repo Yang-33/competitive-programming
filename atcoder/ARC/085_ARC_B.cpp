@@ -1,4 +1,4 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
 using VS = vector<string>;    using LL = long long;
@@ -18,11 +18,11 @@ using VL = vector<LL>;        using VVL = vector<VL>;
 #define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
 #define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
 #define debug(x) cerr << #x << ": " << x << endl
-const int INF = 1e9;                          const LL LINF = 1e18;
+const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/11/11  Problem: ABC 085 B / Link: http://arc085.contest.atcoder.jp/tasks/arc085_b  ----- */
+/* -----  2018/02/27  Problem: 085_arc_b / Link: https://abc078.contest.atcoder.jp/tasks/arc085_b?lang=en  ----- */
 /* ------問題------
 
 N 枚のカードからなる山札があります。カードにはそれぞれ数が書かれており， 上から i 枚目には ai が書かれています。
@@ -34,60 +34,26 @@ X さんはスコアを最大化するように，Y さんはスコアを最小�
 -----問題ここまで----- */
 /* -----解説等-----
 
-再帰で書いてしまったがこれは(N^3)で、遷移をDPに書き換えたらO(N^2)にするとこれは通る。
-末尾から再帰的なことをしていくことを考えたとき、min/maxはmax/minを現在の場所から末尾までの区間全てでやっていく感じのDPになる。
-一様区間セグ木を考えるとこれはNlogNまでできるが今回はN^2でOKなため通る
-なんか再帰もαβをすると通るよう(手番が2つしか存在しないため)
+なんかO(1)があったのを覚えているのですが、これはプログラミングコンテストで、
+ゲームの末尾から再帰してO(N^3) -> 部分構造から O(N^2)
 
 ----解説ここまで---- */
 
-//LL N, Z, W;
-//
-//LL ans = 0LL;
-//LL dp[2003][2003][2];
-//// turn に bf ,teときたとき
-//LL dfs(int bf, int te, int turn, VL &a) {
-//	if (dp[bf][te][turn] != -1)return dp[bf][te][turn];
-//	if (te == N ) {
-//		if (bf == 0) {
-//			return abs(W - a[te]);
-//		}
-//		return abs(a[te] - a[bf]);
-//	}
-//
-//	LL &res = dp[bf][te][turn];
-//	if (turn == 0) {
-//		res = -LINF;
-//		FOR(i, te + 1, N+1) {
-//			res = max(res, dfs(te, i, turn ^ 1, a));
-//		}
-//	}
-//	else {
-//		res = LINF;
-//		FOR(i, te + 1, N+1) {
-//			res = min(res, dfs(te, i, turn ^ 1, a));
-//		}
-//	}
-//	return res;
-//}
-
-LL N, Z, W;
+LL N,Z,W;
 
 LL ans = 0LL;
-LL dp[2003][2];
-// turn に bf ,teときたとき
 
 int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
-	cin >> N >> Z >> W;
-	VL a(N + 1, 0);
-	FOR(i, 0, N) {
-		cin >> a[i + 1];
-	}
+	cin >> N>>Z>>W;
+	VL a(N+1);
 	a[0] = W;
-
+	FOR(i, 0, N) {
+		cin >> a[i+1];
+	}
+	VVL dp(N + 1, VL(2));
 	FORR(i, N, 0 - 1) {
 		if (i == N) {
 			dp[N][0] = LINF;
