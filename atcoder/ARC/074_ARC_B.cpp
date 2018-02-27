@@ -1,78 +1,101 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> pii;
-typedef pair<ll, ll> pll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-#define FOR(i, s, e) for (ll(i) = (s); (i) < (e); (i)++)
-#define FORR(i, s, e) for (ll(i) = (s); (i) > (e); (i)--)
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define PB push_back
+#define EB emplace_back
+#define MP make_pair
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+#define debug(x) cerr << #x << ": " << x << endl
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/05/20  Problem: ARC 074 B / Link: http://arc074.contest.atcoder.jp/tasks/arc074_b  ----- */
+/* -----  2018/02/27  Problem: 074_arc_b / Link: https://abc062.contest.atcoder.jp/tasks/arc074_b?lang=en  ----- */
 /* ------問題------
 
-長さ3Nの数列について、N個の要素を取り出し、残った2Nこの数列で、(a前半N要素の総和)−(a後半N要素の総和)
-を最大化したい。最大値は。
-N≦10^5
+N を 1 以上の整数とします。
+長さ 3N の数列 a=(a1,a2,…,a3N) があります。 すぬけ君は、a からちょうど N 個の要素を取り除き、残った 2N 個の要素を元の順序で並べ、長さ 2N の数列 a' を作ろうとしています。 このとき、a' のスコアを (a'の前半N要素の総和)−(a'の後半N要素の総和) と定義します。
+a' のスコアの最大値を求めてください。
 
 -----問題ここまで----- */
 /* -----解説等-----
 
-A/Bの境界を決定して、自分のサイドの領域で好きな数をとればよい。
-A/Bの境界をN回探索してこれについての最適値を求めていると間に合わない。
-
-一つ境界をずらしたときに行う動作は要素が一つ移動してAでは大きいものならば採用、最小を排出
-Bでは最小なら採用、最大を排出、を行っている。
-これはpriority_queueでこの操作を再現できる。
-左右からA/Bの動作をし、最適値同士を組み合わせればよい。
+priority_queueのやつ
+両側から区間を作っていくとできる
+dp1[i]:= iまでを使ってできる最大値
+dp2[i]:= i以降を使ってできる最小値
+探索区間は[N-1,2*N)なのでN-1を忘れない(戒め)
 
 ----解説ここまで---- */
 
+LL N;
 
-ll N;
+LL ans = 0LL;
 
-ll ans = LLONG_MIN;
-ll a[300030];
-ll b[300030];
-ll res[300030];
 int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
 	cin >> N;
-
+	VI a(3 * N);
 	FOR(i, 0, 3 * N) {
 		cin >> a[i];
 	}
-	priority_queue<ll, vector<ll>, greater<ll>>qa;
-	priority_queue<ll>qb;
-	ll asum = 0;
-	ll bsum = 0;
-	FOR(i, 0, 3 * N) {
-		qa.push(a[i]);
-		asum += a[i];
-		if (qa.size() > N) {
-			asum -= qa.top(); qa.pop();
+
+	VL dp1(3 * N, 0);
+	{
+		priority_queue<int, VI, greater<int>>pq;
+		LL sum = 0;
+		FOR(i, 0, 3 * N) {
+
+			sum += a[i];
+			pq.push(a[i]);
+			if (SZ(pq)== (N + 1)) {
+				LL val = pq.top(); pq.pop();
+				sum -= val;
+			}
+			dp1[i] = sum;
 		}
-		res[i] = asum;
+		//FOR(i, 0, 3 * N) {
+		//	cout << dp1[i] << " ";
+		//}cout << endl;
 	}
-	FORR(i, 3 * N - 1, -1) {
-		qb.push(a[i]);
-		bsum += a[i];
-		if (qb.size() > N) {
-			bsum -= qb.top(); qb.pop();
+	VL dp2(3 * N, 0);
+	{
+		priority_queue<int>pq;
+		LL sum = 0;
+		FORR(i, 3*N-1, 0-1) {
+
+			sum += a[i];
+			pq.push(a[i]);
+			if (SZ(pq) ==(N + 1)) {
+				LL val = pq.top(); pq.pop();
+
+				sum -= val;
+			}
+			dp2[i] = sum;
 		}
-		if(i>=1)
-		res[i-1] -= bsum;
+		//FOR(i, 0, 3 * N) {
+		//	cout << dp2[i] << " ";
+		//}cout << endl;
 	}
-
-	ans = res[N - 1];
-	FOR(i, N, 2 * N) {
-		ans = max(ans, res[i]);
+	ans = -LINF;
+	FOR(i, N-1, 2 * N) {
+		ans = max(ans, dp1[i] - dp2[i+1]);
 	}
-
-
-	cout << ans << endl;
+	cout << ans << "\n";
 
 	return 0;
 }
