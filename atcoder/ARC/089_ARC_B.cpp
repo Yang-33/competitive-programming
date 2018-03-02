@@ -17,32 +17,22 @@ using VL = vector<LL>;        using VVL = vector<VL>;
 #define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
 #define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
 #define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
-#define debug(x) cout << #x << ": " << x << endl
+#define debug(x) cerr << #x << ": " << x << endl
 const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2018/01/21  Problem: ARC 089 B / Link: http://arc089.contest.atcoder.jp/tasks/arc089_b  ----- */
+/* -----  2018/03/02  Problem: 089_arc_b / Link: https://abc086.contest.atcoder.jp/tasks/arc089_b?lang=en  ----- */
 /* ------問題------
 
-シカのAtCoDeerくんは無限に広がる二次元グリッドを一辺が K の市松模様で塗ろうと考えています。 
-ただし、一辺が K の市松模様とは、各マスが白か黒で塗られたパターンであって、各色の各連結成分が K × K の正方形となっているようなものです
-。 例えば以下は一辺が 3 の市松模様の例です。
-AtCoDeerくんは N 個の希望を持っています。
-i 個目の希望は、 xi,yi,ci で表されます。 これは、ci が 'B' ならマス (xi,yi) を黒で塗る、 'W' なら白で塗ることを意味しています。
-同時に最大でいくつの希望を叶えることが出来るか答えてください。
-
+シカのAtCoDeerくんは無限に広がる二次元グリッドを一辺が K の市松模様で塗ろうと考えています。 ただし、一辺が K の市松模様とは、各マスが白か黒で塗られたパターンであって、各色の各連結成分が K × K の正方形となっているようなものです。 例えば以下は一辺が 3 の市松模様の例です。
+AtCoDeerくんは N 個の希望を持っています。 i 個目の希望は、 xi,yi,ci で表されます。 これは、ci が B ならマス (xi,yi) を黒で塗る、 W なら白で塗ることを意味しています。 同時に最大でいくつの希望を叶えることが出来るか答えてください。
 
 -----問題ここまで----- */
 /* -----解説等-----
 
-白黒の最小の構成は正方形が2つ隣接したK*2Kの領域。
-また、領域の決定の仕方は黒の右下を決定すると全部決まり、K^2通り。
-正方形が2つ隣接した領域でやるのは場合分けで壊れそうなので、点を追加する位置を拡張して4倍の領域に4点足すをすればよい
-なんか追加する点は対称性からyが上下する。(modKでやったので)
-
-mod2Kでもよかったしこっちのほうがかんたんだった
-ちょっと待って、最小の構成かつ採用の探索を発見したほうが良さそう
+座標の変換がアレだけど少なくとも2K * 4Kの領域に落とし込めるので、これを全探索する。
+愚直はダメなので累積和を取っておく
 
 ----解説ここまで---- */
 
@@ -103,11 +93,14 @@ int main() {
 
 	cin >> N >> K;
 
+	VVI w(K, VI(2 * K));
+	VVI b(K, VI(2 * K));
 	VI x(N), y(N);
 
 	CumulativeSum2D<LL> BB(2 * K, 4 * K);
 	CumulativeSum2D<LL> WW(2 * K, 4 * K);
 	string s;
+	int wc = 0, bc = 0;
 	FOR(i, 0, N) {
 		cin >> x[i] >> y[i] >> s;
 		if (s[0] == 'B') {
@@ -123,6 +116,7 @@ int main() {
 			FOR(j, 0, SZ(a)) {
 				WW.add(a[j].second, a[j].first, 1);
 			}
+
 		}
 	}
 	WW.build();
@@ -131,7 +125,9 @@ int main() {
 		FOR(x, 0, 2 * K) {
 			LL res = 0;
 			res += BB.querysumhan(y, x, y + K, x + K);
+			//debug(res);
 			res += WW.querysumhan(y, x + K, y + K, x + 2 * K);
+			//debug(res);
 			ans = max(ans, res);
 		}
 	}
