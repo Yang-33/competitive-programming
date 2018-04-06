@@ -1,111 +1,91 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> pii;
-typedef pair<ll, ll> pll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-#define FOR(i, s, e) for (ll(i) = (s); (i) < (e); (i)++)
-#define FORR(i, s, e) for (ll(i) = (s); (i) > (e); (i)--)
-#define debug(x) cout << #x << ": " << x << endl
-#define mp make_pair
-#define pb push_back
-const ll MOD = 1000000007;
-const int INF = 1e9;
-const ll LINF = 1e16;
-const double PI = acos(-1.0);
-int dx[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };
-int dy[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define PB push_back
+#define EB emplace_back
+#define MP make_pair
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (LL(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+#define debug(x) cerr << #x << ": " << x << endl
+const int INF = 1e9;                          const LL LINF = 1e18;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/06/11  Problem: yukicoder010 / Link: http://yukicoder.me/problems/no/10  ----- */
+/* -----  2018/04/06  Problem: yukicoder 010  / Link: http://yukicoder.me/problems/no/010  ----- */
 /* ------問題------
 
+あなたは、Isaacから借りたノートをコピーしようとしてOCRにかけようとしている。
+ある計算式をOCRしようとしたら、演算子を正しく認識されてなく、文字化けしていることに気づいた。
+ここに出てくる演算子は+と*のみで、すべて?と表示されてしまっている。
+元の数式の正しい数式を求めてください。
+複数回答がある場合は、{+,*} の順の辞書列順の最初のものを求めてください。
+例えば辞書順は
+++ → +* → *+ → **　の順番である。
 
+重要：この問題では優先順位は同じとし、左結合とする。
+簡単に言うと左から順に処理するだけである。
+例えば1 ? 2 ? 10 ? 1=31の場合 1+2*10+1が答えで
+実際の世界では((1+2)*10)+1=31　となるので注意。
 
 -----問題ここまで----- */
 /* -----解説等-----
 
-メモ化再帰または経路復元dp.
-メモ化再帰では、i個目まで見て、総和がsumの状況を探索したかどうかをmemoした。(あと枝狩り)
-dpでは,演算結果がtargetの値になるかを確認したい上でtargetが10^5以下であること、Nが50以下であることがわかっているので、
-dp[ 今何個目の数字も見ているか ][ 作成可能な値 ] := 作成可能/作成不可能　とする。
-これによってtargetの値が作成可能かどうかを判定することができる。
-経路復元ではこのdpの値意外にも値を選択できることを利用して、dp:= 何を選択したか(+/*)をもった。
-これにより最適な状態を二値で表すことができるようになる。具体的にはbitがたっている場合には'*',
-立っていない場合には'+'を選択したことにすれば最小の値を持つものは'+'.'*'を辞書順最小で使っていることになる。
-したがって経路復元ではdp[N-1][target]の桁についてこれを順番に見ていけばよい。
-
-経路復元はhttp://rsujskf.s602.xrea.com/?yukicoder_10
-でもできるみたい。(dpにもつ情報がもっと大事なものだったらこれは天才！)
-
-作成: dp[i][j] will be 1 <= dp[i+1][j+a[i]] is 1 
-復元: x=a[0]として、dp[i+1][x+a[[i]] == 1 ならx=x+a[i]として+を復元
-
-様々な経路復元、できるようにしたい。
+最小の情報を持たせるためにこれを2進数表現で保持する。(後で復元できるように)
+dp[i][j]:= a[i]を使って、演算の選択をしたときに結果がjとなるような辞書順最小の演算結果
+としてDP
+1LL << x さん…でWAした。
 
 ----解説ここまで---- */
 
-ll N, target;
-ll a[50];
-bool memo[51][100110];
-ll ans = 0LL;
-string s = "";
-void f(int i, ll sum) {
-	//cout << s << endl;
-	if (sum > target)return;
-	if (i == N&&sum == target) {
-		cout << s << endl;
-		exit(0);
-	}
-	if (i >= N)return;
-	if (memo[i][sum])return;
-	memo[i][sum] = 1;
-	s += '+';
-	f(i + 1, sum + a[i]);
-	s.erase(s.size() - 1);
-	s += '*';
-	f(i + 1, sum * a[i]);
-	s.erase(s.size() - 1);
+LL N;
 
-	return;
-}
-
-ll dp[50][100010];
+LL ans = 0LL;
 
 int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
-	//FOR(i, 0, 50)FOR(j, 0, 100011) memo[i][j] = 0;
-
-	cin >> N >> target;
-	FOR(i, 0, N)cin >> a[i];
-	//f(1, a[0]);
-	FOR(i, 0, N)FOR(j, 0, 100010)dp[i][j] = LINF;
+	cin >> N;
+	LL total; cin >> total;
+	VL a(N);
+	FOR(i, 0, N) {
+		cin >> a[i];
+	}
+	VVL dp(N, VL(total + 1, LINF));
 	dp[0][a[0]] = 0;
 	FOR(i, 1, N) {
-		FOR(j, 0, target+1) {
+		FOR(j, 0, total + 1) {
 			if (dp[i-1][j] == LINF)continue;
-			if (j + a[i] <= target) {
-				dp[i][j + a[i]] = min(dp[i][j+a[i]], dp[i - 1][j] * 2);
-			}
-			if (j * a[i] <= target) {
-				dp[i][j * a[i]] = min(dp[i][j*a[i]], dp[i - 1][j] * 2 + 1);
-
-			}
+			if(j+a[i] <=total)dp[i][j+a[i]] = min(dp[i][j+a[i]], dp[i-1][j] * 2);     // +
+			if(j*a[i]<=total)dp[i][j*a[i]] = min(dp[i][j*a[i]], dp[i-1][j] * 2 + 1); // *
 		}
 	}
-	ans = dp[N - 1][target];
-	FORR(i, N -2, -1) {
-		if (ans & 1LL << i)s += "*";
-		else s += "+";
+	// 復元 
+
+	ans = dp[N-1][total];
+	// N-1回
+	FOR(i, 0, N - 1) {
+		if (ans & (1LL << (N - i - 2))) {
+			cout << "*";
+		}
+		else {
+			cout << "+";
+		}
 	}
-	//FOR(i, 0, N-1) {
-	//	if (ans & 1LL << i)s += "*";
-	//	else s += "+";
-	//}
-	////s.pop_back();
-	//reverse(s.begin(), s.end());
-	cout << s << endl;
+
+	cout << endl;
+	//cout << ans << "\n";
+
 	return 0;
 }
