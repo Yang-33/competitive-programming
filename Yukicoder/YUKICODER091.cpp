@@ -22,15 +22,18 @@ const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2018/04/19  Problem: yukicoder 091  / Link: http://yukicoder.me/problems/no/091  ----- */
+/* -----  2018/04/20  Problem: yukicoder 091  / Link: http://yukicoder.me/problems/no/091  ----- */
 /* ------問題------
 
-
+赤、緑、青の3種類の石を1つずつ使って1つのアクセサリーができる。
+石は同じ色の石2個を別の色の石1個に交換することができる。
+最初に持っている赤、緑、青の石から最大何個のアクセサリーを作ることができるか？
 
 -----問題ここまで----- */
 /* -----解説等-----
 
-
+f(x):=さらにx個増やせるか？
+として二分探索すればよい。
 
 ----解説ここまで---- */
 
@@ -38,11 +41,38 @@ LL N;
 
 LL ans = 0LL;
 
+
+
+
 int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
-	cin >> N;
+	VI a(3);
+	FOR(i, 0, 3)cin >> a[i];
+	int ret = *min_element(ALL(a));
+	FOR(i, 0, 3) {
+		a[i] -= ret;
+	}
+	ans = ret;
+	auto f = [=](int x) {// 追加でx個
+		int lack = 0;
+		FOR(i, 0, 3) {
+			if (a[i] > x)lack -= (a[i] - x) / 2;
+			else lack += x - a[i];
+		}
+
+		return lack <= 0;
+	};
+	int l = 0; int r = INF;
+	while (r - l > 1) {
+		int mid = (l + r) / 2;
+		if (f(mid)) {
+			l = mid;
+		}
+		else r = mid;
+	}
+	ans += l;
 	cout << ans << "\n";
 
 	return 0;
