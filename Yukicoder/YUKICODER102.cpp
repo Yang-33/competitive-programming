@@ -1,23 +1,28 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> pii;
-typedef pair<ll, ll> pll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-#define FOR(i, s, e) for (ll(i) = (s); (i) < (e); (i)++)
-#define FORR(i, s, e) for (ll(i) = (s); (i) > (e); (i)--)
-#define debug(x) cout << #x << ": " << x << endl
-#define mp make_pair
-#define pb push_back
-const ll MOD = 1000000007;
-const int INF = 1e9;
-const ll LINF = 1e16;
-const double PI = acos(-1.0);
-int dx[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };
-int dy[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define PB push_back
+#define EB emplace_back
+#define MP make_pair
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+#define debug(x) cerr << #x << ": " << x << endl
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/09/14  Problem: yukicoder102  / Link: https://yukicoder.me/problems/no/102  ----- */
+/* -----  2018/04/23  Problem: yukicoder 102  / Link: http://yukicoder.me/problems/no/102  ----- */
 /* ------問題------
 
 太郎君と次郎君は机の上に、トランプのカードのうち何枚かをスート（♤♡♢♧）別に重ねて置いてあるのを見つけました。
@@ -39,57 +44,25 @@ int dy[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 -----問題ここまで----- */
 /* -----解説等-----
 
-解法1はメモ化再帰。
-N^4ぐらいでまわるので間に合う。通常のゲーム
-解法2は問題をよく読む。
-最後にカードをとれば盤面のカード+相手の半分のカードを手に入れることができるのでうれしい気持ちになれる。
-したがってただのNimになる。
+最後に勝てば完全に勝てるので、最後だけ見れば良い
+grundy数は各山について (枚数)%4
 
 ----解説ここまで---- */
 
+LL N;
 
-// 解法1
-//vector<int> n(4, 0);
-//int a[14][14][14][14];
-//
-//int f() {
-//	int& ret = a[n[0]][n[1]][n[2]][n[3]];
-//	if (accumulate(n.begin(), n.end(), 0) == 0) return 0;
-//
-//	if (ret != -1)return ret;
-//	ret = 0;
-//	FOR(j, 0, 4) {
-//		FOR(i, 1, min(n[j], 3) + 1) {
-//			n[j] -= i;
-//			if (f() == 0)ret = 1;
-//			n[j] += i;
-//		}
-//	}
-//	return ret;
-//}
-//
-//int main() {
-//	cin.tie(0);
-//	ios_base::sync_with_stdio(false);
-//
-//	FOR(i, 0, 4)cin >> n[i];
-//	FOR(i, 0, 14)FOR(j, 0, 14)FOR(k, 0, 14)FOR(l, 0, 14)a[i][j][k][l] = -1;
-//
-//	if (f())cout << "Taro" << "\n";
-//	else cout << "Jiro" << "\n";
-//
-//	return 0;
-//}
+LL ans = 0LL;
 
 int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
-	int grundy = 0;
 
 	FOR(i, 0, 4) {
 		int a; cin >> a;
-		grundy ^= (a % 4);
+		ans ^= a % 4;
 	}
-	cout << ((grundy != 0) ? "Taro" : "Jiro") << "\n";
 
+	cout << (ans?"Taro":"Jiro") << "\n";
+
+	return 0;
 }
