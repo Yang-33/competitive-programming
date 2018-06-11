@@ -1,30 +1,40 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
-typedef long long ll;
-typedef pair<int, int> pii;
 
-#define FOR(i,s,e) for(int i = s;i < e;i++)
-#define debug(x) cout << #x << ": " << x << endl
-const int INF = (1 << 30);
-const ll LINF = (1LL << 60);
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/11/01  Problem: AOJ2708 / Link: http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2708  ----- */
-/* ------ñ‚ëË------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+#define debug(x) cerr << #x << ": " << x << endl
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-ï∂éöóÒ ABC Ç≈ï\Ç≥ÇÍÇÈà‚ì`éqîzóÒÇ™Ç†ÇÈÅBÇ†Ç»ÇΩÇÕéüÇÃëÄçÏÇâΩâÒÇ©çsÇ¢ÅAÇ±ÇÃà‚ì`éqîzóÒÇèëÇ´ä∑Ç¶ÇƒÇ¢Ç≠Ç±Ç∆Ç™Ç≈Ç´ÇÈÅB
-ï∂éö AÅCBÅCC ÇÃÇ§Çø 1 Ç¬ÇëIÇ‘ÅBÇ±ÇÍÇ x Ç∆Ç®Ç≠ÅBà‚ì`éqîzóÒÇ…ä‹Ç‹ÇÍÇÈÇ∑Ç◊ÇƒÇÃ x ÇÇªÇÍÇºÇÍ ABC Ç÷ìØéûÇ…íuÇ´ä∑Ç¶ÇÈÅB
-AÅCBÅCC ÇæÇØÇ©ÇÁÇ»ÇÈï∂éöóÒ S Ç™ó^Ç¶ÇÁÇÍÇÈÅBà‚ì`éqîzóÒÇ S Ç…àÍívÇ≥ÇπÇÁÇÍÇÈÇ©îªíËÇπÇÊÅB
+/* -----  2018/06/10  Problem: AOJ 2708 / Link: http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2708  ----- */
+/* ------ÂïèÈ°å------
 
------ñ‚ëËÇ±Ç±Ç‹Ç≈----- */
-/* -----âê‡ìô-----
+ÊñáÂ≠óÂàó ABC „ÅßË°®„Åï„Çå„ÇãÈÅ∫‰ºùÂ≠êÈÖçÂàó„Åå„ÅÇ„Çã„ÄÇ„ÅÇ„Å™„Åü„ÅØÊ¨°„ÅÆÊìç‰Ωú„Çí‰ΩïÂõû„ÅãË°å„ÅÑ„ÄÅ„Åì„ÅÆÈÅ∫‰ºùÂ≠êÈÖçÂàó„ÇíÊõ∏„ÅçÊèõ„Åà„Å¶„ÅÑ„Åè„Åì„Å®„Åå„Åß„Åç„Çã„ÄÇ
+ÊñáÂ≠ó AÔºåBÔºåC „ÅÆ„ÅÜ„Å° 1 „Å§„ÇíÈÅ∏„Å∂„ÄÇ„Åì„Çå„Çí x „Å®„Åä„Åè„ÄÇÈÅ∫‰ºùÂ≠êÈÖçÂàó„Å´Âê´„Åæ„Çå„Çã„Åô„Åπ„Å¶„ÅÆ x „Çí„Åù„Çå„Åû„Çå ABC „Å∏ÂêåÊôÇ„Å´ÁΩÆ„ÅçÊèõ„Åà„Çã„ÄÇ
+AÔºåBÔºåC „Å†„Åë„Åã„Çâ„Å™„ÇãÊñáÂ≠óÂàó S „Åå‰∏é„Åà„Çâ„Çå„Çã„ÄÇÈÅ∫‰ºùÂ≠êÈÖçÂàó„Çí S „Å´‰∏ÄËá¥„Åï„Åõ„Çâ„Çå„Çã„ÅãÂà§ÂÆö„Åõ„Çà„ÄÇ
 
-ÇÕÇ‹ÇËë±ÇØÇΩÅB
-ãtÇÉVÉÖÉ~ÉåÅ[ÉVÉáÉìÇµÇΩÇ∆Ç´Ç…ABCÇ…Ç»ÇÍÇŒÇÊÇ¢ÅB
-Ç™ÅAàÍâÒíuä∑ÇçsÇ¡ÇΩå„Ç…ëIëÇµÇΩï∂éöóÒÇ™ë∂ç›ÇµÇ»Ç¢Ç©ÇÉ`ÉFÉbÉNÇµÇ»ÇØÇÍÇŒÇ»ÇÁÇ»Ç©Ç¡ÇΩÅI
+-----ÂïèÈ°å„Åì„Åì„Åæ„Åß----- */
+/* -----Ëß£Ë™¨Á≠â-----
 
-----âê‡Ç±Ç±Ç‹Ç≈---- */
-string S;
+„Åì„ÇåËã¶Êâã„Åò„ÇÉ„Çì
+ÈÄÜ„Çí„Åô„Çã„Å®„Åç„ÅØÂèç‰æã„Åå„Å™„ÅÑ„ÅãÊ≥®ÊÑè
 
+----Ëß£Ë™¨„Åì„Åì„Åæ„Åß---- */
+
+int ans = 0;
 string replace(string S, string from, string to) {
 	auto pos = S.find(from);
 	while (pos != string::npos) {
@@ -33,26 +43,34 @@ string replace(string S, string from, string to) {
 	}
 	return S;
 }
+// Ââç„ÇÑ„Å£„ÅüÊ∞ó„Åå„Åô„Çã
+// Ââç„ÇÇÂêå„Åò„Éü„Çπ„Çí„Åó„ÅüÊ∞ó„Åå„Åô„Çã
+void f(string s) {
+	if (s == "ABC")ans = 1;
 
-void dfs(string S) {
-	if (S == "ABC") {
-		cout << "Yes" << endl;
-		exit(0);
-	}
-	string T[3] = { "A","B","C" };
-	string U = replace(S, "ABC", "X");
-	if (S == U) return;
-
-	FOR(i, 0, 3) if (count(U.begin(), U.end(), T[i][0]) == 0) dfs(replace(U, "X", T[i]));
-
+	string toS = replace(s, "ABC", "#");
+	string ABC = "ABC";
+	FOR(i, 0, 3)
+		if (!count(toS.begin(), toS.end(), ABC[i])) {
+			string toABC = replace(s, "ABC", string(1, ABC[i]));
+			if (s != toABC)f(toABC);
+		}
 }
+
+void solve() {
+	string s;
+	cin >> s;
+	// ABC„Å∏ÈÇÑÂÖÉ„Åô„Çã
+	f(s);
+
+	cout << (ans ? "Yes" : "No") << endl;
+}
+
 int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
-	cin >> S;
-	dfs(S);
-	cout << "No" << endl;
+	solve();
 
 	return 0;
 }
