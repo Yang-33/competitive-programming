@@ -1,4 +1,4 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
 using VS = vector<string>;    using LL = long long;
@@ -8,9 +8,6 @@ using VL = vector<LL>;        using VVL = vector<VL>;
 
 #define ALL(a)  begin((a)),end((a))
 #define RALL(a) (a).rbegin(), (a).rend()
-#define PB push_back
-#define EB emplace_back
-#define MP make_pair
 #define SZ(a) int((a).size())
 #define SORT(c) sort(ALL((c)))
 #define RSORT(c) sort(RALL((c)))
@@ -22,7 +19,7 @@ const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/11/13  Problem: AOJ 2585 / Link: http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2585  ----- */
+/* -----  2018/06/10  Problem: AOJ 2585 / Link: http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2585  ----- */
 /* ------問題------
 
 某国に住む大学生D氏は，国民的ギタリストA氏の大ファンで，この夏都心で行われるライブに行こうと考えている． しかし，D氏は辺境の地に住んでいるため，交通費がかかることがとても不安だった． そんなとき彼は，JAGという組織から安価で販売されている「1Dayパスポート」の存在を知った．
@@ -42,7 +39,7 @@ dist[node][hour]:=cost
 bitがよりたっていないモノにも最小値をとらせる。
 またこれらのパスポートを用いて新たな合成パスポートをmergeしてつくっておくとよい。
 
-なんだかscanfよりもcinのほうが速いという現象がおきた(入力が少ないので誤差になるっぽい)
+bitで部分集合を扱うやつを思い出した(wikiにもまとめた)
 
 ----解説ここまで---- */
 
@@ -105,13 +102,15 @@ int main() {
 				idx |= 1 << k;
 			}
 			pass[idx] = min(pass[idx], d);
-			for (int j = idx; j > 0; j = idx&(j - 1)) {
-				pass[j] = min(pass[j], d);
+			for (int y = 0; ; y = (y - idx)&idx) {
+				pass[y] = min(pass[y], d);
+				if (y == idx)break;
 			}
 		}
 		FOR(k, 0, 1 << K) {//merge
-			for (int le = k; le > 0; le = (le - 1)&k) {
-				pass[k] = min(pass[k], pass[le] + pass[k^le]);
+			for (int y = 0; ; y = (y - k)&k) {
+				pass[k] = min(pass[k], pass[y] + pass[k^y]);
+				if (y == k)break;
 			}
 		}
 		fill(**dist, **dist + 102 * 25 * (1 << 8), LINF);
