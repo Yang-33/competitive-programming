@@ -1,144 +1,147 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> pii;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-#define FOR(i,s,e) for(int(i)=(s);(i) < (e);(i)++)
-#define debug(x) cout << #x << ": " << x << endl
-/* -----  2017/11/01  Problem: AOJ1155  / Link: http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1155   ----- */
-/* ------–â‘è------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+#define debug(x) cerr << #x << ": " << x << endl
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-ŽO’l˜_—‚Í’l‚Æ‚µ‚Ä "^"C"‹U" ‚É‰Á‚¦ "–¢’m" ‚ð‹–‚·˜_—‘ÌŒn‚Å‚ ‚éD ˆÈ‰º‚Å‚ÍC"‹U"C"–¢’m"C"^" ‚ð 0, 1, 2 ‚Å‚»‚ê‚¼‚ê•\‚·D
+/* -----  2018/06/11  Problem: AOJ 1155 / Link: http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1155  ----- */
+/* ------å•é¡Œ------
 
-"-" ‚ð’P€‰‰ŽZŽqi‚·‚È‚í‚¿C’l‚Ð‚Æ‚Â‚ðŽó‚¯Žæ‚éŠÖ”‚ð•\‚·‹L†j‚Æ‚µC "*" ‚Æ "+" ‚ð“ñ€‰‰ŽZŽqi‚·‚È‚í‚¿C’l‚Ó‚½‚Â‚ðŽó‚¯Žæ‚éŠÖ”‚ð•\‚·‹L†j‚Æ‚·‚éD ‚±‚ê‚ç‚ÍC‚»‚ê‚¼‚ê”Û’è (NOT), ˜_—Ï (AND), ˜_—˜a (OR) ‚ð•\‚·‰‰ŽZŽq‚Å‚ ‚èC ŽO’l˜_—‚É‚¨‚¯‚é‚±‚ê‚ç‚Ì‰‰ŽZ‚Í•\ C-1 ‚ÉŽ¦‚·‚æ‚¤‚É’è‹`‚Å‚«‚éD
 
-•\ C-1: ŽO’l˜_—‰‰ŽZŽq‚Ì^—’l•\
--X		(X*Y)		(X+Y)
 
-P, Q, R ‚ðŽO’l˜_—‚Ì•Ï”‚Æ‚·‚éD —^‚¦‚ç‚ê‚½˜_—Ž®‚ð–ž‘«‚·‚éC ‚Â‚Ü‚è˜_—Ž®‚Ì’l‚ª 2 ‚É‚È‚é‚æ‚¤‚È (P,Q,R) ‚ÌŽO‚Â‘g‚ª‰½’Ê‚è‚ ‚é‚©‚ð“š‚¦‚é‚Ì‚ª‚ ‚È‚½‚Ì–ðŠ„‚¾D ˜_—Ž®‚ÍˆÈ‰º‚Ì‚¢‚¸‚ê‚©‚ÌŒ`Ž®‚Å‚ ‚éi‚±‚±‚Å X, Y ‚Í‚Ü‚½˜_—Ž®‚Å‚ ‚é‚Æ‚·‚éjD
+-----å•é¡Œã“ã“ã¾ã§----- */
+/* -----è§£èª¬ç­‰-----
 
-’è”: 0, 1 ‚Ü‚½‚Í 2
-•Ï”: P, Q ‚Ü‚½‚Í R
-”Û’è: -X
-˜_—Ï: (X*Y)
-˜_—˜a: (X+Y)
-ã‹L‚Ì‚æ‚¤‚ÉC‚Ó‚½‚Â‚Ì˜_—Ž®‚Ì˜_—Ï‚â˜_—˜a‚Í•K‚¸Š‡ŒÊ‚ÅˆÍ‚ÞD
+æ§‹æ–‡è§£æž
 
-‚½‚Æ‚¦‚ÎC“ü—Í (P*Q) ‚É‘Î‚µ‚Ä‚ÍC(P,Q,R) ‚ª (2,2,0)C(2,2,1)C(2,2,2) ‚Ìê‡C ‚©‚Â‚»‚Ìê‡‚Ì‚ÝC‚±‚Ì˜_—Ž®‚Ì’l‚ª 2‚Æ‚È‚é‚Ì‚ÅC3‚ðo—Í‚·‚ê‚Î‚æ‚¢D
+----è§£èª¬ã“ã“ã¾ã§---- */
 
------–â‘è‚±‚±‚Ü‚Å----- */
-/* -----‰ðà“™-----
-
-\•¶‰ðÍB
-LL(1)‚È‚Ì‚Å‚±‚ê‚Í3^3’Ê‚è‚Ì‘g‚Ý‡‚í‚¹‚ð‘S•”ŒŸ¸‚·‚ê‚Î‚æ‚¢B
-
-----‰ðà‚±‚±‚Ü‚Å---- */
-const int INF = 1e9;
-const ll LINF = 1e16;
-int N;
-string expr0(int &i, string &s);
-string expr1(int &i, string &s);
-
-void changes(string &s, char a, char b, char c) {
-	FOR(i, 0, s.size()) {
+void change(string&s, int a, int b, int c) {
+	FOR(i, 0, SZ(s)) {
 		if (s[i] == 'P') {
-			s[i] = a;
+			s[i] = a + '0';
 		}
-		else	if (s[i] == 'Q') {
-			s[i] = b;
+		if (s[i] == 'Q') {
+			s[i] = b + '0';
 		}
-		else	if (s[i] == 'R') {
-			s[i] = c;
+		if (s[i] == 'R') {
+			s[i] = c + '0';
 		}
 	}
 }
+string expr1(string&, int&);
+string expr2(string&, int&);
 
-string expr1(int &i, string &s) {
+// (ã ã£ãŸã‚‰Fã‚’å†åº¦è©•ä¾¡
+// -ã ã£ãŸã‚‰Fã‚’å†åº¦è©•ä¾¡
+// numã ã£ãŸã‚‰ãŠã¡ã¾ã„
+// ()å†…ã§ã—ã‹*,+ã‚’ã‚„ã‚‰ãªã„
+
+string expr2(string &s, int &i) { // ã¨ã‚‹ã¨ã“,(ã ã£ãŸã‚‰expr1ã¸
 	if (isdigit(s[i])) {
-		string num = to_string(s[i] - '0');
+		string num = string(1, s[i]);
 		i++;
 		return num;
 	}
 	if (s[i] == '-') {
 		i++;
-		string num = expr1(i, s);
-		if (num == "2")return "0";
-		if (num == "0")return "2";
-		if (num == "1")return "1";
+		string num = expr2(s, i);
+		if ("2" == num)return "0";
+		if ("0" == num)return "2";
+		assert(num == "1");
+		return num;
 	}
 	if (s[i] == '(') {
 		i++;
-		string num = expr0(i, s);
+		string num = expr1(s, i);
+		// ã¨ã£ã¦ããŸã®ã§ã€ä»Šè¦‹ã¦ã‚‹ã®ã¯)
+		assert(s[i] == ')');
 		i++;
 		return num;
 	}
+	// -
+
 	return "";
 }
 
-string expr0(int &i, string &s) {
-	string num = expr1(i, s);
-	int flag = -1;
-	while (i < N && (s[i] == '+' || s[i] == '*')) {
+
+string expr1(string &s, int &i) {
+	string A = expr2(s, i);
+	string B = "";
+	// ã„ã£ã“ã¨ã£ãŸ
+	int mode = 0;
+	while (i < SZ(s) && (s[i] == '+' || s[i] == '*')) {
 		char op = s[i];
 		i++;
 		if (op == '+') {
-			num += expr0(i, s);
-			flag = 1;
+			B = expr1(s, i);
+			mode = 1;
 		}
 		else if (op == '*') {
-			num += expr0(i, s);
-			flag = 2;
+			B = expr1(s, i);
+			mode = 2;
 		}
 	}
+	string OP = " +*";
 
-	if (flag == 1) {
-		FOR(k, 0, num.size()) {
-			if (num[k] == '2')return "2";
-		}
-		FOR(k, 0, num.size()) {
-			if (num[k] == '1')return "1";
-		}
+	//cout << "A:" << A << ", "<<OP[mode] <<" B:" << B << endl;
+	if (mode == 1) {
+		if (A == "2" || B == "2")return "2";
+		if (A == "1" || B == "1")return "1";
 		return "0";
 	}
-	else if (flag == 2) {
-		FOR(k, 0, num.size()) {
-			if (num[k] == '0')return "0";
-		}
-		FOR(k, 0, num.size()) {
-			if (num[k] == '1')return "1";
-		}
-		return  "2";
+	else if (mode == 2) {
+		if (A == "0" || B == "0")return "0";
+		if (A == "1" || B == "1")return "1";
+		return "2";
 	}
-	return num;
 
+	return A;
 }
 
 
-int main() {
-	cin.tie(0); ios::sync_with_stdio(false);
-	while (true) {
-		string S; cin >> S;
-		if (S[0] == '.')break;
+void solve() {
+	string s;
+	while (cin >> s, s != ".") {
+		// p,q,r:0,1,2
 		int ans = 0;
-		N = S.size();
-		FOR(i, 0, 3) {
-			FOR(j, 0, 3) {
-				FOR(k, 0, 3) {
-					string ss = S;
-					changes(ss, '0' + i, '0' + j, '0' + k);
-					int p = 0;
-					if (expr0(p, ss) == "2") {
+		FOR(a, 0, 2 + 1) {
+			FOR(b, 0, 2 + 1) {
+				FOR(c, 0, 2 + 1) {
+					string t = s;
+					change(t, a, b, c);
+					int i = 0;
+					string res = expr1(t, i);
+					//ut << "res:" << res << endl;
+					if ("2" == res) {
 						ans++;
 					}
 				}
 			}
 		}
-
-
 		cout << ans << endl;
 	}
+}
+// aa/a/a/a/a/
 
-
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
+	solve();
 	return 0;
 }
