@@ -1,174 +1,122 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> pii;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-#define FOR(i,s,e) for(int(i)=(s);(i) < (e);(i)++)
-#define debug(x) cout << #x << ": " << x << endl
-/* -----  2017/11/01  Problem: AOJ1156  / Link: http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1156  ----- */
-/* ------–â‘è------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+#define debug(x) cerr << #x << ": " << x << endl
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 
-ƒƒ{ƒbƒg‚ðŽg‚Á‚½ƒQ[ƒ€‚ð‚µ‚æ‚¤D ƒƒ{ƒbƒg‚ª 1 ‘äCƒ}ƒX–Úó‚É‹æØ‚ç‚ê‚½’·•ûŒ`‚Ì”Õ–Êã‚É’u‚©‚ê‚Ä‚¢‚éi} D-1jD ƒƒ{ƒbƒg‚ÍCÅ‰–k¼‹÷‚É‚ ‚éƒXƒ^[ƒg’n“_‚Ìƒ}ƒX‚É“Œ•ûŒü‚ðŒü‚¢‚Ä”z’u‚³‚ê‚Ä‚¢‚éD ƒQ[ƒ€‚Ì–Ú“I‚ÍCƒƒ{ƒbƒg‚ð“ì“Œ‹÷‚É‚ ‚éƒS[ƒ‹‚Ìƒ}ƒX‚Ü‚Å—U“±‚·‚é‚±‚Æ‚Å‚ ‚éD
-ƒƒ{ƒbƒg‚ÍCŽŸ‚Ì 5 Ží—Þ‚Ì–½—ß‚ðŽÀs‚·‚é‚±‚Æ‚ª‚Å‚«‚éD
+/* -----  2018/06/12  Problem: AOJ 1156 / Link: http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1156  ----- */
+/* ------å•é¡Œ------
 
-u’¼i (Straight)v:
-Œ»Ý‚Ìis•ûŒü‚Ì‚Ü‚ÜCŽŸ‚Ìƒ}ƒX‚É‘Oi‚·‚éD
-u‰EÜ (Right)v:
-is•ûŒü‚ð 90 “x‰E‚É•Ï‚¦‚ÄCŽŸ‚Ìƒ}ƒX‚É‘Oi‚·‚éD
-u”½“] (Back)v:
-is•ûŒü‚ð 180 “x•Ï‚¦‚ÄCŽŸ‚Ìƒ}ƒX‚É‘Oi‚·‚éD
-u¶Ü (Left)v:
-is•ûŒü‚ð 90 “x¶‚É•Ï‚¦‚ÄCŽŸ‚Ìƒ}ƒX‚É‘Oi‚·‚éD
-u’âŽ~ (Halt)v:
-Œ»Ý‚Ìƒ}ƒX‚ÅŽ~‚Ü‚Á‚ÄCƒQ[ƒ€‚ðI—¹‚·‚éD
-Šeƒ}ƒX‚É‚ÍCãq‚Ì–½—ß‚Ì‚¢‚¸‚ê‚©‚ªŠ„‚è“–‚Ä‚ç‚ê‚Ä‚¢‚éi—áF} D-2jD ‘ã‚í‚è‚ÉŽÀs‚·‚×‚«•Ê‚Ì–½—ß‚ðƒvƒŒƒCƒ„[‚ª—^‚¦‚È‚¢ŒÀ‚èC ƒƒ{ƒbƒg‚ÍCŒ»Ý‚¢‚éƒ}ƒX‚Ì–½—ß‚ðŽÀs‚·‚éD ƒvƒŒƒCƒ„[‚ª–¾Ž¦“I‚É–½—ß‚ð—^‚¦‚éÛ‚ÍC‚»‚Ì“s“xC –½—ß‚ÌŽí—Þ‚É‰ž‚¶‚½ƒRƒXƒg‚ðŽx•¥‚¤•K—v‚ª‚ ‚éD
+ãƒ­ãƒœãƒƒãƒˆã‚’ä½¿ã£ãŸã‚²ãƒ¼ãƒ ã‚’ã—ã‚ˆã†ï¼Ž ãƒ­ãƒœãƒƒãƒˆãŒ 1 å°ï¼Œãƒžã‚¹ç›®çŠ¶ã«åŒºåˆ‡ã‚‰ã‚ŒãŸé•·æ–¹å½¢ã®ç›¤é¢ä¸Šã«ç½®ã‹ã‚Œã¦ã„ã‚‹ï¼ˆå›³ D-1ï¼‰ï¼Ž ãƒ­ãƒœãƒƒãƒˆã¯ï¼Œæœ€åˆåŒ—è¥¿éš…ã«ã‚ã‚‹ã‚¹ã‚¿ãƒ¼ãƒˆåœ°ç‚¹ã®ãƒžã‚¹ã«æ±æ–¹å‘ã‚’å‘ã„ã¦é…ç½®ã•ã‚Œã¦ã„ã‚‹ï¼Ž ã‚²ãƒ¼ãƒ ã®ç›®çš„ã¯ï¼Œãƒ­ãƒœãƒƒãƒˆã‚’å—æ±éš…ã«ã‚ã‚‹ã‚´ãƒ¼ãƒ«ã®ãƒžã‚¹ã¾ã§èª˜å°Žã™ã‚‹ã“ã¨ã§ã‚ã‚‹ï¼Ž
+ãƒ­ãƒœãƒƒãƒˆã¯ï¼Œæ¬¡ã® 5 ç¨®é¡žã®å‘½ä»¤ã‚’å®Ÿè¡Œã™ã‚‹ã“ã¨ãŒã§ãã‚‹ï¼Ž
+ã€Œç›´é€² (Straight)ã€:
+ç¾åœ¨ã®é€²è¡Œæ–¹å‘ã®ã¾ã¾ï¼Œæ¬¡ã®ãƒžã‚¹ã«å‰é€²ã™ã‚‹ï¼Ž
+ã€Œå³æŠ˜ (Right)ã€:
+é€²è¡Œæ–¹å‘ã‚’ 90 åº¦å³ã«å¤‰ãˆã¦ï¼Œæ¬¡ã®ãƒžã‚¹ã«å‰é€²ã™ã‚‹ï¼Ž
+ã€Œåè»¢ (Back)ã€:
+é€²è¡Œæ–¹å‘ã‚’ 180 åº¦å¤‰ãˆã¦ï¼Œæ¬¡ã®ãƒžã‚¹ã«å‰é€²ã™ã‚‹ï¼Ž
+ã€Œå·¦æŠ˜ (Left)ã€:
+é€²è¡Œæ–¹å‘ã‚’ 90 åº¦å·¦ã«å¤‰ãˆã¦ï¼Œæ¬¡ã®ãƒžã‚¹ã«å‰é€²ã™ã‚‹ï¼Ž
+ã€Œåœæ­¢ (Halt)ã€:
+ç¾åœ¨ã®ãƒžã‚¹ã§æ­¢ã¾ã£ã¦ï¼Œã‚²ãƒ¼ãƒ ã‚’çµ‚äº†ã™ã‚‹ï¼Ž
+å„ãƒžã‚¹ã«ã¯ï¼Œä¸Šè¿°ã®å‘½ä»¤ã®ã„ãšã‚Œã‹ãŒå‰²ã‚Šå½“ã¦ã‚‰ã‚Œã¦ã„ã‚‹ï¼ˆä¾‹ï¼šå›³ D-2ï¼‰ï¼Ž ä»£ã‚ã‚Šã«å®Ÿè¡Œã™ã¹ãåˆ¥ã®å‘½ä»¤ã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒä¸Žãˆãªã„é™ã‚Šï¼Œ ãƒ­ãƒœãƒƒãƒˆã¯ï¼Œç¾åœ¨ã„ã‚‹ãƒžã‚¹ã®å‘½ä»¤ã‚’å®Ÿè¡Œã™ã‚‹ï¼Ž ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒæ˜Žç¤ºçš„ã«å‘½ä»¤ã‚’ä¸Žãˆã‚‹éš›ã¯ï¼Œãã®éƒ½åº¦ï¼Œ å‘½ä»¤ã®ç¨®é¡žã«å¿œã˜ãŸã‚³ã‚¹ãƒˆã‚’æ”¯æ‰•ã†å¿…è¦ãŒã‚ã‚‹ï¼Ž
+ãƒ­ãƒœãƒƒãƒˆã¯ï¼ŒåŒã˜å ´æ‰€ã‚’ä½•åº¦ã‚‚è¨ªã‚Œã‚‹ã“ã¨ãŒè¨±ã•ã‚Œã¦ã„ã‚‹ï¼Ž ä¸€æ–¹ã§ï¼Œãƒ­ãƒœãƒƒãƒˆãŒç›¤é¢å¤–ã«å‰é€²ã™ã‚‹ã‚ˆã†ãªå‘½ä»¤ã‚’å®Ÿè¡Œã—ãŸå ´åˆã‚„ï¼Œ ã‚´ãƒ¼ãƒ«ã«ç€ãå‰ã«åœæ­¢å‘½ä»¤ã‚’å®Ÿè¡Œã—ãŸå ´åˆã¯ï¼Œå¤±æ ¼ã¨ãªã‚‹ï¼Ž
+ã‚ãªãŸã®ä»•äº‹ã¯ï¼Œ ãƒ­ãƒœãƒƒãƒˆã‚’ã‚¹ã‚¿ãƒ¼ãƒˆåœ°ç‚¹ã‹ã‚‰ã‚´ãƒ¼ãƒ«åœ°ç‚¹ã«èª˜å°Žã™ã‚‹ãŸã‚ã«å¿…è¦ãªæœ€å°ã‚³ã‚¹ãƒˆã‚’æ±‚ã‚ã‚‹ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚’æ›¸ãã“ã¨ã§ã‚ã‚‹ï¼Ž
 
-ƒƒ{ƒbƒg‚ÍC“¯‚¶êŠ‚ð‰½“x‚à–K‚ê‚é‚±‚Æ‚ª‹–‚³‚ê‚Ä‚¢‚éD ˆê•û‚ÅCƒƒ{ƒbƒg‚ª”Õ–ÊŠO‚É‘Oi‚·‚é‚æ‚¤‚È–½—ß‚ðŽÀs‚µ‚½ê‡‚âC ƒS[ƒ‹‚É’…‚­‘O‚É’âŽ~–½—ß‚ðŽÀs‚µ‚½ê‡‚ÍCŽ¸Ši‚Æ‚È‚éD
+-----å•é¡Œã“ã“ã¾ã§----- */
+/* -----è§£èª¬ç­‰-----
 
-‚ ‚È‚½‚ÌŽdŽ–‚ÍC ƒƒ{ƒbƒg‚ðƒXƒ^[ƒg’n“_‚©‚çƒS[ƒ‹’n“_‚É—U“±‚·‚é‚½‚ß‚É•K—v‚ÈÅ¬ƒRƒXƒg‚ð‹‚ß‚éƒvƒƒOƒ‰ƒ€‚ð‘‚­‚±‚Æ‚Å‚ ‚éD
+å‰ã©ã“ã‹ã‚‰æ¥ãŸã‹ã‚’ã‚‚ã£ã¦ã€ã‚„ã‚‹
+æ–¹å‘è¡Œåˆ—ã¯å›žè»¢ã§ãã‚‹ã‚ˆã†ã«ã™ã‚‹
 
------–â‘è‚±‚±‚Ü‚Å----- */
-/* -----‰ðà“™-----
+----è§£èª¬ã“ã“ã¾ã§---- */
 
-ƒ}ƒX‚ÉˆÚ“®‚µ‚Ä‚«‚½‚Æ‚«‚ÉˆÈ‘O‚Ìî•ñ‚ª•K—v‚È‚Ì‚ÅAƒ_ƒCƒNƒXƒgƒ‰‚ð‚·‚é‚Æ‚«‚É’¸“_‚ð‘‚â‚µ‚Ä‚â‚ê‚Î‚æ‚¢B
-
-----‰ðà‚±‚±‚Ü‚Å---- */
-const int INF = 1e9;
-const ll LINF = 1e16;
-int dx[4] = { 1,0,-1,0 };
-int dy[4] = { 0,1,0,-1 };
 bool is_in(int x, int y, int h, int w) {
-	return (0 <= x&&x < w && 0 <= y&&y < h);
+	return (0 <= x && x < w && 0 <= y && y < h);
 }
-
-int masu[35][35];
-int dist[35][35][5];
-int co[4];
-
+int nxtstep(int cmd,int dir) {
+	if (cmd == 0)return dir;
+	if (cmd == 1)return (dir+1)%4;
+	if (cmd == 2)return (dir+2)%4;
+	if (cmd == 3)return (dir+3)%4;
+	assert(0);
+}
 int main() {
-	cin.tie(0); ios::sync_with_stdio(false);
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
+	int W, H;
+	int DY[8] = { 0, 1, 0, -1 };
+	int DX[8] = { 1, 0, -1, 0 };
 
-	while (true) {
-		FOR(i, 0, 35)FOR(j, 0, 35)masu[i][j] = -1;
-		FOR(i, 0, 35)FOR(j, 0, 35)FOR(k, 0, 4)dist[i][j][k] = INF;
-
-		int H, W;
-		cin >> W >> H;
-		if (W == 0 && H == 0)break;
+	while (cin >> W >> H, W) {
+		VVI masu(H, VI(W));
 		FOR(i, 0, H) {
 			FOR(j, 0, W) {
 				cin >> masu[i][j];
 			}
 		}
-		FOR(i, 0, 4)cin >> co[i];
-
-		//cost,y,x,dirct
-		using Ty = tuple<int, int, int, int>;
-		priority_queue<Ty, vector<Ty>, greater<Ty>>q;
-		q.push(Ty(0, 0, 0, 0));
+		VI co(4);
+		FOR(i, 0, 4) {
+			cin >> co[i];
+		} // straight,ri,rev,le
+		vector<VVI>dist(H, VVI(W, VI(4, INF)));
+		using tp = tuple<int, int, int, int>;
+		priority_queue<tp, vector<tp>, greater<tp>>q;
 		dist[0][0][0] = 0;
-
+		q.push(tp(0, 0, 0, 0));
 		while (!q.empty()) {
-			Ty a = q.top(); q.pop();
-			int x, y, cost, dir, dir2;
-			tie(cost, y, x, dir) = a;
-			dir2 = dir;
+			int x, y, cost, dir, nxdir;
+			tie(cost, y, x, dir) = q.top(); q.pop();
+			nxdir = dir;
 			if (dist[y][x][dir] < cost)continue;
 			int command = masu[y][x];
-			
-			
-			if (command == 0) {
-				int nx = x + dx[dir];
-				int ny = y + dy[dir];
-				if (is_in(nx, ny, H, W))
-				if (dist[ny][nx][dir] > cost) {
-					dist[ny][nx][dir] = cost;
-					q.push(Ty(cost, ny, nx, dir));
-				}
-			}
-			else if (command == 1) {
-				dir2 = (dir + 1) % 4;
-				int nx = x + dx[dir2];
-				int ny = y + dy[dir2];
-				if (is_in(nx, ny, H, W))
-				if (dist[ny][nx][dir2] > cost) {
-					dist[ny][nx][dir2] = cost;
-					q.push(Ty(cost, ny, nx, dir2));
-				}
-			}
-			else if (command == 2) {
-				dir2 = (dir + 2) % 4;
-				int nx = x + dx[dir2];
-				int ny = y + dy[dir2];
-				if (is_in(nx, ny, H, W))
-				if (dist[ny][nx][dir2] > cost) {
-					dist[ny][nx][dir2] = cost;
-					q.push(Ty(cost, ny, nx, dir2));
-				}
-			}
-			else if (command == 3) {
-				dir2 = (dir - 1 + 4) % 4;
-				int nx = x + dx[dir2];
-				int ny = y + dy[dir2];
-				if (is_in(nx, ny, H, W))
-				if (dist[ny][nx][dir2] > cost) {
-					dist[ny][nx][dir2] = cost;
-					q.push(Ty(cost, ny, nx, dir2));
-				}
-			}
-			else if (command == 4) {
-				;
-			}
-			//cost
 
-			int nx = x + dx[dir];
-			int ny = y + dy[dir];
-			if (is_in(nx, ny, H, W)) {
-				if (dist[ny][nx][dir] > cost + co[0]) {
-					dist[ny][nx][dir] = cost + co[0];
-					q.push(Ty(dist[ny][nx][dir], ny, nx, dir));
+			if (command >= 0 && command <= 3) {
+				nxdir = nxtstep(command, dir);
+				int ny = y + DY[nxdir];
+				int nx = x + DX[nxdir];
+				if (is_in(nx, ny, H, W)) {
+					if (dist[ny][nx][nxdir] > cost) {
+						dist[ny][nx][nxdir] = cost;
+						q.push(tp(cost, ny, nx, nxdir));
+					}
 				}
 			}
-			dir2 = (dir + 1) % 4;
-			 nx = x + dx[dir2];
-			 ny = y + dy[dir2];
-			if (is_in(nx, ny, H, W)) {
-				if (dist[ny][nx][dir2] > cost + co[1]) {
-					dist[ny][nx][dir2] = cost + co[1];
-					q.push(Ty(dist[ny][nx][dir2], ny, nx, dir2));
+			// change
+			FOR(i, 0, 4) {
+				nxdir = nxtstep(i, dir);
+				int ny = y + DY[nxdir];
+				int nx = x + DX[nxdir];
+				if (is_in(nx, ny, H, W)) {
+					if (dist[ny][nx][nxdir] > cost + co[i]) {
+						dist[ny][nx][nxdir] = cost + co[i];
+						q.push(tp(dist[ny][nx][nxdir], ny, nx, nxdir));
 
-				}
-			}
-			dir2 = (dir + 2) % 4;
-			 nx = x + dx[dir2];
-			 ny = y + dy[dir2];
-			if (is_in(nx, ny, H, W)) {
-				if (dist[ny][nx][dir2] > cost + co[2]) {
-					dist[ny][nx][dir2] = cost + co[2];
-					q.push(Ty(dist[ny][nx][dir2], ny, nx, dir2));
-
-				}
-			}
-			dir2 = (dir - 1 + 4) % 4;
-			 nx = x + dx[dir2];
-			 ny = y + dy[dir2];
-			if (is_in(nx, ny, H, W)) {
-				if (dist[ny][nx][dir2] > cost + co[3]) {
-					dist[ny][nx][dir2] = cost + co[3];
-					q.push(Ty(dist[ny][nx][dir2], ny, nx, dir2));
+					}
 				}
 			}
 		}
-
-		ll ans = LINF;
+		int ans = INF;
 		FOR(i, 0, 4) {
-			ans = min(ans, (ll)dist[H - 1][W - 1][i]);
+			ans = min(ans, dist[H - 1][W - 1][i]);
 		}
-		cout << ans << endl;
+		cout << ans << "\n";
 	}
-
 
 	return 0;
 }
