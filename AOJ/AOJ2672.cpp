@@ -1,34 +1,44 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> pii;
-typedef pair<ll, ll> pll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-#define FOR(i, s, e) for (ll(i) = (s); (i) < (e); (i)++)
-#define FORR(i, s, e) for (ll(i) = (s); (i) > (e); (i)--)
-#define debug(x) cout << #x << ": " << x << endl
-#define mp make_pair
-#define pb push_back
-const ll MOD = 1000000007;
-const int INF = 1e9;
-const ll LINF = 1e16;
-const double PI = acos(-1.0);
-int dx[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };
-int dy[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+#define debug(x) cerr << #x << ": " << x << endl
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/07/12  Problem: AOJ 2672  / Link: http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2672  ----- */
+/* -----  2018/06/15  Problem: AOJ 2672 / Link: http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2672  ----- */
 /* ------問題------
 
-
+あなたの担当する配達地域として無向グラフを考える．
+n頂点からなる無向グラフを考えたとき，それぞれの頂点には1からnの番号が付けられている．
+落とした郵便物の数と落ちている頂点，それぞれの郵便物の配達先の頂点が与えられたとき，
+すべての郵便物を回収して配達先に届ける最短時間を求めよ．
+このとき，ある郵便物をその郵便物の配達先に届ける場合に拾っていない他の郵便物が存在しても良い．
+また，配達終了時にはどの頂点にいても良いこととする．
+ここで，1つの頂点には高々1つの郵便物か高々1つの配達先しかなく，出発する頂点には郵便物も配達先も存在しない．
+与えられる無向グラフは単純なグラフ，すなわち自己閉路や多重辺のないグラフである．
 
 -----問題ここまで----- */
 /* -----解説等-----
 
-bitDP.
-頂点の訪問順番が全体として(手紙->届ける場所)ときまっているのでこれを満たす場合のみ遷移させる。
+何度もダイクストラをしてまず2*K点間の最短距離を求める。
+その後、state={ひろった,届けた}*を2^K個もったbitDPをすればよい
 
 ----解説ここまで---- */
+using ll = LL;
 
 ll N, M, K, P;
 ll ans = 0LL;
@@ -36,27 +46,27 @@ using TypeDijk = pair<ll, ll>;
 
 #define DijkV 1003
 ll d[DijkV];
-vector<pll>G[DijkV];
+vector<PLL>G[DijkV];
 void Dijkstra(int s, int t) {
 	const int INF = INT_MAX;
 
-	FOR(i, 0, DijkV)d[i] = LLONG_MAX / 10;//init
+	FOR(i, 0, DijkV)d[i] = LLONG_MAX / 10;
 
-	d[s] = 0; // 頂点sを0で初期化
-	priority_queue<TypeDijk, vector<TypeDijk>, greater<TypeDijk>> que; //優先度付きqueue 降順(距離、頂点)
-	que.push(TypeDijk(0ll, s)); // push(距離,頂点)
+	d[s] = 0; 
+	priority_queue<TypeDijk, vector<TypeDijk>, greater<TypeDijk>> que; 
+	que.push(TypeDijk(0ll, s)); 
 
 	while (!que.empty()) {
-		TypeDijk p = que.top(); que.pop(); //queueのデータ構造
-		int v = p.second; // 頂点
-		ll dist = p.first; // 頂点vまでの距離
-		if (dist > d[v]) continue; //最適でないならば考慮しない
+		TypeDijk p = que.top(); que.pop(); 
+		int v = p.second; 
+		ll dist = p.first; 
+		if (dist > d[v]) continue;
 
-		FOR(i, 0, G[v].size()) { //頂点vからはi本の辺が存在
-			int nv = G[v][i].first; // v->nv
+		FOR(i, 0, G[v].size()) { 
+			int nv = G[v][i].first; 
 			if (d[nv] > d[v] + G[v][i].second) {
 				d[nv] = d[v] + G[v][i].second;
-				que.push(TypeDijk(d[nv], nv)); //push(距離,頂点) 
+				que.push(TypeDijk(d[nv], nv)); 
 			}
 		}
 	}
@@ -73,8 +83,8 @@ int main() {
 	FOR(i, 0, M) {
 		int a, b, c; cin >> a >> b >> c;
 		a--; b--;
-		G[a].push_back(pll(b, c));
-		G[b].push_back(pll(a, c));
+		G[a].push_back(PLL(b, c));
+		G[b].push_back(PLL(a, c));
 	}
 
 	FOR(i, 0, K) {
