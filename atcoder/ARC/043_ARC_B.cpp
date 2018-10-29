@@ -14,32 +14,27 @@ using VL = vector<LL>;        using VVL = vector<VL>;
 #define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
 #define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
 #define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
-#define debug(x) cerr << #x << ": " << x << endl
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
 const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2018/10/13  Problem: 043_arc_b / Link: https://beta.atcoder.jp/contests/arc043/tasks/arc043_b ----- */
+/* -----  2018/10/28  Problem: ARC 043 B / Link: http://arc043.contest.atcoder.jp/tasks/arc043_b  ----- */
 /* ------問題------
 
-高橋君はプログラミングコンテストを開く仕事をしている。
-高橋君はストックしている N 個の問題から 4 問を選んでコンテストに出題する。
-各問題には「難易度」という正の整数が決められており、 i 番目の問題の難易度は Di である。
-選ぶ問題は以下の 3 つの条件を満たしていなければならない。
 
-2 問目の難易度は 1 問目の難易度の 2 倍以上である。
-3 問目の難易度は 2 問目の難易度の 2 倍以上である。
-4 問目の難易度は 3 問目の難易度の 2 倍以上である。
-上の条件のもとで N 個の問題から 4 問選ぶとき、何通りの選び方があるか求めよ。
-この値は非常に大きくなり得るので 1,000,000,007(=109+7) で割った余りを求めよ。
 
 -----問題ここまで----- */
 /* -----解説等-----
 
-コメントの通り。dp(i,k)のkについて更新をかければよい。区間和がほしいのでBITを使っても良い。
+
 
 ----解説ここまで---- */
-
 
 template <::std::uint_fast32_t MODULO> class modint {
 public:
@@ -52,51 +47,34 @@ int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
-	int N; cin >> N;
+	LL N; cin >> N;
 	VI a(N);
 	FOR(i, 0, N) {
 		cin >> a[i];
 	}
-
 	SORT(a);
-
-	// O(NK)のdpを独立、sumで求める
-	// dp(i,k):= ithをk番目に選択する組合せ
-	// dp(i,k+1) = \sum dp(X,k) X:[0,a[i]/2]
-	// 
-	int K = 4;
-	// K をまわす方のdp?
-	int S = 100005;
-	vector<vector<mint>>dp(S + 1, vector<mint>(K + 1, 0));
-	vector<vector<mint>>cum(S + 1, vector<mint>(K, 0));
-	FOR(i, 0, S + 1) {
-		cum[i][0] = 1;
+	const int K = 4;
+	const int Dmax = 1e5 + 5;
+	vector<vector<mint>>dp(K + 1, vector<mint>(Dmax, 0));
+	FOR(i, 0, N) {
+		dp[1][a[i]] += 1;
 	}
-	dp[0][0] = 1;
-	FOR(k, 0, K) {
-		// dpからcum をつくる
-		if (k) {
-			FOR(i, 0, S) {
-				cum[i + 1][k] = cum[i][k] + dp[i + 1][k];
-			}
-
+	FOR(k, 1, K) {
+		vector<mint>cum(Dmax + 1, 0);
+		FOR(i, 0, Dmax) {
+			cum[i + 1] = cum[i] + dp[k][i + 1];
 		}
-		// dp遷移
 		FOR(i, 0, N) {
-			dp[a[i]][k + 1] += cum[a[i] / 2][k];
+			dp[k + 1][a[i]] += cum[a[i] / 2];
 		}
-		//cout << "DEBUG" << endl;
-		//FOR(i, 0, 30) {
-		//	cout << i << ":" << dp[i][k + 1].get() << " ";
-		//}cout << endl;
 
 	}
 
-	// ここcumと一緒
 	mint ans = 0;
-	FOR(i, 0, S) {
-		ans += dp[i][4];
+	FOR(i, 0, Dmax) {
+		ans += dp[K][i];
 	}
+
 	cout << ans.get() << "\n";
 
 	return 0;
