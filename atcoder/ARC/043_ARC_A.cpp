@@ -18,13 +18,13 @@ using VL = vector<LL>;        using VVL = vector<VL>;
 #ifdef YANG33
 #include "mydebug.hpp"
 #else
-#define DEBUG(x) 
+#define DD(x) 
 #endif
 const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2018/10/17  Problem: 043_ARC_A / Link: https://beta.atcoder.jp/contests/arc043/tasks/arc043_a  ----- */
+/* -----  2018/10/28  Problem: ARC 043 A / Link: http://arc043.contest.atcoder.jp/tasks/arc043_a  ----- */
 /* ------問題------
 
 
@@ -50,7 +50,7 @@ int main() {
 	LL Max = *max_element(ALL(a));
 	LL Min = *min_element(ALL(a));
 	if (Max == Min) {
-		if (B == 0) {
+		if (B == 0) { // B>=1だった…
 			double P = A / (accumulate(ALL(a), 0.0) / N);
 			cout << fixed << setprecision(10) << P << " " << 0 << endl;
 		}
