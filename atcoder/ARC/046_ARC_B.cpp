@@ -1,9 +1,30 @@
-#include<iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/03/15  Problem: ARC046 B / Link: http://arc046.contest.atcoder.jp/tasks/arc046_b ----- */
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+
+/* -----  2018/11/04  Problem: ARC 046 B / Link: http://arc046.contest.atcoder.jp/tasks/arc046_b  ----- */
 /* ------問題------
 
 高橋君と青木君は N 個の石からなる石の山を使って石取りゲームをすることにしました。ゲームのルールは以下の通りです。
@@ -15,36 +36,31 @@ typedef long long ll;
 -----問題ここまで----- */
 /* -----解説等-----
 
-A=BのときはA+1の倍数を踏んだ人の勝ちであるから剰余が0のときにはＢ，そうでないときはＡの勝ちである。
-一方A>BであればＡが主導権を握ることができるのでシュミレーションをする必要はない。
+値が大きいほうが有利すぎる(grundy数をぶち壊せるので)
 
 ----解説ここまで---- */
 
-ll N;
-ll A, B;
-ll ans = 0LL;
+LL ans = 0LL;
 
-int main()
-{
+int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
-	cin >> N >> A >> B;
-	if (N <= A)ans = 1;
+	LL N; cin >> N;
+	LL A, B; cin >> A >> B;
+	if (N <= A) {
+		ans = 1;
+	}
 	else {
 		if (A == B) {
-			if (N % (A + 1) == 0)ans = 0;
-			else ans = 1;
+			if (N % (A + 1) != 0)ans = 1;
 		}
 		else {
 			if (A > B)ans = 1;
-			else ans = 0;
 		}
 	}
 
-	if(ans==1)
-	cout << "Takahashi" << endl;
-	else cout << "Aoki" << endl;
-	
+	cout << (ans ? "Takahashi" : "Aoki") << "\n";
+
 	return 0;
 }
