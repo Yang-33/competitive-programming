@@ -1,10 +1,30 @@
-﻿#include<iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/03/15  Problem: ARC048 B / Link: http://arc048.contest.atcoder.jp/tasks/arc048_b ----- */
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+
+/* -----  2018/11/06  Problem: ARC 048 B / Link: http://arc048.contest.atcoder.jp/tasks/arc048_b  ----- */
 /* ------問題------
 
 AtCoderじゃんけんの大会が開かれています。AtCoderじゃんけんとは、2 人で行う以下のようなゲームです。
@@ -20,41 +40,40 @@ AtCoderじゃんけんの大会が開かれています。AtCoderじゃんけん
 -----問題ここまで----- */
 /* -----解説等-----
 
-毎回勝利判定などは計算量が多すぎてできないので、あらかじめ値をハッシュとして記録しておく。
-はじめはlower_bound？と思ったけれど必要がなかった。
+累積和を使えばO(N)でできる。
+また、rateが等しい人はじゃんけん別に分けておけばO(1)でメモを見るだけで良い。
 
 ----解説ここまで---- */
 
-ll N;
-int rate[100000], te[100000];
-int m[100010][3];
-int cnt[100010];
-int sumc[100010];
-ll ans = 0LL;
+LL ans = 0LL;
 
-
-int main()
-{
+int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
-	cin >> N;
+	int N; cin >> N;
+	vector<PII>a(N);
 	FOR(i, 0, N) {
-		cin >> rate[i] >> te[i];
-		te[i]--;
-		cnt[rate[i]]++;
-		m[rate[i]][te[i]]++;
+		cin >> a[i].first >> a[i].second;
+		a[i].second--;
+	}
+	VL csum(100010);
+	VVI hash(100010, VI(3, 0));
+	FOR(i, 0, N) {
+		csum[a[i].first]++;
+		hash[a[i].first][a[i].second]++;
 	}
 
-	sumc[0] = 0;
 	FOR(i, 1, 100010) {
-		sumc[i] = sumc[i - 1] + cnt[i];
+		csum[i] += csum[i - 1];
 	}
-
 	FOR(i, 0, N) {
-		cout << sumc[rate[i] - 1] + m[rate[i]][(te[i] + 1) % 3] << " " << (sumc[100009] - sumc[rate[i]]) + m[rate[i]][(te[i] + 2) % 3] << " " << m[rate[i]][te[i]] - 1 << endl;
-		//cout << sumc[100009] <<"  "<< - sumc[rate[i]] <<"  "<< m[rate[i]][(te[i] + 2) % 3] << endl;
+		LL iwin = csum[a[i].first - 1];
+		iwin += hash[a[i].first][(a[i].second+1)%3];
+		LL ilose = csum[100000] - csum[a[i].first];
+		ilose+= hash[a[i].first][(a[i].second + 2) % 3];
+		LL itie = hash[a[i].first][a[i].second]-1;
+		cout << iwin << " " << ilose << " " << itie << endl;
 	}
-
 	return 0;
 }
