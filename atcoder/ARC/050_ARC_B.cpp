@@ -1,10 +1,30 @@
-#include<iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/03/15  Problem: ARC050 / Link: http://arc050.contest.atcoder.jp/tasks/arc050_b ----- */
+/* -----  2018/11/07  Problem: ARC 050 B / Link: http://arc050.contest.atcoder.jp/tasks/arc050_b  ----- */
 /* ------問題------
 
 高橋君は赤い花を R 本、青い花を B 本持っています。高橋君は次の 2 種類の花束を作ることができます。
@@ -15,48 +35,41 @@ x 本の赤い花と 1 本の青い花からなる花束
 -----問題ここまで----- */
 /* -----解説等-----
 
-合計でZ=P+Q個欲しいとする。制約から、
-x*P + 1*Q ≦ R
-1*P + y*Q ≦ B
-
-ここで
-Z = P + Q であったから、
-
-Z + (x-1)*P ≦ R
-Z + (y-1)*Q ≦ B
-
-となりZのみに依存した式がP,Qへの式となって現わすことができる。
-あとはこれを二分探索してやればよい。
-
-三分探索もできるが安全ではなく、ある程度解の存在しうる区間を特定したらその付近を全探索した方がいいみたい。
+K本つくるならば、少なくとも赤い花も青い花もK本必要で、かつ、貪欲に作成して足りる必要がある。
+K本作れるなら、K+1本も作れるので、二分探索すれば良い。
 
 ----解説ここまで---- */
 
-ll N;
-ll R, B, x, y;
-ll ans = 0LL;
+LL ans = 0LL;
 
-bool f(ll Z) {
-	if (Z > R) return false;
-	if (Z > B) return false;
-	ll a = (R - Z) / (x - 1), b = (B - Z) / (y - 1);
-	return a + b >= Z;
-}
-
-int main()
-{
+int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
-	cin >> R >> B >> x >> y;
-	ll l = 0, r = 1e18;
-	while (r - l > 1) {
-		ll mid = (l + r) / 2;
-		if (f(mid))l = mid;
-		else r = mid;
+	LL R, B; cin >> R >> B;
+	LL needR, needB; cin >> needR >> needB;
+
+	auto f = [&](LL x) {
+		LL a = R, b = B;
+		if (a < x || b < x)return false;
+		a -= x, b -= x;
+		LL cnt = max(0LL, a / (needR - 1))
+			+ max(0LL, b / (needB - 1));
+		return cnt >= x;
+	};
+	LL L = 0; LL Rr = 1e18;
+	while (Rr - L > 1) {
+		LL mid = (L + Rr) / 2;
+		if (f(mid)) {
+			L = mid;
+		}
+		else {
+			Rr = mid;
+		}
 	}
-	ans = l;
-	cout << ans << endl;
+	ans = L;
+
+	cout << ans << "\n";
 
 	return 0;
 }
