@@ -1,13 +1,30 @@
-#include<iostream>
-#include<algorithm>
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-const double PI = acos(-1.0);
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/03/15  Problem: ARC052 B / Link: http://arc052.contest.atcoder.jp/tasks/arc052_b ----- */
+/* -----  2018/11/18  Problem: ARC 052 B / Link: http://arc052.contest.atcoder.jp/tasks/arc052_b  ----- */
 /* ------問題------
 
 3次元空間( xyz 空間)上に N 個の円錐が互いに重なり合わないように浮いています。
@@ -19,41 +36,47 @@ i 番目の円錐の底面の中心の x 座標の値は Xi で半径は Ri 、�
 -----問題ここまで----- */
 /* -----解説等-----
 
-各クエリごとにＮこの円錐全ての体積を求めていけばよい。
-比を使って求めれば楽。
+愚直O(QN)をします
+体積を求める際に変化する円錐の半径は比で求める事ができる。
 
 ----解説ここまで---- */
 
-int N, Q;
-double x[100], r[100], h[100];
-double A[100000], B[100000];
-double ans = 0.0;
 
-int main()
-{
+int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
-	cin >> N >> Q;
+	int N, Q; cin >> N >> Q;
+	vector<int>X(N), R(N), H(N);
 	FOR(i, 0, N) {
-		cin >> x[i] >> r[i] >> h[i];
+		cin >> X[i] >> R[i] >> H[i];
 	}
-	FOR(q, 0, Q) {
-		cin >> A[q] >> B[q];
-	}
-
-	FOR(q, 0, Q) {
-		ans = 0.0;
+	auto f = [](double h, double r) {
+		return r * r*PI*h / 3;
+	};
+	auto rr = [](double XS, double XT, double R, double X) {
+		return (XT - X) / (XT - XS)*R;
+	};
+	FOR(_, 0, Q) {
+		int a, b; cin >> a >> b;
+		double ans = 0;
 		FOR(i, 0, N) {
-			if (B[q] < x[i] || x[i] + h[i] < A[q])continue;
-			double a = max(x[i], A[q]) - x[i];
-			double b = min(B[q], x[i] + h[i]) - x[i];
-			ans += r[i] * (h[i] - a) / h[i] * r[i] * (h[i] - a) / h[i] * (h[i] - a)*PI / 3;
-			ans -= r[i] * (h[i] - b) / h[i] * r[i] * (h[i] - b) / h[i] * (h[i] - b)*PI / 3;
-		}
-		printf("%.15f¥n", ans);
-	}
+			int XS = X[i];
+			const int XT = X[i] + H[i];
+			if (b <= XS || XT <= a)continue;
+			XS = max(XS, a);
 
+			ans += f(XT - XS, rr(X[i],XT,R[i],XS));
+			{
+				int Cut = min(XT, b);
+				double val = f(XT - Cut, rr(X[i], XT, R[i], Cut));
+				ans -= val;
+			}
+
+
+		}
+		cout << fixed << setprecision(10) << ans << endl;
+	}
 
 	return 0;
 }
