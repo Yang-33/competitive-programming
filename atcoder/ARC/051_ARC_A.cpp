@@ -1,9 +1,30 @@
-#include<iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/03/09  Problem: ARC051 A / Link: http://arc051.contest.atcoder.jp/tasks/arc051_a ----- */
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+
+/* -----  2018/11/18  Problem: ARC 051 A / Link: http://arc051.contest.atcoder.jp/tasks/arc051_a  ----- */
 /* ------問題------
 
 白く塗られた二次元平面を考えます。
@@ -15,30 +36,30 @@ typedef long long ll;
 -----問題ここまで----- */
 /* -----解説等-----
 
-片方の図形が片方の図形に対して内包されていなければその色は存在する。従ってそれを判定すればよい。
-円が内包されるときは上下左右端が四角形の頂点領域よりも内側、四角形が内包されるときは円の領域判定をすればよい。
+めんどい…
 
- ----解説ここまで---- */
+----解説ここまで---- */
 
+int main() {
+	int x1, x2, r, x3, y1, y2, y3;
+	cin >> x1 >> y1 >> r;
+	cin >> x2 >> y2 >> x3 >> y3;
 
-ll ans = 0LL;
-
-int dist(int x, int y) {
-    return x*x + y*y;
-}
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-    int x1, y1, r, x2, x3, y2, y3;
-
-    cin >> x1 >> y1 >> r >> x2 >> y2 >> x3 >> y3;
-    if (x2 <= x1 - r && x1 + r <= x3 && y2 <= y1 - r && y1 + r <= y3 )cout << "NO" << endl;
-    else cout << "YES" << endl;
-
-    if (dist(x2 - x1, y2 - y1) - r*r <= 0 && dist(x2 - x1, y3 - y1) - r*r <= 0 && dist(x3 - x1, y2 - y1) - r*r <= 0 && dist(x3 - x1, y3 - y1) - r*r <= 0)cout << "NO" << endl;
-    else cout << "YES" << endl;
-
-    return 0;
+	using P = complex<double>;
+	P c = P(x1, y1);
+	if (x1 + r <= x3 && x2 <= x1 - r && y1 + r <= y3 && y2 <= y1 - r) {
+		cout << "NO" << endl;
+		cout << "YES" << endl;
+	}
+	else if (abs(c - P(x2, y2)) <= r
+		&& abs(c - P(x3, y3)) <= r
+		&& abs(c - P(x3, y2)) <= r
+		&& abs(c - P(x2, y3)) <= r) {
+		cout << "YES" << endl;
+		cout << "NO" << endl;
+	}
+	else {
+		cout << "YES" << endl;
+		cout << "YES" << endl;
+	}
 }
