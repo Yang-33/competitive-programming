@@ -1,9 +1,30 @@
-#include<iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/03/09  Problem: ARC053 A / Link: http://arc053.contest.atcoder.jp/tasks/arc053_a ----- */
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+
+/* -----  2018/11/19  Problem: ARC 053 A / Link: http://arc053.contest.atcoder.jp/tasks/arc053_a  ----- */
 /* ------問題------
 
 縦 H マス、横 W マスの白いマス目があります。
@@ -13,25 +34,20 @@ typedef long long ll;
 -----問題ここまで----- */
 /* -----解説等-----
 
-片側のサイズが１であるとその向きの塗り方はできない。
+縦と横でそれぞれ求める。
 
- ----解説ここまで---- */
+----解説ここまで---- */
 
-ll H, W;
+LL ans = 0LL;
 
-ll ans = 0LL;
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
+	LL H, W; cin >> H >> W;
+	ans = H * (W - 1) + W * (H - 1);
+	
+	cout << ans << "\n";
 
-    cin >> H >> W;
-    if (W > 1)
-        ans += H*(W - 1);
-    if (H > 1)
-        ans += W*(H - 1);
-    cout << ans << endl;
-
-    return 0;
+	return 0;
 }
