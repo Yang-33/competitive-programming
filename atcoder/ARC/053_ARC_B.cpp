@@ -1,81 +1,70 @@
-#include<iostream>
-#include<algorithm>
-#include<cstdio>
-#include<cmath>
-#include<string>
-#include<cstring>
-#include<vector>
-#include<map>
-#include<list>
-#include<stack>
-#include<queue>
-#include<set>
-#include<climits> //INT_MIN/MAX
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> pii;
-typedef pair<ll, ll> pll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-#define FORR(i,s,e) for(ll (i)=(s);(i)>(e);(i)--)
-#define debug(x) cout<<#x<<": "<<x<<endl
-#define mp make_pair
-#define pb push_back
-const ll MOD = 1000000007;
-const int INF = 1e9;
-const ll LINF = 1e16;
-const double PI = acos(-1.0);
-int dx[8] = { 0,0,1,-1,1,1,-1,-1 };
-int dy[8] = { 1,-1,0,0,1,-1,1,-1 };
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/03/14  Problem: ARC053 B / Link: http://arc053.contest.atcoder.jp/tasks/arc053_b ----- */
+/* -----  2018/11/19  Problem: ARC 053 B / Link: http://arc053.contest.atcoder.jp/tasks/arc053_b  ----- */
 /* ------問題------
 
 高橋君は文字列 S を持っています。S は英小文字のみからなります。
-
 まず、高橋君は S の文字を任意の順番に並べ替え、文字列 S' を作ります。
-
 次に、高橋君は S' を任意の位置で分割し、何個かの文字列 s1，s2，…，sN を作ります（N は任意）。ただし、各 si は回文でなければなりません。
-
 各 si の長さの最小値を X とします。高橋君は X をできるだけ大きくしようとしています。X の最大値を求めてください。
 
 -----問題ここまで----- */
 /* -----解説等-----
 
-奇数個ある文字を核として回分列を生成しようと考える。
-一つの核にくっつけられる偶数個の文字列について、片側に（偶数個の総数）/2
-とあらわせるので、これを核の個数で割ればよい。よってこれを二倍したものが一番低いものにくっつく
-偶数個の列であるのでこれに１を加えればよい。
-核がない場合はそのまま数を出力しておく。
+奇数長の回分の中心の数だけ必ず分割しなければならない。
+それの外側は均等に割り振りたいので、これを求める。
 
 ----解説ここまで---- */
 
-string N;
-int c[30];
-ll ans = 0LL;
+LL ans = 0LL;
 
-int main()
-{
+int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
-	cin >> N;
-	FOR(i, 0, N.size()) {
-		c[N[i] - 'a']++;
+	string s; cin >> s;
+	VI a(26, 0);
+	FOR(i, 0, SZ(s)) {
+		a[s[i] - 'a']++;
 	}
-
-	int k = 0;
+	int oddCnt = 0;
 	FOR(i, 0, 26) {
-		if (c[i] % 2 == 1)k++;
+		if (a[i] & 1)oddCnt++;
 	}
 
-	if (k == 0) {
-		cout << N.size() << endl;
+	if (oddCnt == 0) {
+		ans = SZ(s);
 	}
 	else {
-		ans = 1 + ((N.size() - k) / 2 )/ k * 2;
-		cout << ans << endl;
+		int X = SZ(s) - oddCnt;
+		X /= 2;
+		ans = (X / oddCnt) * 2+1;
 	}
+	cout << ans << "\n";
+
 	return 0;
 }
