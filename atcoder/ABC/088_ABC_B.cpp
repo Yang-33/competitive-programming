@@ -24,37 +24,27 @@ const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2018/10/23  Problem: ABC 088 B / Link: http://abc088.contest.atcoder.jp/tasks/abc088_b  ----- */
-/* ------問題------
+/* -----  2019/03/11  Problem: ABC 088 B / Link: http://abc088.contest.atcoder.jp/tasks/abc088_b  ----- */
 
-
-
------問題ここまで----- */
-/* -----解説等-----
-
-
-
-----解説ここまで---- */
-
-LL ans = 0LL;
 
 int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
-	int N; cin >> N;
-	VI a(N);
-	FOR(i, 0, N) {
+	LL N; 
+	cin >> N;
+	vector<LL> a(N);
+	for (int i = 0; i < N; ++i) {
 		cin >> a[i];
 	}
+	LL ans = 0LL;
 	RSORT(a);
 	FOR(i, 0, N) {
-		if (i % 2 == 0)ans += a[i];
+		if (i%2==0)ans += a[i];
 		else ans -= a[i];
 	}
 	
-	
-	cout << ans << "\n";
+	cout << (ans) << "\n";
 
 	return 0;
 }
