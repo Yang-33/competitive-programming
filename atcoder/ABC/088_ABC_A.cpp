@@ -24,32 +24,21 @@ const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2018/10/23  Problem: ABC 088 A / Link: http://abc088.contest.atcoder.jp/tasks/abc088_a  ----- */
-/* ------問題------
+/* -----  2019/03/11  Problem: ABC 088 A / Link: http://abc088.contest.atcoder.jp/tasks/abc088_a  ----- */
 
-
-
------問題ここまで----- */
-/* -----解説等-----
-
-
-
-----解説ここまで---- */
-
-LL ans = 0LL;
 
 int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
-	int N, A; cin >> N >> A;
+	LL N, A; cin >> N >> A;
 	N %= 500;
-	if (N <= A) {
-		cout << "Yes" << endl;
-	}
-	else {
-		cout << "No" << endl;
-	}
+
+
+	LL ans = A>=N;
+	
+	
+	cout << (ans?"Yes":"No") << "\n";
 
 	return 0;
 }
