@@ -24,51 +24,44 @@ const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2018/10/23  Problem: ABC 088 C / Link: http://abc088.contest.atcoder.jp/tasks/abc088_c  ----- */
-/* ------問題------
+/* -----  2019/03/11  Problem: ABC 088 C / Link: http://abc088.contest.atcoder.jp/tasks/abc088_c  ----- */
 
-
-
------問題ここまで----- */
-/* -----解説等-----
-
-
-
-----解説ここまで---- */
-
-LL ans = 0LL;
 
 int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
-	VVI c(3, VI(3));
-	FOR(i, 0, 3) {
-		FOR(j, 0, 3) {
+	int N = 3;
+	vector<vector<LL>> c(N, vector<LL>(N));
+	for (int i = 0; i < N; ++i) {
+		for (int j = 0; j < N; ++j) {
 			cin >> c[i][j];
 		}
 	}
 
-	FOR(a1, -400, 401) {
-		VI b(3);
-		FOR(i, 0, 3) {
-			b[i] = c[0][i] - a1;
-		}
-		VI a(3);
-		FOR(i, 0, 3) {
-			a[i] = c[i][0] - b[0];
-		}
-		bool ok = 1;
-		FOR(i, 0, 3) {
-			FOR(j, 0, 3) {
-				ok &= (a[i] + b[j] == c[i][j]);
+	LL ans = 0LL;
+	FOR(i, -100, 101) {
+		FOR(j, -100, 101) {
+			FOR(k, -100, 101) {
+				VI a({ i,j,k });
+				VI b(3);
+				FOR(m, 0, 3) {
+					b[m] = c[0][m] - a[0];
+				}
+				bool ok = 1;
+				FOR(s, 0, N) {
+					FOR(t, 0, N) {
+						ok &= a[s] + b[t] == c[s][t];
+					}
+				}
+				ans |= ok;
 			}
 		}
-		if (ok) {
-			cout << "Yes" << endl; return 0;
-		}
 	}
-	cout << "No" << endl;
+
+
+
+	cout << (ans?"Yes":"No") << "\n";
 
 	return 0;
 }
