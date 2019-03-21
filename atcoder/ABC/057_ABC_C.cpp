@@ -8,61 +8,54 @@ using VL = vector<LL>;        using VVL = vector<VL>;
 
 #define ALL(a)  begin((a)),end((a))
 #define RALL(a) (a).rbegin(), (a).rend()
-#define PB push_back
-#define EB emplace_back
-#define MP make_pair
 #define SZ(a) int((a).size())
 #define SORT(c) sort(ALL((c)))
 #define RSORT(c) sort(RALL((c)))
 #define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
 #define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
 #define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
-#define debug(x) cerr << #x << ": " << x << endl
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
 const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2018/02/14  Problem: 057_abc_c / Link: https://abc057.contest.atcoder.jp/tasks/abc057_c?lang=en  ----- */
-/* ------問題------
+/* -----  2019/03/21  Problem: ABC 057 C / Link: http://abc057.contest.atcoder.jp/tasks/abc057_c  ----- */
 
-整数 N が与えられます。
-ここで、2 つの正の整数 A,B に対して、F(A,B) を「10 進表記における、A の桁数と B の桁数のうち大きい方」と定義します。
-例えば、F(3,11) の値は、3 は 1 桁、11 は 2 桁であるため、F(3,11)=2 となります。
-2 つの正の整数の組 (A,B) が N=A×B を満たすように動くとき、F(A,B) の最小値を求めてください。
-
------問題ここまで----- */
-/* -----解説等-----
-
-Aを決めると反対側の数値も決定できるので、O(√N)とかで計算できる。
-あとは書かれているとおりに計算を行う。
-
-----解説ここまで---- */
-
-LL N;
-
-LL ans = 0LL;
-
-LL f(LL i) {
-	int ret=0;
-	while (i) {
-		i /= 10;
-		ret++;
+vector<LL> getdivisor(LL n) {
+	vector<LL> res;
+	for (LL i = 1; i*i <= n; i++) {
+		if (n%i == 0) {
+			res.push_back(i);
+			if (n / i != i)res.push_back(n / i);
+		}
 	}
-	return ret;
+	sort(res.begin(), res.end());
+	return res;
 }
 
 int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
+	LL N; 
 	cin >> N;
-	ans = LLONG_MAX;
-	for (LL i = 1; i*i <= N; i++) {
-		if (N%i == 0) {
-			ans = min(ans, max(f(i), f(N / i)));
-		}
+	auto divs = getdivisor(N);
+	LL ans = LINF;
+	auto f = [](LL a,LL  b) {
+		string A = to_string(a);
+		string B = to_string(b);
+		return (LL)max(SZ(A), SZ(B));
+	};
+	for (auto i : divs) {
+		ans = min(ans, f(i, N / i));
 	}
-	cout << ans << "\n";
+	
+	cout << (ans) << "\n";
 
 	return 0;
 }
