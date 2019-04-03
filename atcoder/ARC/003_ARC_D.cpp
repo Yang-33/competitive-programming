@@ -24,75 +24,66 @@ const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2018/12/15  Problem: ARC 003 D / Link: http://arc003.contest.atcoder.jp/tasks/arc003_d  ----- */
-/* ------問題------
-
-高橋君が働くAtCoder社では、いつも 1 つの円形のテーブルの周囲に社員全員で座ってミーティングを行います。
-それぞれお気に入りの席があるのでいつも席は同じなのですが、今日は席替えをすることにしました。
-高橋君がランダムに 2 人を選び場所を入れ替える動作を決められた回数行った後の席配置が新しい席配置になります。
-しかし、残念なことにAtCoder社には隣り合わせにしてしまうとミーティング中におしゃべりをしてミーティングを邪魔してしまう 2 人組が存在します。
-高橋君は真面目なので、ミーティングが滞りなく行われるようにそのような 2 人組は 1 組も隣り合わせにしたくないと思っています。
-席替えを行った後に、隣り合わせにしてはいけない 2 人組が 1 組も隣り合わない確率を求めなさい。
+/* -----  2019/04/03  Problem: ARC 003 D / Link: http://arc003.contest.atcoder.jp/tasks/arc003_d  ----- */
 
 
------問題ここまで----- */
-/* -----解説等-----
+#include<chrono>
+#include<random>
+struct randgen {
+	mt19937_64 rng;
+	randgen() :rng((int)std::chrono::steady_clock::now().time_since_epoch().count()) {}
+	LL getrand(LL s, LL t) {
+		return rng() % (t - s) + s;
+	}
+};
 
-要求誤差が小さいときは乱択なんですよね(yukicoderを解いたので)
-
-----解説ここまで---- */
-
-const int SIZE = 1e5;
-int xor128() {
-	static int x = 123456789;
-	static int y = 362436069;
-	static int z = 521288629;
-	static int w = 88675123;
-	int t;
-
-	t = x ^ (x << 11);
-	x = y; y = z; z = w;
-	return w = (w ^ (w >> 19)) ^ (t ^ (t >> 8));
-}
 
 int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
-	int N, M, K; cin >> N >> M >> K;
-	VI a(M), b(M); {
-		FOR(i, 0, M) {
-			cin >> a[i] >> b[i];
-		}
+	LL N, M, K; cin >> N >> M >> K;
+	VVI NG(N, VI(N, 0));
+	FOR(i, 0, M) {
+		int a, b; cin >> a >> b;
+		NG[a][b] = NG[b][a] = 1;
 	}
+	VI ids(N, 0);
+	iota(ALL(ids), 0);
 
 	double ans = 0;
-	VI seed(N); {
-		iota(ALL(seed), 0);
-	}
-
-	FOR(_, 0, SIZE) {
-		VI p = seed;
-		FOR(z, 0, K) {
-			int c = xor128() % N, d = xor128() % N;
-			while (c == d)c = xor128() % N, d = xor128() % N;
-			swap(p[c], p[d]);
-		}
-		bool f = 1; {
-			VI rev(N); {
-				FOR(i, 0, N) {
-					rev[p[i]] = i;
+	const int TRY_TIMES = 5000000;
+	randgen rnd;
+	FOR(_, 0, TRY_TIMES) {
+		VI state = ids;
+		FOR(i, 0, K) {
+			int a = rnd.getrand(0, N);
+			while (1) {
+				int b = rnd.getrand(0, N);
+				if (a != b) {
+					swap(state[a], state[b]);
+					break;
 				}
 			}
-			FOR(i, 0, M) {
-				int di = abs(rev[a[i]] - rev[b[i]]);
-				if (di <= 1 || di == N - 1)f = 0;
+		}
+		int ok = 1;
+		FOR(i, 0, N) {
+			int a = state[i];
+			int b = state[(i + 1) % N];
+			if (NG[a][b]) {
+				ok = 0;
+				break;
 			}
 		}
-		ans += f;
+		ans += ok;
 	}
-	ans /= SIZE;
-	cout << fixed << setprecision(10) << ans << "\n";
+
+
+
+
+	ans /= TRY_TIMES;
+
+	cout << (ans) << "\n";
 
 	return 0;
 }
