@@ -24,26 +24,8 @@ const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2018/12/15  Problem: ARC 003 A / Link: http://arc003.contest.atcoder.jp/tasks/arc003_a  ----- */
-/* ------問題------
+/* -----  2019/04/03  Problem: ARC 003 A / Link: http://arc003.contest.atcoder.jp/tasks/arc003_a  ----- */
 
-高橋君はアメリカに留学しようと考えており、成績表を提出することになりました。
-アメリカ留学の成績表には、学力を測る指標であるGPAを表記する必要があります。
-GPAとは各単位に対する評価(A,B,C,D,F)を点数に換算して平均した値で、点数への換算は以下のようになります。
-A評価 → 4 点
-B評価 → 3 点
-C評価 → 2 点
-D評価 → 1 点
-F評価 → 0 点
-全てF評価だった場合は、GPAは 0 になります。
-高橋君の各単位に対する評価をもとにGPAを求めなさい。
-
------問題ここまで----- */
-/* -----解説等-----
-
-これぐらい簡単にGPAが求められるシステムをくれ
-
-----解説ここまで---- */
 
 int main() {
 	cin.tie(0);
@@ -51,18 +33,19 @@ int main() {
 
 	LL N; cin >> N;
 	string s; cin >> s;
-	map<char, int>M;
-	M['A'] = 4;
-	M['B'] = 3;
-	M['C'] = 2;
-	M['D'] = 1;
-	M['F'] = 0;
+	map<char, int>m;
+	m['A'] = 4;
+	m['B'] = 3;
+	m['C'] = 2;
+	m['D'] = 1;
+	m['F'] = 0;
 	double ans = 0;
-	for (auto c : s) {
-		ans += M[c];
+	FOR(i, 0, N) {
+		ans += m[s[i]];
 	}
 	ans /= N;
-	cout <<fixed<<setprecision(10)<< ans << "\n";
+
+	cout <<fixed<<setprecision(10)<< (ans) << "\n";
 
 	return 0;
 }
