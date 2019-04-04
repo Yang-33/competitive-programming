@@ -24,21 +24,7 @@ const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2018/12/13  Problem: ARC 004 B / Link: http://arc004.contest.atcoder.jp/tasks/arc004_b  ----- */
-/* ------問題------
-
-平面上に N+1 個の点があり、それぞれ 0 から N までの番号が付けられています。
-それぞれの点の位置はわかりませんが、0 以上 N 未満の整数 i について、i 番の点と i+1 番の点の距離 di はわかっています。
-0 番の点と N 番の点の距離としてとりうる値の最大と最小を求めてください。
-
------問題ここまで----- */
-/* -----解説等-----
-
-全探索したらなぜか落ちた。
-最大辺をもってきたとき、残りがそれ以上なら必ず0にできる。
-そうでないなら辺を畳んだときに余りができる。
-
-----解説ここまで---- */
+/* -----  2019/04/04  Problem: ARC 004 B / Link: http://arc004.contest.atcoder.jp/tasks/arc004_b  ----- */
 
 
 int main() {
@@ -46,8 +32,8 @@ int main() {
 	ios_base::sync_with_stdio(false);
 
 	LL N; cin >> N;
-	VL a(N);
-	FOR(i, 0, N) {
+	vector<LL> a(N);
+	for (int i = 0; i < N; ++i) {
 		cin >> a[i];
 	}
 	LL sum = accumulate(ALL(a), 0LL);
@@ -55,13 +41,8 @@ int main() {
 
 	LL ans = LINF;
 	LL mx = *max_element(ALL(a));
-	if (sum - mx < mx) {
-		ans = mx - (sum - mx);
-	}
-	else {
-		ans = 0;
-	}
-	cout << ans << "\n";
+	ans = (sum - mx < mx ? mx - (sum - mx) : 0);
+	cout << (ans) << "\n";
 
 	return 0;
 }
