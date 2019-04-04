@@ -24,78 +24,73 @@ const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2018/12/13  Problem: ARC 004 D / Link: http://arc004.contest.atcoder.jp/tasks/arc004_d  ----- */
-/* ------問題------
+/* -----  2019/04/04  Problem: ARC 004 D / Link: http://arc004.contest.atcoder.jp/tasks/arc004_d  ----- */
 
-整数 N と M が与えられる時、整数 N を M 個の整数の積で表す方法は何通りあるでしょうか。
-その答えを 1,000,000,007 で割った余りを答えてください。
-
------問題ここまで----- */
-/* -----解説等-----
-
-素数ごとに独立してM個に配置しても重複しない。(事象は独立なので)
-あとは-1/+1とするだけなので2^{M-1}をかければ良い。
-
-----解説ここまで---- */
-
-const long long mod = 1e9 + 7;
-long long modpow(long long a, long long b) {
-	if (b == 0) return 1;
-	return modpow(a * a % mod, b / 2) * (b & 1 ? a : 1) % mod;
+map<LL, LL> make_factor(long long  n) {
+	map<LL, LL>ans;
+	for (long long i = 2; i * i <= n; i++) {
+		while (n%i == 0) {
+			ans[i]++;
+			n /= i;
+		}
+	}
+	if (n != 1)ans[n]++;
+	return ans;
 }
 
-long long modinv(long long a) {
-	return modpow(a, mod - 2);
-}
+template <std::uint_least32_t MODULO> class modint {
+public:
+using uint32 = std::uint_least32_t; using uint64 = std::uint_least64_t; using iint64 = std::int_fast64_t; class optimize_tag_t {}; static constexpr optimize_tag_t optimize_tag{}; public:using value_type = uint32; value_type a; static constexpr value_type cst(iint64 x) noexcept { x %= static_cast<iint64>(MODULO); if (x < static_cast<iint64>(0)) { x += static_cast<iint64>(MODULO); }return static_cast<value_type>(x); }constexpr modint(optimize_tag_t, const value_type &x) noexcept : a(x) {}constexpr modint() noexcept : a(static_cast<value_type>(0)) {}constexpr modint(const iint64 &x) noexcept : a(cst(x)) {}constexpr modint operator+(const modint &o) const noexcept { return modint(optimize_tag, a + o.a < MODULO ? a + o.a : a + o.a - MODULO); }constexpr modint operator-(const modint &o) const noexcept { return modint(optimize_tag, a < o.a ? a + MODULO - o.a : a - o.a); }constexpr modint operator*(const modint &o) const noexcept { return modint(optimize_tag, static_cast<value_type>(static_cast<uint64>(a) * static_cast<uint64>(o.a) % static_cast<uint64>(MODULO))); }constexpr modint operator/(const modint &o) const { return modint(optimize_tag, static_cast<value_type>(static_cast<uint64>(a) * static_cast<uint64>((~o).a) % static_cast<uint64>(MODULO))); }modint &operator+=(const modint &o) noexcept { if ((a += o.a) >= MODULO)a -= MODULO; return *this; }modint &operator-=(const modint &o) noexcept { if (a < o.a)a += MODULO; a -= o.a; return *this; }modint &operator*=(const modint &o) noexcept { a = static_cast<value_type>(static_cast<uint64>(a) * static_cast<uint64>(o.a) % static_cast<uint64>(MODULO)); return *this; }modint &operator/=(const modint &o) { a = static_cast<uint64>(a) * (~o).a % MODULO; return *this; }constexpr modint inverse() const noexcept { assert(a != static_cast<value_type>(0) && "0 does not have inverse"); return pow(static_cast<uint64>(MODULO - static_cast<value_type>(2))); }constexpr modint operator~() const noexcept { return inverse(); }constexpr modint operator-() const noexcept { if (a == static_cast<value_type>(0)) { return modint(optimize_tag, static_cast<value_type>(0)); } else { return modint(optimize_tag, MODULO - a); } }modint &operator++() noexcept { if (++a == MODULO) { a = static_cast<value_type>(0); }return *this; }modint &operator--() noexcept { if (a == static_cast<value_type>(0)) { a = MODULO; }--a; return *this; }constexpr bool operator==(const modint &o) const noexcept { return a == o.a; }constexpr bool operator!=(const modint &o) const noexcept { return a != o.a; }constexpr bool operator<(const modint &o) const noexcept { return a < o.a; }constexpr bool operator<=(const modint &o) const noexcept { return a <= o.a; }constexpr bool operator>(const modint &o) const noexcept { return a > o.a; }constexpr bool operator>=(const modint &o) const noexcept { return a >= o.a; }constexpr explicit operator bool() const noexcept { return a; }constexpr explicit operator value_type() const noexcept { return a; }modint pow(iint64 inx) const noexcept { if (inx < 0)assert(a != static_cast<value_type>(0) && "not pow index < 0"); uint64 x = inx; uint64 t = a, u = 1; while (x) { if (x & 1)u = u * t % MODULO; t = (t * t) % MODULO; x >>= 1; }return modint(optimize_tag, static_cast<value_type>(u)); }
+constexpr value_type get() const noexcept { return a; }
+};
 
-vector<long long> fact, inv_fact;
+
+using mint = modint<MOD>;
+const mint mintzero = mint(0); const mint mintone = mint(1);
+mint modinv(mint a) { return mintone / mint(a); }
+
+vector<mint> fact, inv_fact;
 
 void init_fact(int n) {
 	fact.resize(n);
-	fact[0] = 1;
+	fact[0] = mintone;
 	for (int i = 1; i < n; i++) {
-		fact[i] = i * fact[i - 1] % mod;
+		fact[i] = fact[i - 1] * mint(i);
 	}
 	inv_fact.resize(n);
 	inv_fact[n - 1] = modinv(fact[n - 1]);
 	for (int i = n - 2; i >= 0; i--) {
-		inv_fact[i] = (i + 1) * inv_fact[i + 1] % mod;
+		inv_fact[i] = mint(i + 1) * inv_fact[i + 1];
 	}
 }
-
-long long nCr(int n, int r) {
-	if (n < r || n < 0 || r < 0) return 0;
-	return fact[n] * inv_fact[r] % mod * inv_fact[n - r] % mod;
+mint nCr(int n, int r) {
+	if (n < r || n < 0 || r < 0) return mintzero;
+	return fact[n] * inv_fact[r] * inv_fact[n - r];
 }
 
-long long nHr(int n, int r) {
-	if (n == 0 && r == 0) return 1;
+mint nHr(int n, int r) {
+	if (n < 0 || r < 0) return mintzero;
+	if (n == 0 && r == 0) return mintone;
 	return nCr(n + r - 1, r);
 }
+
 
 int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
+	init_fact(2e5 + 5);
 	LL N, M; cin >> N >> M;
-	// 素数を全部置く時、素数ごとの配置の仕方は独立
-	LL ans = 1;
 	N = abs(N);
-	init_fact(1e6);
-	for (LL i = 2; i*i <= N; i++) {
-		LL cnt = 0;
-		while (N%i == 0) {
-			cnt++; N /= i;
-		}
-		if (cnt) {
-			(ans *= nHr(M, cnt)) %= mod;
-		}
+	auto maps = make_factor(N);
+	mint ans = 1;
+
+	for (auto it : maps) {
+		ans *= nHr(M, it.second);
 	}
-	if (N > 1)		(ans *= nHr(M, 1)) %= mod;
+	ans *= mint(2).pow(M - 1);
 
-	(ans *= modpow(2, M - 1)) %= mod;
-
-	cout << ans << "\n";
+	cout << (ans).get() << "\n";
 
 	return 0;
 }
