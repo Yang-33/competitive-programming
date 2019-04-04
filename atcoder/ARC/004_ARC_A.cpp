@@ -24,40 +24,31 @@ const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2018/12/13  Problem: ARC 004 A / Link: http://arc004.contest.atcoder.jp/tasks/arc004_a  ----- */
-/* ------問題------
+/* -----  2019/04/04  Problem: ARC 004 A / Link: http://arc004.contest.atcoder.jp/tasks/arc004_a  ----- */
 
-平面上に N 個の点があり、それぞれ 0 から N−1 までの番号が付けられており、それぞれの点について x 座標と y 座標が与えられています。
-その N 点のうち 2 点を選び結んで得られる線分のうち、最も長くなる線分の長さを求めてください。
-
------問題ここまで----- */
-/* -----解説等-----
-
-全探索!
-
-----解説ここまで---- */
 
 int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
-	LL N; 
-	cin >> N;
-	vector<double>x(N), y(N);
-	FOR(i, 0, N) {
+	int N; cin >> N;
+	vector<double> x(N), y(N);
+	for (int i = 0; i < N; ++i) {
 		cin >> x[i] >> y[i];
 	}
+
+	auto f = [&](int a, int b) {
+		return (x[a] - x[b])*(x[a] - x[b]) + (y[a] - y[b])* (y[a] - y[b]);
+	};
 	double ans = 0;
 	FOR(i, 0, N) {
 		FOR(j, 0, N) {
-			auto f = [](double x) {
-				return x * x;
-			};
-			double ret =sqrt(f(x[i]-x[j])+f(y[i]-y[j]));
-			ans = max(ans, ret);
+			ans = max(ans, f(i, j));
 		}
 	}
-	cout << fixed << setprecision(10) << ans << endl;
+	ans = sqrt(ans);
+
+	cout <<fixed<<setprecision(10)<< (ans) << "\n";
 
 	return 0;
 }
