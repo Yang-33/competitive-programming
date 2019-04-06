@@ -22,107 +22,74 @@ using VL = vector<LL>;        using VVL = vector<VL>;
 #endif
 const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
-int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2018/12/15  Problem: ARC 006 C / Link: http://arc006.contest.atcoder.jp/tasks/arc006_c  ----- */
-/* ------問題------
+/* -----  2019/04/06  Problem: ARC 006 C / Link: http://arc006.contest.atcoder.jp/tasks/arc006_c  ----- */
+struct Bipartite_Matching {
+	vector<vector<int>> graph;
+	vector<int> match, alive, used;
+	int timestamp;
 
-高橋君はもう大人なので、親元を離れて一人暮らしをすることにしました。トラックから引越し先の部屋へと荷物のダンボールを運びたいのですが、部屋の床がダンボールで埋まってしまうと、今日高橋君が寝るための布団がひけません。
-　そこで、1 箱ずつ広げて置くのではなく、ある程度ダンボールを積み重ねた山を作ることにしました。しかし、ダンボールには重さが決まっており、下にあるダンボールよりも重いダンボールを上に積み重ねると下のダンボールが潰れてしまいます。
-
- 図：下にあるダンボールは上にあるダンボール以上の重さでなければならない
-
- 　トラックから運ぶ順にダンボールの重さが与えられるので、ダンボールを潰さないような積み重ね方を考えなさい。そして、その積み重ねた山の個数が最小となる場合の山の個数を求めなさい。
-
-
------問題ここまで----- */
-/* -----解説等-----
-
-DAGの最小パス被覆で解ける。
-貪欲でも解ける。(ア)
-
-----解説ここまで---- */
-
-
-struct FordFulkerson {
-#define max_flow_MAX 1005
-
-	struct edge {
-		int to, cap, rev;
-		edge() {}
-		edge(int to, int cap, int rev) :to(to), cap(cap), rev(rev) {}
-	};
-	vector<edge> G[max_flow_MAX];
-	bool used[max_flow_MAX];
-
-	void add_edge(int from, int to, int cap) {
-		G[from].emplace_back(edge(to, cap, (int)G[to].size()));
-		G[to].emplace_back(edge(from, 0, (int)G[from].size() - 1));
-	}
-	void undir_add_edge(int from, int to, int cap) {
-		G[from].emplace_back(edge(to, cap, (int)G[to].size()));
-		G[to].emplace_back(edge(from, cap, (int)G[from].size() - 1));
+	Bipartite_Matching(int n) {
+		timestamp = 0;
+		graph.resize(n);
+		alive.assign(n, 1);
+		used.assign(n, 0);
+		match.assign(n, -1);
 	}
 
-	int dfs(int v, int t, int f) {
-		if (v == t)return f;
-		used[v] = true;
-		FOR(i, 0, (int)G[v].size()) {
-			edge &e = G[v][i];
-			if (!used[e.to] && e.cap > 0) {
-				int d = dfs(e.to, t, min(f, e.cap));
-				if (d > 0) {
-					e.cap -= d;
-					G[e.to][e.rev].cap += d;
-					return d;
-				}
+	void add_edge(int u, int v) {
+		graph[u].push_back(v);
+		graph[v].push_back(u);
+	}
+
+	bool dfs(int v) {
+		used[v] = timestamp;
+		for (int i = 0; i < graph[v].size(); i++) {
+			int u = graph[v][i], w = match[u];
+			if (alive[u] == 0) continue;
+			if (w == -1 || (used[w] != timestamp && dfs(w))) {
+				match[v] = u;
+				match[u] = v;
+				return (true);
 			}
 		}
-		return 0;
+		return (false);
 	}
 
-	int max_flow(int s, int t) {
-		const int INF = INT_MAX;
-		int flow = 0;
-		for (;;) {
-			memset(used, 0, sizeof(used));
-			int f = dfs(s, t, INF);
-			if (f == 0)return flow;
-			flow += f;
+	int bipartite_matching() {
+		int ret = 0;
+		for (int i = 0; i < graph.size(); i++) {
+			if (alive[i] == 0) continue;
+			if (match[i] == -1) {
+				++timestamp;
+				ret += dfs(i);
+			}
 		}
-		return -1;
+		return (ret);
 	}
-#undef max_flow_MAX
 };
-
-
 
 int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
 	LL N; cin >> N;
-	VI a(N);
-	FOR(i, 0, N) {
+	Bipartite_Matching F(2 * N);
+	vector<LL> a(N);
+	for (int i = 0; i < N; ++i) {
 		cin >> a[i];
-	}
-	FordFulkerson F;
-	int S = 2 * N, T = 2 * N + 1;
-	FOR(i, 0, N) {
-		F.add_edge(S, i, 1);
-		F.add_edge(N + i, T, 1);
 	}
 	FOR(i, 0, N) {
 		FOR(j, i + 1, N) {
 			if (a[i] >= a[j]) {
-				F.add_edge(i, N + j, 1);
+				F.add_edge(i, j + N);
 			}
 		}
 	}
+	LL ans = N - F.bipartite_matching();
 
 
-	LL ans = N - F.max_flow(S, T);
-	cout << ans << endl;
+	cout << (ans) << "\n";
 
 	return 0;
 }
