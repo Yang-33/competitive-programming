@@ -1,56 +1,78 @@
-#include<iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/02/25  Problem: ABC027 C / Link: http://abc027.contest.atcoder.jp/tasks/abc027_c ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 
-高橋君と青木君が以下のような二人ゲームで勝負する。
-まず、正の整数 N が与えられる。 また、変数 x を 1 に初期化する。高橋君から始め、高橋君と青木君が交互に次の操作を行う。
-x の値を 2x または 2x+1 に置き換える。
-x が N よりも大きくなったとき、最後に操作を行った人が負けである。
-二人が最善を尽くすとき、どちらが勝つか求めよ。
+/* -----  2019/04/07  Problem: ABC 027 C / Link: http://abc027.contest.atcoder.jp/tasks/abc027_c  ----- */
 
------問題ここまで----- */
-/* -----解説等-----
+map<LL, int>gamedp;
+const int LOSE = 1, WIN = 2;
+LL N;
+int f(LL a) {
+	if (a > N) {
+		return WIN;
+	}
+	if (gamedp[a])return gamedp[a];
 
-手書きで実験する。
-勝ちの区間の法則が1,4,4,16,16,32,32,...となっているので順番にこれを判定していけばよい
+	bool gotolose = 0;
+	gotolose |= f(2 * a) == LOSE;
+	gotolose |= f(2 * a + 1) == LOSE;
 
-また、解説には深さの偶奇によって戦略が変わると書いてあり、Ｎの深さが偶数のときは1人目は左に分岐して二人目は右に分岐するのが最適。
-奇数のときは逆になる。
-これを実際に動かして計算させればよい。
+	return gamedp[a] = (gotolose ? WIN : LOSE);
+}
+void test() {
+	FOR(i, 1, 601) {
+		N = i;
+		gamedp.clear();
+		cout << "  " << i << ":= " << "LW"[f(1) == WIN];
+		if (i % 10 == 0)cout << endl;
+	}
+}
 
- ----解説ここまで---- */
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-ll N;
+	cin >> N;
+	if (N == 1) {
+		cout << "Aoki" << endl;
+		return 0;
+	}
+	//test();
+	LL a = 1;
+	LL fours = 4;
+	for (;;) {
+		if (N <= a + fours) {
+			cout << "Takahashi" << endl;
+			return 0;
+		}
+		else if (N <= a + 2 * fours) {
+			cout << "Aoki" << endl;
+			return 0;
+		}
+		a += 2 * fours;
+		fours *= 4;
+	}
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    cin >> N;
-
-    if (N == 1) {
-        cout << "Aoki" << endl;
-    }
-    else {
-        ll x = 1;
-        for (ll i = 4;; i = i * 4) {
-            x += i;
-            if (x >= N) {
-                cout << "Takahashi" << endl;
-                break;
-            }
-            x += i;
-            if (x >= N) {
-                cout << "Aoki" << endl;
-                break;
-            }
-
-        }
-    }
-    return 0;
+	return 0;
 }
