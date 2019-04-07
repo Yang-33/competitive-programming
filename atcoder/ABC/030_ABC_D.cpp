@@ -1,98 +1,82 @@
-#include<iostream>
-#include<string>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/02/20  Problem: ABC030 D / Link: http://abc030.contest.atcoder.jp/tasks/abc030_d ----- */
-/* ------問題------
-ミカミくんは怪しい英単語帳を使っています。その単語帳には N 個の単語の意味が載っており、単語 i の説明には「単語 bi と同じ意味である」とだけ書いてあります。
-ここで、i 番目の単語を単語 i と呼ぶことにします。 ミカミくんはまだ一つの英単語も知らないので、
-単語 i の意味を調べようとしたとき、単語 bi の意味を調べようとします。ミカミくんは真面目なので、
-今までにすでに調べようとしたことのある単語でも同じように単語帳をひき続けます。 
-しかし、残念ながらこの単語帳では英単語の意味自体はどこにも書いていないため、意味を知ることはできません。 
-ある単語 i を調べようとして、単語帳を参照し、単語 bi を調べようとするまでを1ステップとします。
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 
-ミカミくんが単語 i を調べようとして、k ステップ経ったとき、ミカミくんはどの単語を調べようとしているでしょうか？
-*/
-/* -----解説等-----
+/* -----  2019/04/07  Problem: ABC 030 D / Link: http://abc030.contest.atcoder.jp/tasks/abc030_d  ----- */
 
-単語の検索に時間がかかる場合、≧10^9
-閉路が存在し、またこれは余分な枝分かれのない閉路であるからそのサイズがわかれば
- 閉路の大きさを mod としてk を計算可能な回数まで削減することができる。
- （本来の到達点に行く前の状態まで削減してしまわないように注意　ここで 1WA）
-サイズが小さいときや k が小さいときの分岐はめんどくさいのでそのまま実行してしまった方が楽。
-閉路長を出すのに苦戦してしまったが番兵を置くなり印をはっきりさせるといいという経験をした。
-
-多長倍整数にも昇順または降順でmodをとることができる。
-具体的には26桁のabcdef...xyzという数が存在するときにa*10^25+b*10^24+c*10^23+...+x*10^2+y*10^1+zと現わすことができるので
-桁を上げていく段階でmodをとればよい。（加法）
-thanks to quora.
-
-*/
-
-ll N, a;
-string k;
-ll b[100001];
-ll id[100001];
-ll ans = 0LL;
-
-ll digitsmod(string s, ll mod) {
-    ll reminder = 0;
-    FOR(i, 0, s.size()) {
-        reminder = (reminder * 10 + (s[i] - '0')) % mod;
-    }
-    return reminder;
+LL str_mod(const string &s, int mod) {
+	LL res = 0;
+	for (auto c : s) {
+		res *= 10;
+		res += (c - '0');
+		res %= mod;
+	}
+	return res;
 }
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-    cin >> N >> a >> k;
-    FOR(i, 1, N + 1) {
-        cin >> b[i];
-    }
+	LL N, a; cin >> N >> a;
+	a--;
+	string k; cin >> k;
+	VI nextto(N);
+	FOR(i, 0, N) {
+		int to; cin >> to;
+		to--;
+		nextto[i] = to;
+	}
+	auto simulation = [&nextto](LL leftk, int pos) {
+		FOR(t, 0, leftk) {
+			pos = nextto[pos];
+		}
+		return pos;
+	};
+	if (SZ(k) < 7) {
+		int leftk = stoi(k);
+		cout << simulation(leftk, a) + 1 << endl;
+		return 0;
+	}
 
-    if (k.size() < 6) {
-        int kk = stoi(k);
-        FOR(i, 0, kk) {
-            a = b[a];
-        }
-        cout << a << endl;
-        return 0;
-    }
+	VI visittime(N);
+	int pos = a;
+	int now_t = 1;
+	int loopsize = 0;
+	{
+		while (1) {
+			visittime[pos] = now_t++;
+			pos = nextto[pos];
+			if (visittime[pos]) {
+				loopsize = now_t - visittime[pos];
+				break;
+			}
+		}
+	}
+	int leftk = str_mod(k, loopsize) + loopsize * ((N + loopsize - 1) / loopsize);
+	cout << simulation(leftk, a) + 1 << endl;
+	// loopsizeでmodをとって，シュミレーション
 
-
-    /* dig */
-    FOR(i, 1, N + 1) {
-        id[i] = -1;
-    }
-    
-    ll pos = a;
-    ll cnt = 1;
-
-    while (id[pos] == -1) {
-        id[pos] = cnt++;
-        pos = b[pos];
-    }
-
-    /*for (; id[cnt] < 0; cnt++) {
-        id[pos] = cnt;
-        pos = b[pos];
-    }*/
-
-    ll loop = cnt - id[pos];
-    ll knum = digitsmod(k, loop);
-    knum += loop * 20;
-
-    FOR(i, 0, knum) {
-        a = b[a];
-    }
-
-    cout << a << endl;
-
-    return 0;
+	return 0;
 }
