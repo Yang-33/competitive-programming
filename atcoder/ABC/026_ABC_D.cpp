@@ -1,54 +1,53 @@
-#include<iostream>
-#include<cstdio>
-#include<cmath>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/02/25  Problem: ABC026 D / Link: http://abc026.contest.atcoder.jp/tasks/abc026_d ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 
-高橋君は野球が得意です。高橋君は、高橋君ボール 1 号という変化球を投げることが出来ます。
-このボールは、投げてから t 秒後のボールの位置を f(t) とすると、
-f(t)=A×t+B×sin(C×t×π) と表すことが出来ます。
-あなたは、t≧0 かつ f(t)=100 となるタイミングで、ボールを打たなければいけません。
-この時の t を求めたいです。
+/* -----  2019/04/07  Problem: ABC 026 D / Link: http://abc026.contest.atcoder.jp/tasks/abc026_d  ----- */
 
------問題ここまで----- */
-/* -----解説等-----
 
-二分探索。
-グラフを書くと連続で増加傾向にある関数であることがわかり、
-中間値の定理から求めるtは必ず一つ以上存在する。
-もし最小のtがほしいときには先に総当たりで範囲を決定し、その後二分探索をすればよい。
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
- ----解説ここまで---- */
+	LL A, B, C; cin >> A >> B >> C;
 
-int a, b, c;
-ll ans = 0LL;
-double pi = acos(-1.0);
 
-bool f(double t) {
-    return a*t + b*sin(c*pi*t) >= 100.0;
-}
+	auto f = [&](double T) {
+		return A * T + B * sin(C*PI*T);
+	};
+	double L = 0, R = LINF;
+	FOR(i, 0, 300) {
+		double mid = (R + L) / 2;
+		if (f(mid) >= 100) {
+			R = mid;
+		}
+		else {
+			L = mid;
+		}
+	}
+	double ans = R;
+	cout << fixed << setprecision(10) << (ans) << "\n";
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    cin >> a >> b >> c;
-
-    double l = 0.0, r = 100000.0, mid;
-
-    FOR (i, 0, 100000) {
-        mid = (l + r) / 2.0;
-        if (f(mid)) r = mid;
-        else l = mid;
-    }
-
-    printf("%.12f¥n", l);
-
-    return 0;
+	return 0;
 }
