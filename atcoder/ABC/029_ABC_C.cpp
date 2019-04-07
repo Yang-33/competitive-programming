@@ -1,67 +1,56 @@
-#include<iostream>
-#include<cstdio>
-#include<algorithm>
-#include<cmath>
-#include<string>
-#include<cstring>
-#include<vector>
-#include<map>
-#include<list>
-#include<stack>
-#include<queue>
-#include<climits> //INT_MIN/MAX
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-#define FORR(i,s,e) for(ll (i)=(s);(i)>(e);(i)--)
-#define MOD 1000000007
-#define debug(x) cout<<#x<<": "<<x<<endl
-const int INF = 1e9;
-typedef long long ll;
-int dx[8] = { 1,1,1,0,0,-1,-1,-1 };
-int dy[8] = { 1,0,-1,1,-1,1,0,-1 };
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/02/21  Problem: ABC029 C / Link: http://abc029.contest.atcoder.jp/tasks/abc029_c ----- */
-/* ------問題------
-あなたはスーパーハッカーです。高橋君を攻撃対象に定めたあなたは、
-高橋君のパソコンのパスワードに関して次の事実を突き止めました。
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 
-長さは N 文字である。
-a, b, c 以外の文字は含まれない。
-高橋君のパソコンのパスワードの候補として考えられる文字列をすべて列挙してしまいましょう。
-   ------    ------*/
-/* -----解説等-----
-
-総当たりをdfsで生成する。
-実装が少し面倒になるけど3bitでもできそう。
-
- -----ここまで----- */
-
-ll N;
-
-ll ans = 0LL;
-
-void brute(int n, string s) {
-    if (n == 0) {
-        cout << s << endl;
-        return ;
-    }
-
-    brute(n - 1, s + 'a');
-    brute(n - 1, s + 'b');
-    brute(n - 1, s + 'c');
+/* -----  2019/04/07  Problem: ABC 029 C / Link: http://abc029.contest.atcoder.jp/tasks/abc029_c  ----- */
 
 
-}
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
 
-    cin >> N;
+	LL N; cin >> N;
+	int S = 1;
+	FOR(i, 0, N) {
+		S *= 3;
+	}
+	vector<string>ans;
+	FOR(state, 0, S) {
+		int s = state;
+		string ret;
+		FOR(i, 0, N) {
+			ret += string(1,'a'+ s % 3);
+			s /= 3;
+		}
+		ans.push_back(ret);
+	}
+	SORT(ans);
+	for (auto it : ans) {
+		cout << it << endl;
 
-    brute(N,"");
+	}
 
-    return 0;
+	return 0;
 }
