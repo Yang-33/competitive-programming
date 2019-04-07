@@ -1,75 +1,57 @@
-#include<iostream>
-#include<algorithm>
-#include<string>
-#include<vector>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-#define FORR(i,s,e) for(ll (i)=(s);(i)>(e);(i)--)
-const int INF = 1e9;
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/02/25  Problem: ABC027 D / Link: http://abc027.contest.atcoder.jp/tasks/abc027_d ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 
-数直線の原点にロボットが置かれている。 はじめ、ロボットの幸福度は 0 である。
-このロボットに命令列が与えられる。 命令列は次の 3 文字のみからなり、先頭から末尾まで順に実行される。
+/* -----  2019/04/07  Problem: ABC 027 D / Link: http://abc027.contest.atcoder.jp/tasks/abc027_d  ----- */
 
-M : 正または負の好きな向きに、距離 1 だけ移動する。
-+ : 今の座標を x とすると、幸福度が +x だけ変化する。
-- : 今の座標を x とすると、幸福度が ?x だけ変化する。
-命令列を実行し終えた後、 ロボットは原点に戻っていなければならない 。 命令列を実行している間、ロボットの座標および幸福度は負になり得る。
 
-最終的な幸福度を最大化するようにロボットが移動したとき、最終的な幸福度を求めよ。
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
------問題ここまで----- */
-/* -----解説等-----
+	string s; cin >> s;
+	int p = 0, m = 0;
+	VL a;
+	for (int i = SZ(s) - 1; i >= 0; i--) {
+		if (s[i] == '+') {
+			p++;
+		}
+		else if (s[i] == '-') {
+			m++;
+		}
+		else {
+			a.push_back(p - m);
+		}
+	}
 
-Mが二択で分かれておりこれをすべて決めることは計算量的に不可能である。
-+-が先に分かっていることから あるMの移動方向を決めた際に増加する幸福度を求めておき、
-これを大きい順にとっていけばよい。
-残った要素は逆の方向に移動するものと考えて減算すれば答えが求まる。
+	int n = SZ(a);
+	RSORT(a);
+	LL a1 = accumulate(a.begin(), a.begin() + n / 2, 0LL);
+	LL b1 = -accumulate(a.begin() + n / 2, a.end(), 0LL);
+	DD(de(a1,b1))
+	LL ans =  a1+b1;
+	cout << (ans) << "\n";
 
-競技プログラミング以外の場所でやったことがある問題だった。
-
- ----解説ここまで---- */
-
-string N;
-vector<int>V;
-ll ans = 0LL;
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    cin >> N;
-    int Nsize = N.size();
-
-    int p = 0, m = 0;
-    FORR(i, Nsize - 1, -1) {
-        if (N[i] == '+') {
-            p++;
-            continue;
-        }
-        else if (N[i] == '-') {
-            m++;
-            continue;
-        }
-        V.push_back(p - m);
-    }
-
-    int Vsize = V.size();
-
-    sort(V.begin(), V.end());
-    FOR(i, 0, Vsize / 2) {
-        ans -= V[i];
-    }
-    FOR(i, Vsize / 2, Vsize) {
-        ans += V[i];
-    }
-
-    cout << ans << endl;
-
-    return 0;
+	return 0;
 }
