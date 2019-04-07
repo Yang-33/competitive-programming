@@ -1,41 +1,39 @@
-#include<iostream>
-#include<cstdio>
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/02/23  Problem: ABC028 D / Link: http://abc028.contest.atcoder.jp/tasks/abc028_d ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 
-2 つの整数 N、K が与えられます。
-1 以上 N 以下の整数のなかからどれか 1 つ、等確率に選ぶ機械を考えます。
-その機械を 3 回動かした時、選ばれた 3 つの数の中央値が K となる確率を求めてください。
-
------問題ここまで----- */
-/* -----解説等-----
-
-場合分けをしたら終わってしまった。
-３つとも違う値、2つはＫのとき、３つともＫのときを足し合わせたものが総組み合わせ。
-
- ----解説ここまで---- */
-
-double N, K;
-
-double temp = 0, ans;
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    cin >> N >> K;
-    temp += 6 * (K - 1)*(N - K);
-    temp += 3 * (K - 1) + 3 * (N - K);
-    temp += 1;
+/* -----  2019/04/07  Problem: ABC 028 D / Link: http://abc028.contest.atcoder.jp/tasks/abc028_d  ----- */
 
 
-    ans = temp / (N*N*N);
-    printf("%.12f¥n", ans);
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-    return 0;
+	double N, K; cin >> N >> K;
+	double ans = ((6 * (K - 1)*(N - K)) + (3 * (N - 1)) + (1)) / (N*N*N);
+
+	cout << fixed << setprecision(10) << ans << endl;
+
+	return 0;
 }
