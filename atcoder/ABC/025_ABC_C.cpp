@@ -1,99 +1,94 @@
-#include<iostream>
-#include<algorithm>
-#include<vector>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-const int INF = 1e9;
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/02/26  Problem: ABC025 C / Link: http://abc025.contest.atcoder.jp/tasks/abc025_c ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-直大くんと直子さんは双子の兄妹です。時々、休日に 2 人でゲームをしています。
-
-ゲームは○×ゲームをベースにしており、以下の要領でゲームが行われます。
-
-ゲームは縦 3 マス、横 3 マスの盤面を使います。ゲーム開始時点ではどのマスにも文字が書かれていません。
-挨拶した後、直大くんから始めて交互に文字を書いていきます。文字は盤面上のまだ文字が書かれていないマスの上にのみ書くことができます。そのようなマスが複数ある場合は好きな 1 箇所を選んで書きます。書く文字は、直大くんが○、直子さんが×です。
-合わせて 9 回文字を書いた時点で、すべてのマスが埋まります。その後、得点計算を行い、得点の高い方が勝ちます。
-得点計算は以下の方法で行われます。ここで、盤面の左上のマスをマス (1,1) とし、左上から下に i?1(1≦i≦3) マス、右に j?1(1≦j≦3) マス進んだところにあるマスをマス (i,j) と呼ぶことにします。
-
-1≦i≦2 および 1≦j≦3 を満たすすべての整数組 (i,j) に対して、マス (i,j) とマス (i+1,j) に書かれているマスを見て、同じ文字が書かれていたなら直大くんに、違う文字が書かれていたなら直子さんに bi,j 点が入る。
-1≦i≦3 および 1≦j≦2 を満たすすべての整数組 (i,j) に対して、マス (i,j) とマス (i,j+1) に書かれているマスを見て、同じ文字が書かれていたなら直大くんに、違う文字が書かれていたなら直子さんに ci,j 点が入る。
-直大くんも直子さんも、最終的に得られる自分の得点ができるだけ多くなるようにゲームを行います。両者が最善を尽くしたときのそれぞれの得点を計算してください。
-
------問題ここまで----- */
-/* -----解説等-----
-
-min-max法。TDPCでやったのでイメージがしやすかった。
-片側では最大の値を、もう片側では最小の値をとるようにすれば題意を満たす。
-
- ----解説ここまで---- */
+/* -----  2019/04/09  Problem: ABC 025 C / Link: http://abc025.contest.atcoder.jp/tasks/abc025_c  ----- */
 
 
-int b[2][3], c[3][2];
-int board[3][3];
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-int calc(int t) {
+	int N = 3;
+	VVI tate(N - 1, VI(N));
+	LL sum = 0;
+	FOR(i, 0, N - 1) {
+		FOR(j, 0, N) {
+			cin >> tate[i][j];
+			sum += tate[i][j];
+		}
+	}
+	VVI yoko(N, VI(N - 1));
+	FOR(i, 0, N) {
+		FOR(j, 0, N - 1) {
+			cin >> yoko[i][j];
+			sum += yoko[i][j];
+		}
+	}
+	VVI state(N, VI(N, -1));
+	function<LL(int)> f = [&](int num) {
+		if (num == N * N) {
+			LL ret = 0;
+			FOR(i, 0, N - 1) {
+				FOR(j, 0, N) {
+					if (state[i][j] == state[i + 1][j]) {
+						ret += tate[i][j];
+					}
+					//else ret -= tate[i][j];
+				}
+			}
+			FOR(i, 0, N) {
+				FOR(j, 0, N - 1) {
+					if (state[i][j] == state[i][j + 1]) {
+						ret += yoko[i][j];
+					}
+					//else ret -= yoko[i][j];
+				}
+			}
+			return ret;
+		}
+		LL ret = (num % 2 ? LINF : -LINF);
+		FOR(i, 0, N) {
+			FOR(j, 0, N) {
+				if (state[i][j] == -1) {
+					state[i][j] = (num % 2);
+					if (num % 2) {
+						ret = min(ret, f(num + 1));
+					}
+					else {
+						ret = max(ret, f(num + 1));
 
-    if (t == 9) {
-        int sum = 0;
-        FOR(i, 0, 2)FOR(j, 0, 3) {
-            if (board[i][j] == board[i + 1][j])
-                sum += b[i][j];
-        }
-        FOR(i, 0, 3)FOR(j, 0, 2) {
-            if (board[i][j] == board[i][j + 1])
-                sum += c[i][j];
-        }
-        return sum;
-    }
-
-    int maxv = -INF, minv = INF;
-
-    FOR(i, 0, 3)FOR(j, 0, 3) {
-        if (board[i][j] != -1) continue;
-
-        if (t % 2 == 1)board[i][j] = 0;
-        else board[i][j] = 1;
-
-        int num = calc(t + 1);
-
-        maxv = max(maxv, num);
-        minv = min(minv, num);
-        board[i][j] = -1;
-    }
-
-    if (t % 2 == 0) {
-        return maxv;
-    }
-    else {
-        return minv;
-    }
-}
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    int sum = 0;
-
-    FOR(i, 0, 2)FOR(j, 0, 3) {
-        cin >> b[i][j];
-        sum += b[i][j];
-    }
-    FOR(i, 0, 3)FOR(j, 0, 2) {
-        cin >> c[i][j];
-        sum += c[i][j];
-    }
-
-    memset(board, -1, sizeof(board));
-
-    int ans = calc(0);
-    cout << ans << endl;
-    cout << sum - ans << endl;
-
-    return 0;
+					}
+					state[i][j] = -1;
+				}
+			}
+		}
+		return ret;
+	};
+	LL ans = f(0);
+	cout << ans << "\n";
+	cout << sum - ans << endl;
+	return 0;
 }
