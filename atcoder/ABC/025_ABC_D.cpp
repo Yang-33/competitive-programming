@@ -1,102 +1,85 @@
-#include<iostream>
-#include<vector>
-#include<stack>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-#define MOD 1000000007
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/02/26  Problem: ABC025 D / Link: http://abc025.contest.atcoder.jp/tasks/abc025_d ----- */
-/* ------問題------
-高橋君は縦 5 マス、横 5 マスの盤面に 1 から 25 までの整数を 1 つずつ書き込もうとしています。
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-高橋君は以下の条件をすべて満たすように整数を配置しようと考えています。
+/* -----  2019/04/09  Problem: ABC 025 D / Link: http://abc025.contest.atcoder.jp/tasks/abc025_d  ----- */
 
-整数は各マスに 1 つずつ割り当てる。
-縦または横に連続する 3 つの整数をどのように取り出しても、それらは昇順または降順になっていない。すなわち、上から i(1≦i≦5) 番目、左から j(1≦j≦5) 番目のマスに書かれた整数を ni,j としたとき、以下の 2 条件が成立する。
-ni,j<ni+1,j<ni+2,j あるいは ni,j>ni+1,j>ni+2,j を満たす整数組 (i,j)(1≦i≦3,1≦j≦5) が存在しない。
-ni,j<ni,j+1<ni,j+2 あるいは ni,j>ni,j+1>ni,j+2 を満たす整数組 (i,j)(1≦i≦5,1≦j≦3) が存在しない。
-すでにいくつかのマスについては、どの整数を書き込むかは決まっています。あなたの課題は、上記の条件を満たすような残りの整数の配置の総数を計算することです。
+template <std::uint_least32_t MODULO> class modint {
+public:
+using uint32 = std::uint_least32_t; using uint64 = std::uint_least64_t; using iint64 = std::int_fast64_t; class optimize_tag_t {}; static constexpr optimize_tag_t optimize_tag{}; public:using value_type = uint32; value_type a; static constexpr value_type cst(iint64 x) noexcept { x %= static_cast<iint64>(MODULO); if (x < static_cast<iint64>(0)) { x += static_cast<iint64>(MODULO); }return static_cast<value_type>(x); }constexpr modint(optimize_tag_t, const value_type &x) noexcept : a(x) {}constexpr modint() noexcept : a(static_cast<value_type>(0)) {}constexpr modint(const iint64 &x) noexcept : a(cst(x)) {}constexpr modint operator+(const modint &o) const noexcept { return modint(optimize_tag, a + o.a < MODULO ? a + o.a : a + o.a - MODULO); }constexpr modint operator-(const modint &o) const noexcept { return modint(optimize_tag, a < o.a ? a + MODULO - o.a : a - o.a); }constexpr modint operator*(const modint &o) const noexcept { return modint(optimize_tag, static_cast<value_type>(static_cast<uint64>(a) * static_cast<uint64>(o.a) % static_cast<uint64>(MODULO))); }constexpr modint operator/(const modint &o) const { return modint(optimize_tag, static_cast<value_type>(static_cast<uint64>(a) * static_cast<uint64>((~o).a) % static_cast<uint64>(MODULO))); }modint &operator+=(const modint &o) noexcept { if ((a += o.a) >= MODULO)a -= MODULO; return *this; }modint &operator-=(const modint &o) noexcept { if (a < o.a)a += MODULO; a -= o.a; return *this; }modint &operator*=(const modint &o) noexcept { a = static_cast<value_type>(static_cast<uint64>(a) * static_cast<uint64>(o.a) % static_cast<uint64>(MODULO)); return *this; }modint &operator/=(const modint &o) { a = static_cast<uint64>(a) * (~o).a % MODULO; return *this; }constexpr modint inverse() const noexcept { assert(a != static_cast<value_type>(0) && "0 does not have inverse"); return pow(static_cast<uint64>(MODULO - static_cast<value_type>(2))); }constexpr modint operator~() const noexcept { return inverse(); }constexpr modint operator-() const noexcept { if (a == static_cast<value_type>(0)) { return modint(optimize_tag, static_cast<value_type>(0)); } else { return modint(optimize_tag, MODULO - a); } }modint &operator++() noexcept { if (++a == MODULO) { a = static_cast<value_type>(0); }return *this; }modint &operator--() noexcept { if (a == static_cast<value_type>(0)) { a = MODULO; }--a; return *this; }constexpr bool operator==(const modint &o) const noexcept { return a == o.a; }constexpr bool operator!=(const modint &o) const noexcept { return a != o.a; }constexpr bool operator<(const modint &o) const noexcept { return a < o.a; }constexpr bool operator<=(const modint &o) const noexcept { return a <= o.a; }constexpr bool operator>(const modint &o) const noexcept { return a > o.a; }constexpr bool operator>=(const modint &o) const noexcept { return a >= o.a; }constexpr explicit operator bool() const noexcept { return a; }constexpr explicit operator value_type() const noexcept { return a; }modint pow(iint64 inx) const noexcept { if (inx < 0)assert(a != static_cast<value_type>(0) && "not pow index < 0"); uint64 x = inx; uint64 t = a, u = 1; while (x) { if (x & 1)u = u * t % MODULO; t = (t * t) % MODULO; x >>= 1; }return modint(optimize_tag, static_cast<value_type>(u)); }
+constexpr value_type get() const noexcept { return a; }
+};
+using mint = modint<MOD>;
 
------問題ここまで----- */
-/* -----解説等-----
+mint dp[1 << 25];
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-どうしてもN!解法にしかならずずっと考えていた。
-1から埋めていこうとすればいいという発想になるまでかなり時間がかかってしまった。
-１から埋めていこうとすることで大小関係の考慮の仕方が非常に簡単になる。唯一片側が埋まっている状態のときに
-単調減少または単調増加になってしまうのでカウントをしなければよい。
-順序付けができてしまえば確認したかどうかのみが重要であり、これはbitDPで簡単に状態を管理することができる。
-発想に至るまでがむずかしい。まだまだだ。。。
+	int N = 25;
+	// numがdefineされているか
+	VI predef(N, -1);
+	VI nopos;
+	FOR(i, 0, 5) {
+		FOR(j, 0, 5) {
+			int a; cin >> a;
+			a--;
+			if (a >= 0) {
+				predef[a] = 5 * i + j;
+			}
+			else {
+				nopos.push_back(5 * i + j);
+			}
+		}
+	}
+	dp[0] = 1;
+	// 小さい順に置くとして、おける条件
+	auto add = [&](int state, int pos) {
+		if (state & (1 << pos))return;
+		int y = pos / 5, x = pos % 5;
+		if (y > 0 && y < 4 && ((state >> (pos - 5)) ^ (state >> (pos + 5))) & 1)return;
+		if (x > 0 && x < 4 && ((state >> (pos - 1)) ^ (state >> (pos + 1))) & 1)return;
+		dp[state | (1 << pos)] += dp[state];
+	};
+	FOR(state, 0, 1 << N) {
+		if (dp[state].get() == 0)continue;
+		int num = __builtin_popcount(state);
+		if (predef[num] != -1) { // 場所が定義されている
+			add(state, predef[num]);
+		}
+		else {
+			for (auto it : nopos) {
+				add(state, it);
+			}
+		}
+	}
 
- ----解説ここまで---- */
+	LL ans = dp[(1 << N) - 1].get();
 
-ll N;
-int dp[1 << 25];
-vector<int> v;
-int masu[26];
 
-ll ans = 0LL;
+	cout << ans << "\n";
 
-int countbit(int n) {
-    int ret = 0;
-    while (n) {
-        n &= n - 1;
-        ++ret;
-    }
-    return ret;
-}
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    memset(masu, -1, sizeof(masu));
-
-    FOR(i, 0, 25) {
-        int a; cin >> a;
-        if (a == 0) {
-            v.push_back(i);
-        }
-        else {
-            masu[a] = i;
-        }
-    }
-
-    memset(dp, 0, sizeof(dp));
-    dp[0] = 1;
-
-    FOR(i, 0, (1 << 25) - 1) {
-        if (dp[i]) {
-            int c = countbit(i) + 1;
-            int r = masu[c];
-
-            if (r != -1) {
-                int y = r / 5, x = r % 5;
-                if ((i&(1 << r)) == 0) {
-                    if (y > 0 && y < 4 && ((i >> (r - 5)) ^ (i >> (r + 5))) & 1) continue;
-                    if (x > 0 && x < 4 && ((i >> (r - 1)) ^ (i >> (r + 1))) & 1) continue;
-
-                    dp[i | (1 << r)] = (dp[i | (1 << r)] + dp[i]) % MOD;
-                }
-            }
-            else {
-                FOR(s, 0, v.size()) {
-                    int j = v[s];
-                    int y = j / 5, x = j % 5;
-                    if ((i&(1 << j)) == 0) {
-                        if (y > 0 && y < 4 && ((i >> (j - 5)) ^ (i >> (j + 5))) & 1) continue;
-                        if (x > 0 && x < 4 && ((i >> (j - 1)) ^ (i >> (j + 1))) & 1) continue;
-
-                        dp[i | (1 << j)] = (dp[i | (1 << j)] + dp[i]) % MOD;
-                    }
-                }
-            }
-        }
-    }
-
-    cout << dp[(1 << 25) - 1] << endl;
-
-    return 0;
+	return 0;
 }
