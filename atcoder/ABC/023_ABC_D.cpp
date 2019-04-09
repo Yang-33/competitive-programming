@@ -1,85 +1,67 @@
-#include<iostream>
-#include<algorithm>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/02/26  Problem: ABC023 D / Link: http://abc023.contest.atcoder.jp/tasks/abc023_d ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-高橋君は最近、射撃にハマっている。
-高橋君は N 個の風船すべてを射撃で割り、得られる得点をできるだけ小さくする競技に参加している。
-風船には 1 から N までの番号が付けられていて、風船 i(1≦i≦N) は競技開始時に高度 Hi のところにあり、1 秒経過するにつれて高度が Si だけ増加する。
-高橋君は競技開始時に 1 個風船を割ることができ、そこから 1 秒ごとに 1 個の風船を割ることができる。どの順番で風船を割るのかは高橋君が自由に決定できる。
-どの風船についても、その風船を割ることによるペナルティが発生する。ペナルティはその風船が割られたときの高度と等しい整数値となる。高橋君が最終的に得る得点は N 個の風船のペナルティのうちの最大値となる。
-高橋君が得ることのできる得点として考えられる最小値を求めよ。
-
------問題ここまで----- */
-/* -----解説等-----
-
-蟻本より
-最大値の最小化。
-時間で単純な探索はできないので、ある高さを基準にすべての風船を打ち落とすことは可能かを考える。
-これで二分探索を行い、範囲を狭めていく。
-t秒後の高さはh+s*t=Xとあらわせるので 高さXに到達するにはt = ( X - h )/s 秒かかる。
-つまりt秒かけてもよいということになり、時間をかけられない順に並べ替え、各順番に対して
-基準値より低い高さで撃ち落とせるかを確認していく。
-上限は2*10^15
-二分探索の値でバグをたくさん埋め込んだので理解を深めた。
-区間は(l,r]で rが答え
-
- ----解説ここまで---- */
+/* -----  2019/04/09  Problem: ABC 023 D / Link: http://abc023.contest.atcoder.jp/tasks/abc023_d  ----- */
 
 
-ll s[100010], h[100010];
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-bool f(ll x, ll N) {
-    ll m[100010];
+	LL N; cin >> N;
+	vector<double> H(N), S(N);
+	for (int i = 0; i < N; ++i) {
+		cin >> H[i] >> S[i];
+	}
 
-    FOR(i, 0, N) {
-        if (x - h[i] < 0) {
-            return false;
-        }
-        m[i]=((x - h[i]) / s[i]);
-    }
+	auto f = [&](double hh) {
+		vector<double>xs;
+		FOR(i, 0, N) {
+			xs.push_back((hh - H[i]) / S[i]);
+		}
+		SORT(xs);
+		FOR(i, 0, N) {
+			if (xs[i] < i)return false;
+		}
+		return true;
+	};
+	double L = N - 1, R = LINF;
+	FOR(i, 0, 100) {
+		double mid = (L + R) / 2;
+		if (f(mid)) {
+			R = mid;
+		}
+		else {
+			L = mid;
+		}
+	}
+	double ans = R + 1e-5;
 
-    sort(m, m+N);
+	LL ANS = ans;
+	cout << ANS << endl;
 
-    FOR(i, 0, N) {
-        if (m[i] < i)return false;
-    }
-
-    return true;
-}
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-    
-    ll N;
-    cin >> N;
-    
-    FOR(i, 0, N) {
-        cin >> h[i] >> s[i];
-    }
-
-    ll l = 0;
-    ll r = 1000000000000000;
-
-    while (r - l > 1) {
-        ll mid = (l + r) / 2;
-
-        if (f(mid, N)) {
-            r = mid;
-        }
-        else {
-            l = mid;
-        }
-    }
-
-    cout << r << endl;
-
-    return 0;
+	return 0;
 }
