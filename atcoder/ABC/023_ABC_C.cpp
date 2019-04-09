@@ -1,71 +1,76 @@
-#include<iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/02/26  Problem: ABC023 C / Link: http://abc023.contest.atcoder.jp/tasks/abc023_c ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-高橋君はある部屋に移動する予定です。
-部屋は正方形のマスが縦に R 行、横に C 列並んだ形状をしています。このうち i(1≦i≦R) 行目の j(1≦j≦C) 列目にあるマスをマス (i,j) と呼ぶことにします。
-これらのマスには飴が合計 N 個存在します。飴には 1 から N までの番号が付けられており、飴 i(1≦i≦N) はマス (ri,ci) に置いてあります。これらのうちどの 2 つの飴も同一のマス上にありません。
-高橋君はマスのうち任意の 1 マスに移動します。移動した後、高橋君は次に示すように飴を獲得します。
-最初に、高橋君がいるマスと同じ行にあるすべてのマスについて、そのマスにある飴をすべて獲得する。
-次に、高橋君がいるマスと同じ列にあるすべてのマスについて、そのマスにあるすべての飴を獲得する。
-高橋君はこの行動以外には何も行動しません。
-高橋君は獲得する飴の個数がちょうど K 個になるようにしたいです。このような移動先として考えられるマスの総数を求めてください。
+/* -----  2019/04/09  Problem: ABC 023 C / Link: http://abc023.contest.atcoder.jp/tasks/abc023_c  ----- */
 
------問題ここまで----- */
-/* -----解説等-----
 
-ある点を選択した際にK個の点が縦横に存在するようにしたい。座標圧縮では間に合わない。
-片側全探索を行う。点がx個列や行に存在することをあらかじめ記録しておいてさらにx個存在する行がい来る存在するかも
-計算しておく。そうすればi+(k-i)=K個となるような点の集合を一度に足し合わせることができる。
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-次に点が存在する場所について存在する点ではK個あっても計算では重複して数えてK+1異なってしまうのでこれを加える。
-一方で点が存在してK個と認識されているのは嘘でK-1個の場所であるからこれは除かねばならない。
-いかにしてR*C解法から逃れるかがキモ。
+	LL H, W, K; cin >> H >> W >> K;
+	int N; cin >> N;
+	vector<PLL>pos(N);
+	for (int i = 0; i < N; ++i) {
+		int h, w; cin >> h >> w;
+		h--, w--;
+		pos[i] = PLL(h, w);
+	}
+	map<LL, LL>ycnts, xcnts;
+	FOR(i, 0, N) {
+		ycnts[pos[i].first]++;
+		xcnts[pos[i].second]++;
+	}
+	auto revmap = [](int H, const  map<LL, LL> & poscnt) {
+		map<LL, LL>rev;
+		LL zerocnt = H - SZ(poscnt);
+		rev[0] += zerocnt;
+		for (auto it : poscnt) {
+			rev[it.second]++;
+		}
+		return rev;
+	};
 
- ----解説ここまで---- */
+	auto xrev = revmap(W, xcnts);
+	auto yrev = revmap(H, ycnts);
+	LL ans = 0LL;
+	for (auto yc : yrev) {
+		LL yk = yc.first;
+		ans += (xrev.find(K - yk) != xrev.end() ? xrev[K - yk] : 0)*yc.second;
+	}
+	DD(de(ans));
+	LL ret = 0;
+	FOR(i, 0, N) {
+		if (xcnts[pos[i].second] + ycnts[pos[i].first] == K + 1)ans++;
+		if (xcnts[pos[i].second] + ycnts[pos[i].first] == K)ans--;
+	}
+	DD(de(ret))
+		DD(de(ans));
 
-ll R, C, K, N;
-int r[100000], c[100000];
-ll cntC[100010], cntR[100010];
-ll sumC[100010], sumR[100010];
-ll ans = 0LL;
+	cout << ans << "\n";
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    cin >> R >> C >> K >> N;
-
-    FOR(i, 0, N) {
-        int x, y; cin >> x >> y;
-        x--; y--; r[i] = x; c[i] = y;
-        cntR[x]++; cntC[y]++;
-    }
-
-    FOR(i, 0, R) {
-        sumR[cntR[i]]++;
-    }
-
-    FOR(i, 0, C) {
-        sumC[cntC[i]]++;
-    }
-
-    FOR(i, 0, K + 1) {
-        ans += sumC[i] * sumR[K - i];
-    }
-
-    FOR(i, 0, N) {
-        if (cntR[r[i]] + cntC[c[i]] == K)ans--;
-        else if (cntR[r[i]] + cntC[c[i]] == K + 1)ans++;
-    }
-
-    cout << ans << endl;
-
-    return 0;
+	return 0;
 }
