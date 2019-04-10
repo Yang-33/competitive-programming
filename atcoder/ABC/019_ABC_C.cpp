@@ -1,51 +1,57 @@
-#include<iostream>
-#include<set> 
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/02/28  Problem: ABC019 C / Link: http://abc019.contest.atcoder.jp/tasks/abc019_3 ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 
-高橋くんは魔法の箱を持っています。
-この箱に整数を入れるとそれに対応した整数が出てきます。
-出てくる整数は入れた整数だけによって決まり、同じ整数を入れると毎回同じ結果が得られます。
-高橋くんは任意の整数 x について、x を入れた時と 2x を入れた時に出てくる整数が同じであることに気づきました。
-高橋くんが入れた整数が N 個与えられるので、最大で何種類の整数が出てくるか答えてください。
+/* -----  2019/04/10  Problem: ABC 019 C / Link: http://abc019.contest.atcoder.jp/tasks/abc019_c  ----- */
 
------問題ここまで----- */
-/* -----解説等-----
 
-要素aに対して2倍あるいは2で割ったものは同じ結果を吐き出すことから、aを2で割り切れなくなるまで割り、それを集合で管理すればよい。
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
- ----解説ここまで---- */
+	LL N; cin >> N;
+	vector<LL> a(N);
+	for (int i = 0; i < N; ++i) {
+		cin >> a[i];
+	}
+	SORT(a);
+	LL ans = 0LL;
+	map<LL, LL>no;
+	FOR(i, 0, N) {
+		LL b = a[i];
+		if (no.find(b) == no.end()) {
+			while (b * 2 <= 1e9) {
+				b *= 2;
+				no[b] = 1;
+			}
+			ans++;
+		}
+	}
 
-ll N;
-ll a[100000];
-set<ll>s;
-ll ans = 0LL;
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
 
-    cin >> N;
-    FOR(i, 0, N) {
-        cin >> a[i];
-    }
+	cout << (ans) << "\n";
 
-    FOR(i, 0, N) {
-        ll x = a[i];
-        while (x % 2 == 0) {
-            x /= 2;
-        }
-        s.insert(x);
-    }
-    ans = s.size();
-
-    cout << ans << endl;
-
-    return 0;
+	return 0;
 }
