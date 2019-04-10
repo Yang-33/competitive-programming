@@ -1,78 +1,143 @@
-#include<iostream>
-#include<string>
-#include<queue>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-const int INF = 1e9;
-typedef long long ll;
-int dx[4] = { -1,1,0,0 };
-int dy[4] = { 0,0,-1,1 };
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/02/28  Problem: ABC019 C / Link: http://abc018.contest.atcoder.jp/tasks/abc018_3 ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 
-縦 R 行、横 C 列の長方形領域がある。上から i(1≦i≦R) 行目、左から j(1≦j≦C) 列目にあるマスをマス (i, j) と呼ぶことにする。
-これらのマスのうちいくつかのマスは黒く、他のマスは白く塗られている。
-また、ある整数 K が定められている。
-ここで、以下の条件を満たすように新たに緑色を塗ることを考える。この操作は1 回だけ行う。
-ある整数 の組 x(K≦x≦R?K+1), y(K≦y≦C?K+1) に対して、|i?x|+|j?y|≦K?1 を満たすすべてのマス (i,j) について、
-マス (i,j) は元々白いマスで、かつ、この操作で緑色に塗られる。さらに、|i?x|+|j?y|≧K を満たすすべてのマスについて、そのマスは緑色に塗らない。
-このような色の塗り方の総数はいくらか。ただし、ここでいう塗り方とは、どのマスがどの色になったかという組み合わせのことで、色の塗る順番は考慮しないものとする。
+/* -----  2019/04/10  Problem: ABC 018 C / Link: http://abc018.contest.atcoder.jp/tasks/abc018_c  ----- */
 
------問題ここまで----- */
-/* -----解説等-----
+template<typename T>
+struct CumulativeSum2D {
+	int H, W;
+	vector< vector< T > >data;
+	CumulativeSum2D(int H_, int W_) : data(H_ + 1, vector< T >(W_ + 1, 0)) { H = H_, W = W_; };
+	inline void add(int y, int x, T val) {
+		if (y > (int)data.size() || x > (int)data[0].size()) return;
+		data[y + 1][x + 1] += val;
+	}//->buildする
+	inline void build() {
+		FOR(i, 0, H)FOR(j, 0, W)data[i + 1][j + 1] += data[i + 1][j];
+		FOR(i, 0, H)FOR(j, 0, W)data[i + 1][j + 1] += data[i][j + 1];
+	}
+	inline T query(int y, int x) {//アクセス位置変更用, (imos)
+		return (data[y + 1][x + 1]);
+	}
 
-各マスのマンハッタン距離がＫ以上でないと塗れない。Ｏ(R*C)
+	inline T querysumhei(int sy, int sx, int ty, int tx) {// 閉区間[(sy,sx),(ty,tx)]の和(cumsum)
+		return query(ty, tx) - query(sy - 1, tx) - query(ty, sx - 1) + query(sy - 1, sx - 1);
+	}
+};
+/*
+- x
+|  A...B
+y  .   .
+   .   .
+   .   .
+   .   .
+   D...C
 
- ----解説ここまで---- */
+to
+-x'
+|
+y'
+	  A
+	 . .
+	.	.
+   .	 .
+  .  	  B
+ D		 .
+  .  	.
+   .   .
+	. .
+	 C
 
-ll R, C, K;
-string m[500];
-ll d[500][500];
-queue<pair<int, int>>Q;
-ll ans = 0LL;
+*/
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
+struct A {
+	const int DY[4] = { 0,-1, 0 , 1 };
+	const int DX[4] = { -1, 0, 1, 0 };
+	int H, W;
+	A(int H, int W) :H(H), W(W) {}
+	PII access_point(int y, int x) {
+		return PII(x + y, x - y + (H - 1));
+	}
+	PII access_max() {
+		return PII(W + H - 1, W + H - 1);
+	}
+	vector<PII>access_from_center(int y, int x, int k) {
+		vector<PII>res;
+		FOR(d, 0, 4) {
+			int ny = y + DY[d] * k, nx = x + DX[d] * k;
+			res.push_back(this->access_point(ny, nx));
+		}
+		return res;
+	}
+	PII rev(int y, int x) {
+		return PII((H - 1 + y - x) / 2, (x + y + 1 - H) / 2);
+	}
+};
 
-    FOR(i, 0, 500)FOR(j, 0, 500)d[i][j] = INF;
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-    cin >> R >> C >> K;
-    FOR(i, 0, R) {
-        cin >> m[i];
-        FOR(j, 0, C) {
-            if (m[i][j] == 'x') {
-                d[i][j] = 0;
-                Q.push(make_pair(i, j));
-            }
-        }
-    }
+	LL H, W; cin >> H >> W;
+	LL K; cin >> K;
+	vector<string> s(H);
+	for (int i = 0; i < H; ++i) {
+		cin >> s[i];
+	}
 
-    while (!Q.empty()) {
-        auto q = Q.front();
-        int x = q.second; int y = q.first;
-        Q.pop();
-        FOR(i, 0, 4) {
-            int xx = x + dx[i]; int yy = y + dy[i];
-            if (!(0 <= xx&&xx < C && 0 <= yy&&yy < R))continue;
-            if (d[yy][xx] > d[y][x] + 1) {
-                d[yy][xx] = d[y][x] + 1;
-                Q.push(make_pair(yy, xx));
-            }
-        }
-    }
+	A ac(H, W);
+	auto r = ac.access_max();
+	DD(de(r));
+	CumulativeSum2D<LL> cumsum2(r.first, r.second);
+	FOR(i, 0, H) {
+		FOR(j, 0, W) {
+			if (s[i][j] == 'x') {
+				auto p = ac.access_point(i, j);
+				DD(de(p));
+				cumsum2.add(p.first, p.second, 1);
+			}
+		}
+	}
+	cumsum2.build();
+	LL ans = 0LL;
+	FOR(y, K - 1, H - K + 1) {
+		FOR(x, K - 1, W - K + 1) {
+			auto p = ac.access_from_center(y, x, K - 1);
+			auto s = p.front(), t = p[2];
+			DD(de(s, t));
+			LL res = cumsum2.querysumhei(s.first, s.second, t.first, t.second);
+			ans += res == 0;
+		}
+	}
 
-    FOR(i, 0, R) {
-        FOR(j, 0, C) {
-            if (d[i][j] >= K)
-                if (K - 1 <= j&&j <= C - K&&K - 1 <= i&&i <= R - K)ans++;
-        }
-    }
 
-    cout << ans << endl;
 
-    return 0;
+
+
+
+	cout << (ans) << "\n";
+
+	return 0;
 }
