@@ -1,59 +1,54 @@
-#include<iostream>
-#include<algorithm>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/03/01  Problem: ABC017 C / Link: http://abc017.contest.atcoder.jp/tasks/abc017_3 ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 
-高橋君はあるゲームが大好きである。
-このゲームには N 個の遺跡があり、好きな順番に探索することができる。遺跡には 1 から N までの番号が付けられている。
-ゲーム中に宝石を獲得することがある。宝石は M 種類あり、1 から M まで番号が付けられている。
-遺跡を探索することで報酬として得点といくつかの宝石を入手することができる。
-遺跡 i(1≦i≦N) を探索することで、得点 si 点を獲得し、番号が li 以上 ri 以下のすべての宝石を 1 つずつ獲得する。
-同じ遺跡を複数回探索することはできない。
-獲得した宝石は捨てることができず、またすべての種類の宝石を 1 つ以上獲得してしまうと、魔王が復活するイベントが進行する。
-魔王が復活する際に探索していた遺跡で得られるはずの得点は消滅してしまう。
-高橋君はスコアをできるだけ高くすることを目標としており、うまく探索する遺跡を選ぶことで、魔王が復活しない状態で得られる得点の合計値を最大化したい。
-考えられる最大値はいくらか。
+/* -----  2019/04/10  Problem: ABC 017 C / Link: http://abc017.contest.atcoder.jp/tasks/abc017_c  ----- */
 
------問題ここまで----- */
-/* -----解説等-----
 
-区間和なのでimosかsegtreeで解ける。
-一つの宝石を取り除いた時の失点のうち、最小なものを除ければよい。
-累積和をとり、それを確認すればよい。
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-----解説ここまで---- */
+	int N, M; cin >> N >> M;
+	VL seg(M + 1, 0);
+	LL Ssum = 0;
+	FOR(i, 0, N) {
+		LL L, R, S; cin >> L >> R >> S;
+		L--;
+		Ssum += S;
+		seg[L] += S;
+		seg[R] -= S;
+	}
+	FOR(i, 0, M) {
+		seg[i + 1] += seg[i];
+	}
+	LL minp = *min_element(seg.begin(),seg.begin()+M);
 
-ll N, M;
-ll x[100010];
-ll sum;
-ll ans = 0LL;
+	LL ans = Ssum - minp;
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
 
-    cin >> N >> M;
-    FOR(i, 0, N) {
-        int l, r, s; cin >> l >> r >> s;
-        sum += s;
-        x[l] += s;
-        x[r + 1] -= s;
-    }
+	cout << (ans) << "\n";
 
-    FOR(i, 1, M + 1) {
-        x[i] += x[i - 1];
-    }
-
-    FOR(i, 1, M + 1) {
-        ans = max(ans, sum - x[i]);
-    }
-    cout << ans << endl;
-
-    return 0;
+	return 0;
 }
