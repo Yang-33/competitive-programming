@@ -1,61 +1,60 @@
-#include<iostream>
-#include<cstdio>
-#include<algorithm>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-const int INF = 1e9;
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/02/28  Problem: ABC019 D / Link: http://abc019.contest.atcoder.jp/tasks/abc019_4 ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 
-あなたは２頂点間の距離を質問することができる。
-Nが与えられるので 木の直径をリアクティブ問題として2N回以内の質問で求めよ。
+/* -----  2019/04/10  Problem: ABC 019 D / Link: http://abc019.contest.atcoder.jp/tasks/abc019_d  ----- */
 
------問題ここまで----- */
-/* -----解説等-----
+int main() {
+	auto ask = [](int a, int b) {
+		cout << "? " << a + 1 << " " << b + 1 << endl;
+		int dist; cin >> dist;
+		return dist;
+	};
+	auto ansoutput = [](int d) {
+		cout << "! " << d << endl;
+	};
 
-AOJで覚えた木の直径そのままである。
-「任意の頂点から最も遠い点を基準にした最も遠い点が木の直径」
-これは三つの場合分けで正当性を示すことができる。
+	LL N; cin >> N;
 
-解答としては　適当に１から全ての点までの距離を知り、最も遠い頂点を知る。
-次にそこを基準として最も遠い頂点までの距離を質問して求める。
-2N-2回の質問で解くことができる。おわり
+	// 2N回聞けばのやつ
+	auto f = [&](int S) {
+		int maxD = -1;
+		int dpoint = 0;
+		FOR(i, 0, N) {
+			if (S == i)continue;
+			int dist = ask(S, i);
+			if (dist > maxD) {
+				maxD = dist;
+				dpoint = i;
+			}
+		}
+		return PII(dpoint, maxD);
+	};
+	PII P1 = f(0);
+	PII P2 = f(P1.first);
+	ansoutput(P2.second);
 
- ----解説ここまで---- */
 
-ll N;
-ll ans = 0LL;
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    cin >> N;
-
-    ll x = -INF, y;
-    ll id;
-
-    FOR(i, 2, N + 1) {
-        cout << "? " << 1 << " " << i << endl;
-        cin >> y;
-        if (x < y) {
-            x = y;
-            id = i;
-        }
-    }
-
-    FOR(i, 1, N + 1) {
-        if (i == id)continue;
-        cout << "? " << id << " " << i << endl;
-        cin >> y;
-        ans = max(ans, y);
-    }
-
-    cout << "! " << ans << endl;
-    fflush(stdout);
-    return 0;
+	return 0;
 }
