@@ -1,62 +1,129 @@
-#include<iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/03/01  Problem: ABC016 D / Link: http://abc016.contest.atcoder.jp/tasks/abc016_4 ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 
-高橋くんは鍛錬の結果、空手チョップで木の板を切断できるようになりました。
-空手チョップの軌道を表す線分と板の形を表す多角形が与えられるので、板がいくつに切断されたか求めてください。
+/* -----  2019/04/10  Problem: ABC 016 D / Link: http://abc016.contest.atcoder.jp/tasks/abc016_d  ----- */
 
------問題ここまで----- */
-/* -----解説等-----
+using Double = long double;
+const double EPS = 1e-9;
 
-交錯判定を行えばよい。
-f(x,y)>=0を最初調べていたのだけど、判例(傾き∞)が出てきたのであきらめた。
-幾何ライブラリ作ろうかなあ。
+typedef struct Point {
+	Double x, y;
+	Point(Double x_, Double y_) : x(x_), y(y_) {}
 
- ----解説ここまで---- */
+	bool operator < (const Point& a) const {
+		return fabs(x - a.x) < EPS ? y + EPS < a.y : x + EPS < a.x;
+	}
+	bool operator > (const Point& a) const {
+		return a < *this;
+	}
+	bool operator == (const Point& a) const {
+		return !(a < *this) && !(a > *this);
+	}
+	Point operator + (const Point& a) const {
+		return Point(x + a.x, y + a.y);
+	}
+	Point operator - (const Point& a) const {
+		return Point(x - a.x, y - a.y);
+	}
+	Point operator * (const Point& a) const {
+		return Point(x * a.x, y * a.y);
+	}
+	Point operator / (const Point& a) const {
+		return Point(x / a.x, y / a.y);
+	}
+	Point operator * (const Double& d) const {
+		return Point(x * d, y * d);
+	}
+	Point operator / (const Double& d) const {
+		return Point(x / d, y / d);
+	}
+} Vector;
 
-ll N;
-double ax, ay, bx, by;
-double x[101], y[101];
-bool p;
-ll ans = 0LL;
-
-/* 線分交錯判定 */
-bool intersect(double p1x, double p1y, double p2x, double p2y, double p3x, double p3y, double p4x, double p4y) {
-    if (((p1x - p2x) * (p3y - p1y) + (p1y - p2y) * (p1x - p3x)) *
-        ((p1x - p2x) * (p4y - p1y) + (p1y - p2y) * (p1x - p4x)) < 0) {
-
-        if (((p3x - p4x) * (p1y - p3y) + (p3y - p4y) * (p3x - p1x)) *
-            ((p3x - p4x) * (p2y - p3y) + (p3y - p4y) * (p3x - p2x)) < 0) {
-            return true;
-        }
-
-    }
-    return false;
+// ノルム
+Double norm(const Point& a) {
+	return a.x * a.x + a.y * a.y;
 }
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
+// サイズ
+Double abs(const Point& a) {
+	return sqrt(norm(a));
+}
+// 内積
+Double dot(const Vector& a, const Vector& b) {
+	return a.x * b.x + a.y * b.y;
+}
+// 外積
+Double cross(const Vector& a, const Vector& b) {
+	return a.x * b.y - a.y * b.x;
+}
 
-    cin >> ax >> ay >> bx >> by;
-    cin >> N;
-    bool flag;
-    FOR(i, 0, N) {
-        cin >> x[i] >> y[i];
-    }
+// counter clockwise
+int ccw(const Point& a, const Point& b, const Point&  c) {
+	Vector ba = b - a, ca = c - a;
+	if (cross(ba, ca) > EPS) return +1; // ccw
+	if (cross(ba, ca) < -EPS) return -1; // cw
+	if (dot(ba, ca) < -EPS) return +2; // c-a-b
+	if (abs(ba) + EPS < abs(ca)) return -2; // a-b-c
+	return 0; // a-c-b
+}
 
-    FOR(i,0,N){
-        int j = (i + 1) % N;
-        if (intersect(x[i], y[i], x[j], y[j], ax, ay, bx, by)) ans++;
-    }
+// 直線、線分構造体
+typedef struct Line {
+	Point s, e;
+	Line(Point s_, Point e_) : s(s_), e(e_) {}
+} Segment;
 
+// 線分の交差判定
+bool is_crossss(const Segment& a, const Segment& b) {
+	return (ccw(a.s, a.e, b.s) * ccw(a.s, a.e, b.e) <= 0
+		&& ccw(b.s, b.e, a.s) * ccw(b.s, b.e, a.e) <= 0);
+}
 
-    cout << ans / 2 + 1 << endl;
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-    return 0;
+	Double ax, ay, bx, by;
+	cin >> ax >> ay >> bx >> by;
+	Point a(ax, ay), b(bx, by);
+	Segment seg(a, b);
+
+	int N; cin >> N;
+	vector<double> x(N), y(N);
+	for (int i = 0; i < N; ++i) {
+		cin >> x[i] >> y[i];
+	}
+
+	LL ans = 0LL;
+	FOR(i, 0, N) {
+		Segment seg2(Point(x[i],y[i]), Point(x[(i+1)%N],y[(i + 1) % N]));
+		ans += is_crossss(seg, seg2);
+	}
+
+	ans = ans / 2 + 1;
+	
+	cout << (ans) << "\n";
+
+	return 0;
 }
