@@ -1,62 +1,75 @@
-#include<iostream>
-#include<vector>
-#include<set>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/03/01  Problem: ABC016 C / Link: https://abc016.contest.atcoder.jp/tasks/abc016_3 ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 
-高橋くんはSNSの管理者をしています。このSNSではユーザ同士が友達という関係で繋がることができます。
-高橋くんはそれぞれのユーザの「友達の友達」が何人いるかを調べることにしました。
-友達関係が与えられるので、各ユーザの「友達の友達」の人数を求めてください。
-ただし、自分自身や友達は、「友達の友達」に含みません。
+/* -----  2019/04/10  Problem: ABC 016 C / Link: http://abc016.contest.atcoder.jp/tasks/abc016_c  ----- */
 
------問題ここまで----- */
-/* -----解説等-----
+VL bfsG(vector<vector<PLL>>& G, int s) {
+	VL dist(SZ(G), LINF);
+	dist[s] = 0;
+	priority_queue<PLL, vector<PLL>, greater<PLL>> que;
+	que.push(PLL(0LL, s));
 
-友達の友達が自分の友達である可能性を排除すればよい。
+	while (!que.empty()) {
+		PLL p = que.top(); que.pop();
+		int v; /* 頂点*/ long long d; /* 頂点vまでの距離 */
+		tie(d, v) = p;
 
- ----解説ここまで---- */
+		if (d > dist[v]) continue;
 
-ll N, M;
-vector<int>G[10];
+		FOR(i, 0, (int)G[v].size()) {
+			int nv = G[v][i].first;
+			if (dist[nv] > dist[v] + G[v][i].second) {
+				dist[nv] = dist[v] + G[v][i].second;
+				que.push(PLL(dist[nv], nv));
+			}
+		}
+	}
+	return dist;
+}
 
-ll ans = 0LL;
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
+	LL N, M; cin >> N >> M;
+	vector<vector<PLL>> G(N);
+	FOR(i, 0, M) {
+		int a, b; cin >> a >> b;
+		a--, b--;
+		G[a].push_back(PLL(b, 1));
+		G[b].push_back(PLL(a, 1));
+	}
+	FOR(i, 0, N) {
+		auto res = bfsG(G, i);
+		LL ans = 0;
 
-    cin >> N >> M;
-    FOR(i, 0, M) {
-        int a, b; cin >> a >> b;
-        a--; b--;
-        G[a].push_back(b);
-        G[b].push_back(a);
-    }
+		FOR(j, 0, N) {
+			ans+= (res[j] == 2);
+		}
+		cout << ans << endl;
+	}
 
-    FOR(i, 0, N) {
-        set<int>s1;
-        s1.insert(i);
-        set<int>s2;
-        FOR(j, 0, G[i].size()) {
-            s1.insert(G[i][j]);
-            FOR(k, 0, G[G[i][j]].size()) {
-                s2.insert(G[G[i][j]][k]);
-            }
-        }
-        auto it = s1.begin();
-        while (it != s1.end()) {
-            s2.erase(*it);
-            it++;
-        }
-
-            cout << s2.size() << endl;
-    }
-
-    return 0;
+	return 0;
 }
