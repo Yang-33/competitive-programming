@@ -1,74 +1,57 @@
-#include<iostream>
-#include<cstdio>
-#include<algorithm>
-#include<cmath>
-#include<string>
-#include<cstring>
-#include<vector>
-#include<map>
-#include<list>
-#include<stack>
-#include<queue>
-#include<climits> //INT_MIN/MAX
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-#define FORR(i,s,e) for(ll (i)=(s);(i)>(e);(i)--)
-#define MOD 1000000007
-#define debug(x) cout<<#x<<": "<<x<<endl
-const int INF = 1e9;
-typedef long long ll;
-int dx[8] = { 1,1,1,0,0,-1,-1,-1 };
-int dy[8] = { 1,0,-1,1,-1,1,0,-1 };
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/03/01  Problem: ABC015 C / Link: http://abc015.contest.atcoder.jp/tasks/abc015_3 ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-高橋くんは上司からあるアンケートアプリにバグがあるかどうか調べて欲しいと頼まれました。
-このアプリは、ユーザに選択肢が K 個ある質問を N 回答えさせることにより、ユーザの性格を判定します。 
-質問や選択肢はユーザの回答によって変わらず一定であり、ユーザは全ての質問にちょうど 1 つの選択肢を選ぶことで、結果を閲覧できます。
-全ての選択肢はある整数値を持ちます。このアプリは、ユーザによって選ばれた、全ての回答がそれぞれ保持する整数値の排他的論理和（XOR）を使って結果を算出します。
-計算の最後でこの値が 0 になってしまうと、結果が表示されずバグが発生してしまいます。
-あなたには全ての選択肢が持つ整数値が与えられるので、高橋くんの代わりに、ユーザの選択によってはバグが発生する可能性があるかどうかを判定してください。
+/* -----  2019/04/11  Problem: ABC 015 C / Link: http://abc015.contest.atcoder.jp/tasks/abc015_c  ----- */
 
------問題ここまで----- */
-/* -----解説等-----
 
-0^x=xであることからdfsをして間に合う。
-bool dfsのほうがきれい感がある。
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
- ----解説ここまで---- */
+	LL H, W; cin >> H >> W;
+	vector<vector<LL>> a(H, vector<LL>(W));
+	for (int i = 0; i < H; ++i) {
+		for (int j = 0; j < W; ++j) {
+			cin >> a[i][j];
+		}
+	}
 
-ll N, K;
-int t[10][10];
-ll ans = 0LL;
+	//N^K
+	function<bool(int, int)> f = [&](int id, int xsum) {
+		if (id == H)return xsum == 0;
+		bool res = 0;
+		FOR(i, 0, W) {
+			res |= f(id + 1, xsum ^ a[id][i]);
+		}
+		return res;
+	};
 
-void dfs(int i, int x) {
-    if (i == N) {
-        if (x == 0) {
-            cout << "Found" << endl;
-            exit(0);
-        }
-        return;
-    }
-    FOR(j, 0, K) {
-        dfs(i + 1, x ^ (t[i][j]));
-    }
+	string ans = (f(0, 0) ? "Found" : "Nothing");
 
-}
+	cout << ans << "\n";
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    cin >> N >> K;
-    
-    FOR(i, 0, N)FOR(j, 0, K)cin >> t[i][j];
-    
-    dfs(0, 0);
-    
-    cout << "Nothing" << endl;
-
-    return 0;
+	return 0;
 }
