@@ -1,84 +1,72 @@
-#include<iostream>
-#include<cstdio>
-#include<algorithm>
-#include<cmath>
-#include<string>
-#include<cstring>
-#include<vector>
-#include<map>
-#include<list>
-#include<stack>
-#include<queue>
-#include<climits> //INT_MIN/MAX
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-#define FORR(i,s,e) for(ll (i)=(s);(i)>(e);(i)--)
-#define MOD 1000000007
-#define debug(x) cout<<#x<<": "<<x<<endl
-const int INF = 1e9;
-typedef long long ll;
-int dx[8] = { 1,1,1,0,0,-1,-1,-1 };
-int dy[8] = { 1,0,-1,1,-1,1,0,-1 };
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/03/05  Problem: ABC008 D / Link: http://abc008.contest.atcoder.jp/tasks/abc008_4 ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-盤面のうち (x,y),1≦x≦W, 1≦y≦H(x,y),1≦x≦W, 1≦y≦H の各セルには金塊が置いてある．
-金塊回収装置が (xi,yi)に置いてある。そこで回収をはじめると端点あるいは金塊のない場所まで上下左右に回収をする。
-H,W≦10^6,N≦30
-金塊回収装置を起動する際その上の金塊は回収できるものとして最大でいくつ回収できるか。
+/* -----  2019/04/17  Problem: ABC 008 D / Link: http://abc008.contest.atcoder.jp/tasks/abc008_d  ----- */
 
------問題ここまで----- */
-/* -----解説等-----
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-一回回収すると盤面が４分割される。状態遷移であるが良いものを区間を指定して探索していけばよい。
-端から折り返す。
+	LL W, H; cin >> W >> H;
+	int N; cin >> N;
+	vector<int> x(N), y(N);
+	for (int i = 0; i < N; ++i) {
+		cin >> x[i] >> y[i];
+		x[i]--, y[i]--;
+	}
 
- ----解説ここまで---- */
+	auto isin = [&](int idx, int sy, int sx, int ty, int tx) {
+		return sy <= y[idx] && y[idx] < ty && sx <= x[idx] && x[idx] < tx;
+	};
 
-ll N, W, H;
-int x[40], y[40];
-int dp[40][40][40][40];
-ll ans = 0LL;
+	using tp = tuple<int, int, int, int>;
+	map<tp, LL>memo;
+	function<LL(int, int, int, int)>
+		f = [&](int sy, int sx, int ty, int tx) {
+		// memo
+		if (memo.find(tp(sy, sx, ty, tx)) != memo.end()) {
+			return memo[tp(sy, sx, ty, tx)];
+		}
+		LL ret = 0;
+		FOR(i, 0, N) {
+			if (!isin(i, sy, sx, ty, tx))continue;
+			ret = max(ret,
+				ty - sy + tx - sx - 1
+				+ f(sy, sx, y[i], x[i])
+				+ f(y[i] + 1, sx, ty, x[i])
+				+ f(sy, x[i] + 1, y[i], tx)
+				+ f(y[i] + 1, x[i] + 1, ty, tx));
+		}
+		return memo[tp(sy, sx, ty, tx)] = ret;
+	};
 
-int rec(int xl, int xr, int yl, int yr) {
-    if (dp[xl][xr][yl][yr] != -1)return dp[xl][xr][yl][yr];
+	LL ans = f(0, 0, H, W);
 
-    int res = 0; int s = 0;
 
-    FOR(i, 0, N) {
-        if (x[xl] < x[i] && x[i] < x[xr] && y[yl] < y[i] && y[i] < y[yr]) {
-            s = x[xr] - x[xl] + y[yr] - y[yl] - 4 + 1;
-            s += rec(xl, i, yl, i);
-            s += rec(xl, i, i, yr);
-            s += rec(i, xr, yl, i);
-            s += rec(i, xr, i, yr);
-            res = max(res, s);
-        }
-    }
+	cout << ans << "\n";
 
-    return dp[xl][xr][yl][yr] = res;
-}
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    cin >> W >> H;
-    cin >> N;
-
-    FOR(i, 0, N) {
-        cin >> x[i] >> y[i];
-    }
-
-    memset(dp, -1, sizeof(dp));
-
-    x[N] = 0; x[N + 1] = W + 1;
-    y[N] = 0; y[N + 1] = H + 1;
-
-    cout << rec(N, N + 1, N, N + 1) << endl;
-
-    return 0;
+	return 0;
 }
