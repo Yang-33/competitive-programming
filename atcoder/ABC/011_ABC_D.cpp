@@ -1,78 +1,74 @@
-#include<iostream>
-#include<cstdio>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/03/02  Problem: ABC011 D / Link: https://abc011.contest.atcoder.jp/tasks/abc011_4  ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-XY 座標上に、スタート地点とゴール地点が 1 つずつあります。 スタート地点は (0,0) にあり、ゴール地点は (X,Y) です。
-あなたは、ジャンプという移動法を用いて、移動を行います。 ジャンプを 1 回行うと、あなたは、以下の 4 つのうち、ランダムで選ばれた 1 つの移動が行われます。
-X 軸に平行に +D だけ移動する。
-X 軸に平行に ?D だけ移動する。
-Y 軸に平行に +D だけ移動する。
-Y 軸に平行に ?D だけ移動する。
-これらの移動は、どれもちょうど 1?4 の確率で選択されます。
-あなたは、最初にスタート地点におり、ちょうど N 回のジャンプでゴール地点にたどり着きたいです。
-目的を達成できる確率を出力しなさい。
+/* -----  2019/04/11  Problem: ABC 011 D / Link: http://abc011.contest.atcoder.jp/tasks/abc011_d  ----- */
 
------問題ここまで----- */
-/* -----解説等-----
+vector<double>pw, fact;
+double nCr(int a, int b) {
+	return exp(pw[a] + fact[a] - fact[a - b] - fact[b]);
+}
 
-動的計画法では計算量が足りない。
-上下左右の移動量を決定すればその組み合わせで解ける。
+void init_fact(int N) {
+	N++;
+	pw.assign(N, 0); fact.assign(N, 0);
+	FOR(i, 1, N) {
+		pw[i] = pw[i - 1] + log(0.5);
+		fact[i] = fact[i - 1] + log(i);
+	}
+}
 
-解法としてはあっていたけれどなぜＷＡしたのかわからない。桁あふれ?
-引っ張り出す値の計算時に確率化するのではなく、テーブルを作る段階で割り算しとくと良さそう。
-いい経験！？
->> double 型は10^308までしか値が収まりきらないことに起因しているらしい。
-答えを曹宇数で出すのはちょっと危険で、確率で足しこんでいった方がエラーになりにくいとのこと。確かに。
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
+	//pascals_triangle(2000);
+	init_fact(2005);
+	LL N, D, X, Y; cin >> N >> D >> X >> Y;
+	X = abs(X), Y = abs(Y);
+	if (X % D || Y % D) {
+		cout << 0 << endl; return 0;
+	}
+	else if (N < (X + Y) / D) {
+		cout << 0 << endl; return 0;
+	}
+	// ok
 
- ----解説ここまで---- */
+	double ans = 0;
+	X /= D, Y /= D;
+	FOR(tox, 0, N + 1) {
+		int toy = N - tox;
+		auto f = [&](int a, int b) {
+			// 0 to a by bsteps
+			int c = (b - a) / 2;
+			if (b < a || b != a + 2 * c)return 0.0;
+			return nCr(b, c);
+		};
+		ans += f(X, tox)*f(Y, toy)*nCr(N, tox);
+	}
 
-#define MAX_N 1010
-ll N, D, X, Y;
-double comb[MAX_N][MAX_N];
-double ans = 0.0;
+	cout << fixed << setprecision(10) << ans << endl;
 
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    cin >> N >> D >> X >> Y;
-
-    if (X % D != 0 || Y % D != 0) {
-        cout << 0 << endl;
-        return 0;
-    }
-    X /= D; Y /= D;
-
-    FOR(i, 0, MAX_N)FOR(j, 0, MAX_N)comb[i][j] = 0;
-
-    comb[0][0] = 1;
-
-    FOR(i, 1, MAX_N) {
-        comb[i][0] = comb[i - 1][0]/2;
-        FOR(j, 1, MAX_N) {
-            comb[i][j] = (comb[i - 1][j] + comb[i - 1][j - 1]) / 2;
-        }
-    }
-    FOR(i, 0, N + 1) {
-        if ((i + X) % 2 == 1 || i - X < 0 || i + X < 0) continue;
-
-        int right = (i + X) / 2, left = (i - X) / 2;
-        int j = N - i;
-
-        if ((j + Y) % 2 == 1 || j - Y < 0 || j + Y < 0) continue;
-
-        int up = (j + Y) / 2, down = (j - Y) / 2;
-        ans += comb[N][i] * comb[i][right] * comb[N-i][up];
-    }
-    printf("%.10lf¥n", ans);
-
-    return 0;
+	return 0;
 }
