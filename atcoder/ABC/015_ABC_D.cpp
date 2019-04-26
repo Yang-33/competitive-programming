@@ -1,63 +1,64 @@
-#include<iostream>
-#include<algorithm>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/03/01  Problem: ABC015 D / Link: http://abc015.contest.atcoder.jp/tasks/abc015_4 ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-高橋くんは、ソフトウエアが期待通りに動いたというエビデンス（証拠）として、画面のスクリーンショットを表計算ソフトに貼り付ける作業を命じられました。 
-画面のスクリーンショットは N 枚あり、高さは全て等しいのですが、幅が異なります。 また、表計算ソフトに貼りつけ可能なスクリーンショットには 2 つの制約が存在します。
-表計算ソフトの幅は W しかない。そのため、貼りつけるスクリーンショットの幅の合計値は W 以下でなければならない。
-表計算ソフトは K 枚より多くのスクリーンショットを貼りつけることが出来ない。よって、表計算ソフトに貼りつけ可能なスクリーンショットは K 枚までである。
-さらに、スクリーンショットには「重要度」が存在するため、高橋くんは 2 つの制約を満たしながら、貼り付けるスクリーンショットが持つ重要度の合計値を最大化したいです。 
-しかし、彼にとってこの仕事は難しいので、あなたが彼の代わりに表計算ソフトに貼り付け可能なスクリーンショットが持つ重要度の合計の最大値を求めてください。
+/* -----  2019/04/11  Problem: ABC 015 D / Link: http://abc015.contest.atcoder.jp/tasks/abc015_d  ----- */
 
------問題ここまで----- */
-/* -----解説等-----
+LL dp[52][52][10004];
 
-いつものｄｐに個数制限がついただけ。典型の中でも典型。
-最初は計算量が大きくて重要度を最小重みでやるかと思ったけどそんなことをしなくても間に合った。
-dp[ 何番まで選べるか ][ 重さ ][ 何個選んだか ]:=重要度の最大値　として解ける。Ｏ(N*W*K)でぎりぎり間に合う。
-Ｏ(N*K*W)としても解ける。
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-解説記事を読んでいたら重さか個数を逆順にすれば重複しないとあり、なるほどなとなった。
+	auto chmax = [](LL& a, const LL b) {
+		a = max(a, b);
+	};
 
- ----解説ここまで---- */
+	// 幅Wまでk個まで選択可能な最大重み
+	int W, N, K; cin >> W >> N >> K;
+	vector<LL> a(N), b(N);
+	for (int i = 0; i < N; ++i) {
+		cin >> a[i] >> b[i];
+	}
+	FOR(i, 0, N) {
+		FORR(k, N - 1, 0 - 1) {
+			FOR(w, 0, W + 1) {
+				if (w + a[i] <= W)
+					chmax(dp[i + 1][k + 1][w + a[i]], dp[i][k][w] + b[i]);
+				chmax(dp[i + 1][k][w], dp[i][k][w]);
+			}
+		}
+	}
+	LL ans = 0;
+	FOR(i, 0, K + 1) {
+		FOR(w, 0, W + 1) {
+			chmax(ans, dp[N][i][w]);
+		}
+	}
 
-ll N, W, K;
-ll w[50], v[50];
-ll dp[51][10001][51];
+	cout << ans << "\n";
 
-ll ans = 0LL;
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    cin >> W >> N >> K;
-    FOR(i, 0, N) {
-        cin >> w[i] >> v[i];
-    }
-
-    FOR(i, 0, N) {//new
-        FOR(j, 0, W + 1) {
-            FOR(k, 0, K + 1) {
-                if (j - w[i] < 0 || k - 1 < 0) {
-                    dp[i + 1][j][k] = dp[i][j][k];
-                }
-                else {
-                    dp[i + 1][j][k] = max(dp[i][j][k], dp[i][j - w[i]][k - 1] + v[i]);
-                }
-                ans = max(ans, dp[i + 1][j][k]);
-            }
-        }
-    }
-
-    cout << ans << endl;
-
-    return 0;
+	return 0;
 }
