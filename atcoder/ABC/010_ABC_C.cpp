@@ -1,59 +1,107 @@
-#include<iostream>
-#include<cmath>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/03/02  Problem: ABC010 C / Link: https://abc010.contest.atcoder.jp/tasks/abc010_3 ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-高橋君の秘書のなぎさちゃんは、高橋君が大好きです。今日も高橋君に電話をかけてみることにしました。
-すると、どうでしょう？　電話口から、高橋君の声以外の、女の声が聞こえてきます。
-なぎさちゃんは、高橋君と付き合ってはいませんが、高橋君に悪い虫が付いたら大変なので、浮気調査を行うことにしました。
-高橋君の携帯に仕込んだアプリケーションから、高橋君の居場所をGPSで取得すると、高橋君は、電話をかける前は座標 (txa,tya) に、
-電話をかけた後は、座標 (txb,tyb) にいることがわかりました。また、この間にかかった時間は T 分です。
-高橋君は、最大毎分 V の距離を移動することが可能であり、家などの障害物を無視して同じ速度で移動することが可能です。
-なぎさちゃんは、このデータを元に、高橋君が、近所の女の子の家に寄っていないかを調査することにしました。
-近所の女の子は n 人おり、それぞれ座標 (xi,yi) に住んでいます。
-高橋君が、他の女の子の家に寄った可能性が少しでもある場合はYES、そうでない場合はNOと出力しなさい。
+/* -----  2019/04/12  Problem: ABC 010 C / Link: http://abc010.contest.atcoder.jp/tasks/abc010_c  ----- */
 
------問題ここまで----- */
-/* -----解説等-----
+using PDL = pair<double, LL>;
 
-誤差にだけ注意。
+vector<double> Dijkstra(vector<vector<PDL>>& G, int s) {
+	vector<double> dist(SZ(G), LINF);
+	dist[s] = 0;
+	priority_queue<PDL, vector<PDL>, greater<PDL>> que;
+	que.push(PDL(0LL, s));
 
- ----解説ここまで---- */
+	while (!que.empty()) {
+		PDL p = que.top(); que.pop();
+		int v; /* 頂点*/ double d; /* 頂点vまでの距離 */
+		tie(d, v) = p;
+		DD(de(d, v));
+		if (d > dist[v]) continue;
 
-ll N;
-int sx, sy, tx, ty, T, V;
-bool flag = false;
-ll ans = 0LL;
-double eps = 1e-6;
-
-bool f(int X, int Y) {
-    double l = sqrt((sx - X)*(sx - X) + (sy - Y)*(sy - Y)) + sqrt((tx - X)*(tx - X) + (ty - Y)*(ty - Y));
-    if (l < T*V + eps)return true;
-    else return false;
-
+		FOR(i, 0, (int)G[v].size()) {
+			int nv = G[v][i].second;
+			if (dist[nv] > dist[v] + G[v][i].first) {
+				dist[nv] = dist[v] + G[v][i].first;
+				que.push(PDL(dist[nv], nv));
+			}
+		}
+	}
+	return dist;
 }
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-    cin >> sx >> sy >> tx >> ty >> T >> V;
-    cin >> N;
+	PLL sp, tp;
+	cin >> sp.second >> sp.first;
+	cin >> tp.second >> tp.first;
+	int Ti, V; cin >> Ti >> V;
+	int N; cin >> N;
+	vector<double> x(N), y(N);
+	for (int i = 0; i < N; ++i) {
+		cin >> x[i] >> y[i];
+	}
+	x.push_back(sp.second);
+	y.push_back(sp.first);
+	x.push_back(tp.second);
+	y.push_back(tp.first);
+	auto dist = [&](int a, int b) {
+		return sqrt((x[a] - x[b])*(x[a] - x[b]) + (y[a] - y[b])*(y[a] - y[b]));
+	};
 
-    FOR(i, 0, N) {
-        int x, y;
-        cin >> x >> y;
-        if (f(x, y))flag = true;
-    }
-
-    if (flag)cout << "YES" << endl;
-    else    cout << "NO" << endl;
-
-    return 0;
+	vector<vector<PDL>>G(N + 2);
+	int S = N, T = N + 1;
+	FOR(i, 0, N) {
+		G[S].push_back(PDL(dist(S, i), i));
+		G[i].push_back(PDL(dist(S, i), S));
+		G[T].push_back(PDL(dist(T, i), i));
+		G[i].push_back(PDL(dist(T, i), T));
+	}
+	FOR(i, 0, N) {
+		FOR(j, 0, N) {
+			if (i == j)continue;
+			G[i].push_back(PDL(dist(i, j), j));
+		}
+	}
+	auto dists = Dijkstra(G, S);
+	DD(de(dists[T], V*Ti));
+	bool UWAKI = (dists[T] <= 1.0*V * Ti);
+	auto print_yesno = [](LL yes, int mode = 0) {
+		if (mode == 0) {
+			cout << (yes ? "yes" : "no") << endl;
+		}
+		else if (mode == 1) {
+			cout << (yes ? "Yes" : "No") << endl;
+		}
+		else if (mode == 2) {
+			cout << (yes ? "YES" : "NO") << endl;
+		}
+		else assert(0);
+	};
+	print_yesno(UWAKI, 2);
+	return 0;
 }
