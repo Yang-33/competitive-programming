@@ -1,52 +1,56 @@
-#include<iostream>
-#include<algorithm>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/03/01  Problem: ABC014 C / Link: https://abc014.contest.atcoder.jp/tasks/abc014_3 ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-AtColor社は，0 から 1,000,000 まで 1,000,001 通りの濃さがある灰色の絵の具を販売することにしました．0 が最も黒く，1,000,000 が最も白い絵の具です．
-しかし，途方も無い数の濃さのバリエーションがある一方，消費者には細かい違いが分からないということが判明しました．
-これを知ったAtColor社は，売れない濃さの絵の具を生産するのはやめて，最も人気のある濃さの色の絵の具1つだけを販売することにしました．
-AtColor社は上記を達成するために，最も人気な絵の具がどのくらい売れるかをアンケート調査で調べることにしました． 
-AtColor社がどの範囲の濃さの絵の具なら購入したいかというアンケートを消費者に対して行ったところ， 「a≦x≦b を満たす濃さ x の絵の具ならば購入する」という形式の情報が n 件得られました．
-あなたの仕事は，これらの情報から，最も多くの消費者に購入される濃さの絵の具について，その絵の具を購入する消費者の数を出力するプログラムを作ることです．
+/* -----  2019/04/11  Problem: ABC 014 C / Link: http://abc014.contest.atcoder.jp/tasks/abc014_c  ----- */
 
------問題ここまで----- */
-/* -----解説等-----
 
-imos.区間累積和をとればよい。
-その後、最大値をとっておしまい。
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
- ----解説ここまで---- */
+	LL N;
+	cin >> N;
+	vector<LL> x(N), y(N);
+	for (int i = 0; i < N; ++i) {
+		cin >> x[i] >> y[i];
+	}
+	const int M = 1e6 + 10;
+	VL im(M + 1, 0);
+	FOR(i, 0, N) {
+		im[x[i]]++;
+		im[y[i] + 1]--;
+	}
+	FOR(i, 0, M) {
+		im[i + 1] += im[i];
+	}
 
-ll N;
-int m[1000010];
-ll sum[1000010];
-ll ans = 0LL;
+	LL ans = *max_element(ALL(im));
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
 
-    cin >> N;
+	cout << ans << "\n";
 
-    int a, b;
-    FOR(i, 0, N) {
-        cin >> a >> b;
-        m[a]++;
-        m[b + 1]--;
-    }
-
-    FOR(i, 0, 1000001) {
-        sum[i+1] = sum[i] + m[i];
-        ans = max(ans, sum[i + 1]);
-    }
-    cout << ans << endl;
-
-    return 0;
+	return 0;
 }
