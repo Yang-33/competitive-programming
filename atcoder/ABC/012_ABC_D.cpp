@@ -1,86 +1,68 @@
-#include<iostream>
-#include<algorithm>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-const int INF = 1e9;
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/03/02  Problem: ABC012 D / Link: https://abc012.contest.atcoder.jp/tasks/abc012_4 ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-高橋君は、バスがあまり好きではありません。ですが、社会に出ると、バスを乗るという行為を避けることはできません。
-社会人になると、自宅から会社まで、バスで通わなければなりません。高橋君はまだ内定を貰っていないので、会社の場所は解りません。
-高橋君は、バスに乗っている時間が最も長くなってしまうような、最悪のケースを常に想定します。
-この、最悪なケースのバスに乗っている時間が、出来るだけ短くなるような場所に引っ越そうと思っています。
-追記：なお、最悪のケースとは、バスに乗る時間の合計が最も短くなるように、乗るバスを選択した時に、
-最もバスに乗る時間の合計が長くなってしまうような位置に会社があるケースのことを指します。
-また、自宅から会社に行く際に、高橋君が乗るバスを選ぶことができ、高橋君はバスに乗る時間の合計が最も短い経路を選択するものとします。
-各バスは、2 つのバス停を往復するように走っており、行き・帰りでかかる時間に差はありません。
-バスにはいつでも乗ることが可能であり、乗継にかかる時間などは無視することが可能です。
-また、自宅や会社はバス停に隣接しており、他のバス停まで歩いたり、バス以外の手段で移動することはできません。
-高橋君が引っ越すべき場所を求め、そこに引っ越した際の、バスに乗らなければならない時間の最大値を出力してください。
+/* -----  2019/04/11  Problem: ABC 012 D / Link: http://abc012.contest.atcoder.jp/tasks/abc012_d  ----- */
 
------問題ここまで----- */
-/* -----解説等-----
 
-最遠点の最小化をする。
-愚直にある点からの最遠点を調査し、その最遠点の集合から最小のものをとればよい。
-その際前準備として任意の頂点間の距離がわかっているとよい。
-ワーシャルフロイド(Ｏ(N^3)) + 捜査 (Ｏ(N^2))
-頂点数が少ないので解ける。
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-始点のみを指定したダイクストラでもmaxをとっておけば N^3で計算できる。
 
- ----解説ここまで---- */
+	int N, M; cin >> N >> M;
+	VVL dist(N, VL(N, LINF));
+	auto chmin = [](LL &a, const LL b) {
+		a = min(a, b);
+	};
+	auto chmax = [](LL& a, const LL b) {
+		a = max(a, b);
+	};
 
-ll N, M;
-ll d[300][300];
-ll ans = 0LL;
+	FOR(i, 0, M) {
+		LL a, b, c; cin >> a >> b >> c;
+		a--, b--;
+		chmin(dist[a][b], c);
+		chmin(dist[b][a], c);
+	}
+	FOR(i, 0, N) {
+		dist[i][i] = 0;
+	}
+	FOR(k, 0, N)FOR(i, 0, N)FOR(j, 0, N)chmin(dist[i][j], dist[i][k] + dist[k][j]);
 
-void warshall_floyd(ll n) {
-    FOR(k, 0, n) {
-        FOR(i, 0, n) {
-            if (d[i][k] == INF)continue;
-            FOR(j, 0, n) {
-                if (d[k][j] == INF)continue;
-                d[i][j] = min(d[i][j], d[i][k] + d[k][j]);
-            }
-        }
-    }
-}
+	LL ans = LINF;
+	FOR(i, 0, N) {
+		LL ret = 0;
+		FOR(j, 0, N) {
+			if (i == j)continue;
+			chmax(ret, dist[i][j]);
+		}
+		chmin(ans, ret);
+	}
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-    
-    cin >> N >> M;
+	cout << ans << "\n";
 
-    FOR(i, 0, N)FOR(j, 0, N) {
-        d[i][j] = INF;
-        if (i == j)d[i][j] = 0;
-    }
-
-    int a, b, t;
-    FOR(i, 0, M) {
-        cin >> a >> b >> t;
-        a--; b--;
-        d[a][b] = t;
-        d[b][a] = t;
-    }
-   
-    warshall_floyd(N);
-    ans = INF * 10;
-    FOR(i, 0, N) {
-        ll max_t = -1;
-        FOR(j, 0, N) {
-            max_t = max(max_t, d[i][j]);
-        }
-        ans = min(ans, max_t);
-    }
-
-    cout << ans << endl;
-
-    return 0;
+	return 0;
 }
