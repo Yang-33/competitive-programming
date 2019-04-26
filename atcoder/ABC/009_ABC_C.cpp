@@ -1,68 +1,65 @@
-#include<iostream>
-#include<cstdio>
-#include<algorithm>
-#include<string>
-#include<map>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/03/02  Problem: ABC009 C / Link: https://abc009.contest.atcoder.jp/tasks/abc009_3 ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-文字列の辞書式順序による比較についてはご存知だろうか？知らない場合は ABC007 の B 問題にその定義が載っているので読むとよいだろう。
-今回は、この辞書式順序が重要な役割を果たす問題を解いてもらいたいと思う。
-まず、英小文字（a-z）のみからなる N 文字の文字列 S が与えられる。
-S=S1,?S2,?…,?SN の文字を並び替えて作れるような文字列 T=T1,?T2,?…,?TN のうち、辞書順で最小になるようなものを求めてほしい。
-ただし、並び替え方には 1 つだけ制限がある。別に整数 K が与えられ、元から位置の変わった文字の個数を K 以下にしなければならない。
-つまり、Si≠Ti となるような（文字が不一致となるような） i （1≦i≦N）の個数が K 以下であるような並び替え方しかできない。
+/* -----  2019/04/12  Problem: ABC 009 C / Link: http://abc009.contest.atcoder.jp/tasks/abc009_c  ----- */
 
------問題ここまで----- */
-/* -----解説等-----
-
-変更が K こ以下でなくてはならないが、そうである保証を得ることができないので
-コンピューターパワーで殴る。
-
- ----解説ここまで---- */
-
-ll N, K;
-
-string s;
-
-bool C(const string &t, map<char, int>& M) {
-    int Count = 0;
-    for (int i = 0; i < t.size(); i++) {
-        Count += (s[i] != t[i]);
-    }
-    map<char, int> L;
-    for (int i = t.size(); i < N; i++) L[s[i]]++;
-    Count += N - t.size();
-    for (char c = 'a'; c <= 'z'; c++) {
-        Count -= min(M[c], L[c]);
-    }
-    return Count <= K;
-}
 
 int main() {
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-    cin >> N >> K;
-    cin >> s;
-    map<char, int> M;
-    for (int i = 0; i < N; i++) M[s[i]]++;
-    string t;
-    for (int i = 0; i < N; i++) {
-        for (char c = 'a'; c <= 'z'; c++) {
-            if (M[c] == 0) continue;
-            M[c]--;
-            if (C(t + c, M)) {
-                t.push_back(c);
-                break;
-            }
-            else M[c]++;
-        }
-    }
-    cout << t << endl;
-    return 0;
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
+
+	LL N, K; cin >> N >> K;
+	string s; cin >> s;
+	string t = s;
+	auto diffs = [](const string& a, const string &b) {
+		int ret = 0;
+		FOR(i, 0, SZ(a)) {
+			ret += a[i] != b[i];
+		}
+		return ret;
+	};
+	FOR(i, 0, N) {
+		int pi = i;
+		FOR(j, i + 1, N) {
+			if (t[pi] > t[j]) {
+				string new_t = t;
+				swap(new_t[i], new_t[j]);
+				int diff = diffs(new_t, s);
+				if (diff <= K) {
+					pi = j;
+				}
+			}
+		}
+		swap(t[i], t[pi]);
+	}
+
+
+	string ans = t;
+
+	cout << ans << "\n";
+
+	return 0;
 }
