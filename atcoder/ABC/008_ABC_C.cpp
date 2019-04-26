@@ -1,56 +1,69 @@
-#include<iostream>
-#include<cstdio>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/03/03  Problem: ABC008 C / Link: http://abc008.contest.atcoder.jp/tasks/abc008_3 ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-高橋君は裏表が区別できる N 枚のコインを持っている。コインの大きさは異なり、それぞれのコインには 1 つずつ正の整数が書かれている。
-これらのコインを無作為に (N! 通りの組み合わせがすべて同じ確率で出てくるように) 一列に並べる。その後、以下の手順を実行する。
-すべてのコインを表向きにする。
-左端のコインから順に、現在見ているコインよりも右側 (それ自身を除く) にあるコインのうち、
-現在見ているコインに書かれている整数の倍数が書かれているコインすべての裏表をひっくり返す。
-高橋君はこの操作を終了した後に表を向いているコインの枚数の期待値が知りたい。
-あなたは高橋くんの代わりに、期待値を計算するプログラムを作成してほしい。
+/* -----  2019/04/17  Problem: ABC 008 C / Link: http://abc008.contest.atcoder.jp/tasks/abc008_c  ----- */
 
------問題ここまで----- */
-/* -----解説等-----
+// c_iの約数をもつ列の順列
+// 自身の左にある個数
+// これはおなじだけ存在: 一定
+// C+1個ある
+// このうち左にあるものの個数のmod2が表裏
+// S+1:偶数 左の個数/2だけありうる
+// . . . . X .
+// . . X . . .
+// X . . . . . 
+// (S+1)/2/(S+1)
+//
+// S+1:奇数
+// . . . . . . X
+// . . . . X . . 
+// . . X . . . . 
+// X . . . . . . '
+// (S+1+2-1)/2/(S+1)
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-N!は厳しいので考える。位置に関係なく並び方を考えればいいので、表を向く確率を並び方を考慮せずに計算すればよい。
-cnt C 左の枚数 * 左の枚数！ * (cnt - 左の枚数)! = cnt! となるので左に何枚あるかを考慮しなくてもよい。
-よって 0-cntのうち偶数になるものを求めればよいことになる。
+	LL N;
+	cin >> N;
+	vector<LL> a(N);
+	for (int i = 0; i < N; ++i) {
+		cin >> a[i];
+	}
+	double ans = 0;
+	FOR(i, 0, N) {
+		LL cnt = 0;
+		FOR(j, 0, N) {
+			if (a[i] % a[j] == 0)cnt++;
+		}
+		LL p = (cnt + 1) / 2;
+		DD(de(a[i], cnt, p))
+			ans += p / (1.0*cnt);
+	}
+	cout << fixed << setprecision(10) << ans << endl;
 
-突然難しいなあ。
-
- ----解説ここまで---- */
-
-ll N;
-int C[200];
-double ans = 0.0;
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    cin >> N;
-    FOR(i, 0, N)
-        cin >> C[i];
-
-    FOR(i, 0, N) {
-        int cnt = 0;
-        FOR(j, 0, N) {
-            if (i != j) {
-                if (C[i] % C[j] == 0) cnt++;
-            }
-        }
-        ans += (cnt / 2 + 1) / (cnt + 1);
-    }
-
-    printf("%.12f¥n", ans);
-
-    return 0;
+	return 0;
 }
