@@ -1,91 +1,94 @@
-#include<iostream>
-#include<algorithm>
-#include<cstdio>
-#include<cmath>
-#include<string>
-#include<cstring>
-#include<vector>
-#include<map>
-#include<list>
-#include<stack>
-#include<queue>
-#include<set>
-#include<climits> //INT_MIN/MAX
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> pii;
-typedef pair<ll, ll> pll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-#define FORR(i,s,e) for(ll (i)=(s);(i)>(e);(i)--)
-#define debug(x) cout<<#x<<": "<<x<<endl
-#define mp make_pair
-#define pb push_back
-const ll MOD = 1000000007;
-const int INF = 1e9;
-const ll LINF = 1e16;
-const double PI = acos(-1.0);
-int dx[8] = { 0,0,1,-1,1,1,-1,-1 };
-int dy[8] = { 1,-1,0,0,1,-1,1,-1 };
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2017/03/06  Problem: ABC005 D / Link: https://abc005.contest.atcoder.jp/tasks/abc005_4 ----- */
-/* ------問題------
+/* -----  2019/04/19  Problem: ABC 005 D / Link: http://abc005.contest.atcoder.jp/tasks/abc005_d  ----- */
 
-高橋君のたこ焼き屋で使っているたこ焼き器は焼く場所によって美味しさの変わるクセの強いたこ焼き器です。
-また、店員の力量によって一度に焼けるたこ焼きの数が違います。
-高橋君はそれぞれの店員ができるだけ美味しくたこ焼きを焼けるようにしようと思いました。
+template<typename T>
+struct CumulativeSum2D {
+	int H, W;
+	vector< vector< T > >data;
+	CumulativeSum2D(int H_, int W_) : data(H_ + 1, vector< T >(W_ + 1, 0)) { H = H_, W = W_; };
+	inline void add(int y, int x, T val) {
+		if (y > (int)data.size() || x > (int)data[0].size()) return;
+		data[y + 1][x + 1] += val;
+	}
+	inline void build() {
+		FOR(i, 0, H)FOR(j, 0, W)data[i + 1][j + 1] += data[i + 1][j];
+		FOR(i, 0, H)FOR(j, 0, W)data[i + 1][j + 1] += data[i][j + 1];
+	}
+	inline T query(int y, int x) {
+		return (data[y + 1][x + 1]);
+	}
 
-たこ焼き器はN×Nの正方形をしています。
-それぞれの場所ごとにたこ焼きの美味しさDijが決まっています。
-それぞれの店員は一度に焼けるたこ焼きの上限Pkが決まっています。
-また、一度に焼くたこ焼きは必ずたこ焼き器の長方形の部分になっていて、その中の全てを使わなければなりません。
-それぞれの店員について一度に焼けるたこ焼きの美味しさの合計の最大値を求めて下さい。
-ただし、店員が焼き始める時はたこ焼き器が完全に空いていてどの場所でも使えるとします。
+	inline T querysumhei(int sy, int sx, int ty, int tx) {
+		return query(ty, tx) - query(sy - 1, tx) - query(ty, sx - 1) + query(sy - 1, sx - 1);
+	}
+};
+
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
+
+	LL N; cin >> N;
+	vector<vector<LL>> a(N, vector<LL>(N));
+	for (int i = 0; i < N; ++i) {
+		for (int j = 0; j < N; ++j) {
+			cin >> a[i][j];
+		}
+	}
+
+	CumulativeSum2D<LL>cum(N, N);
+	FOR(i, 0, N) {
+		FOR(j, 0, N) {
+			cum.add(i, j, a[i][j]);
+		}
+	}
+	cum.build();
+	VL dp(N*N + 1, 0);
+	FOR(sy, 0, N) {
+		FOR(sx, 0, N) {
+			FOR(ty, sy, N) {
+				FOR(tx, sx, N) {
+					int sz = (ty - sy + 1)*(tx - sx + 1);
+					dp[sz] = max(dp[sz], cum.querysumhei(sy, sx, ty, tx));
+				}
+			}
+		}
+	}
+	FOR(i, 0, N*N) {
+		dp[i + 1] = max(dp[i + 1], dp[i]);
+	}
+
+	int Q; cin >> Q;
+	FOR(_, 0, Q) {
+		int a; cin >> a;
+		LL ans = dp[a];
+		cout << ans << "\n";
+	}
 
 
------問題ここまで----- */
-/* -----解説等-----
-
-クエリが来た時に判定を行うのは時間的に厳しい。
-クエリの前に前処理をしておきたい。
-盤面(0,0) => (i,j)への累積和をとっておけば、サイズ(x,y)=>(x',y')での焼きあがる最高のたこ焼きを差分から求めることができる。
-インデックスが配列の制約から一つずれるので注意。（累積和をとる際にありがちのもの。端点はゼロの方が計算がしやすい。）
-これをサイズごとに管理しておけばクエリにO(1)で答えることができる。
-
-また、クエリの値よりも小さい面積で最高のたこ焼きが焼ける場合はそれを選択すればいいので下から最大値を伝播させておけばよい。
-
- ----解説ここまで---- */
-
-ll N, Q;
-int d[50][50];
-int query[2500];
-int dp[60][60];
-int x[2600];
-ll ans = 0LL;
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    cin >> N;
-    FOR(i, 0, N)FOR(j, 0, N)cin >> d[i][j];
-    cin >> Q;
-    FOR(i, 0, Q)cin >> query[i];
-
-    FOR(i, 0, N)FOR(j, 0, N)
-        dp[i + 1][j + 1] = dp[i + 1][j] + dp[i][j + 1] - dp[i][j] + d[i][j];
-
-    FOR(i, 0, N + 1)FOR(j, 0, N + 1)FOR(k, 0, i)FOR(l, 0, j) {
-        int num = (i - k)*(j - l);
-        x[num] = max(x[num], dp[i][j] - dp[i][l] - dp[k][j] + dp[k][l]);
-    }
-
-    FOR(i, 0, N*N)x[i + 1] = max(x[i], x[i + 1]);
-
-    FOR(i, 0, Q)
-        cout << x[query[i]] << endl;
-
-    return 0;
+	return 0;
 }
