@@ -1,69 +1,77 @@
-#include<iostream>
-#include<algorithm>
+#include <bits/stdc++.h>
 using namespace std;
-typedef long long ll;
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
 
-/* -----  2017/03/06  Problem: ABC005 C / Link: https://abc005.contest.atcoder.jp/tasks/abc005_3 ----- */
-/* ------問題------
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-高橋君は、たこ焼きをどの順番で売るか悩んでいました。というのも、作り置きされたたこ焼きは美味しくないとわかっているので、高橋君はそのようなたこ焼きを売りたくないのですが、できたてばかり売ってしまうと売れるたこ焼きの数が減ってしまいます。
-また、お客さんを待たせてばかりだと、次第にお客さんが離れてしまうだろうと高橋君は考えています。
-そこで、彼は T 秒以内に作成されたたこ焼きを売り続けることで、お客さんを捌ききれるかどうかを調べることにしました。
-たこ焼きは A1、A2、…、AN 秒後に焼きあがります。
-お客さんは B1、B2、…、BM 秒後にやってきます。
-1 人のお客さんに対して、たこ焼きを 1 つ売るとします。すべてのお客さんにたこ焼きを売れるならyes、売れないならnoを出力して下さい。
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
------問題ここまで----- */
-/* -----解説等-----
+/* -----  2019/04/19  Problem: ABC 005 C / Link: http://abc005.contest.atcoder.jp/tasks/abc005_c  ----- */
 
-各たこ焼きについて焼きあがってからT秒以内に販売できるかを考える。
-焼きあがっている　かつ　焼きあがってT秒以内に客が来ている　を、昇順に並んだデータから比較していけばよい。
 
- ----解説ここまで---- */
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-ll T, M, N;
-int a[100];
-int b[100];
+	LL T, N; cin >> T >> N;
+	vector<LL> a(N);
+	for (int i = 0; i < N; ++i) {
+		cin >> a[i];
+	}
+	LL M; cin >> M;
+	vector<LL> b(M);
+	for (int i = 0; i < M; ++i) {
+		cin >> b[i];
+	}
 
-ll ans = 0LL;
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
+	LL ans = 1;
+	VI used(N, 0);
+	reverse(ALL(b));
+	for (auto bi : b) {
+		int id = -1;
+		FOR(i, 0, N) {
+			if (a[i] <= bi && a[i] + T >= bi && !used[i]) {
+				id = i;
+			}
+		}
+		if (id == -1)ans = 0;
+		else used[id] = 1;
 
-    cin >> T >> N;
-    FOR(i, 0, N)cin >> a[i];
-    cin >> M;
-    FOR(i, 0, M)cin >> b[i];
+	}
 
-    if (N < M) {
-        cout << "no" << endl;
-        return 0;
-    }
 
-    int x = 0;
-    bool flag = true;
+	auto print_yesno = [](LL yes, int mode = 0) {
+		if (mode == 0) {
+			cout << (yes ? "yes" : "no") << endl;
+		}
+		else if (mode == 1) {
+			cout << (yes ? "Yes" : "No") << endl;
+		}
+		else if (mode == 2) {
+			cout << (yes ? "YES" : "NO") << endl;
+		}
+		else assert(0);
+	};
+	print_yesno(ans, 0);
 
-    FOR(i, 0, M) {
-        if (a[x]>b[i]) {
-            flag = false;
-            break;
-        }
-        x = lower_bound(a + x, a + N, b[i] - T) - a + 1;
-        if (x > N) {
-            flag = false;
-            break;
-        }
-    }
-
-    if (flag==false) {
-        cout << "no" << endl;
-        return 0;
-    }
-
-    cout << "yes" << endl;
-
-    return 0;
+	return 0;
 }
