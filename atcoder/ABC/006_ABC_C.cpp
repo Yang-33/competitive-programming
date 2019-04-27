@@ -1,50 +1,47 @@
-#include<iostream>
+#include <bits/stdc++.h>
 using namespace std;
-typedef long long ll;
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
 
-/* -----  2017/03/06  Problem: ABC006 C / Link: http://abc006.contest.atcoder.jp/tasks/abc006_3 ----- */
-/* ------問題------
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-新学期に向けて新たな気持ちで通学しているあなたの前に、スフィンクスが立ちふさがっています。
-このスフィンクスは「なぞなぞ」を出すことで有名で、このなぞなぞに答えられない場合、留年します。
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-なぞなぞは以下のとおりです。
-「この街には人間が N 人いる。人間は、大人、老人、赤ちゃんの 3 通りだ。
-この街にいる人間の、足の数の合計は M 本で、大人の足は 2 本、老人の足は 3 本、赤ちゃんの足は 4 本と仮定した場合、
-存在する人間の組み合わせとしてあり得るものを 1 つ答えよ。」
+/* -----  2019/04/19  Problem: ABC 006 C / Link: http://abc006.contest.atcoder.jp/tasks/abc006_c  ----- */
 
-新学期早々留年したくないあなたは、このなぞなぞに正解する必要があります。
-なぞなぞの答えとなる「この街に存在する人間の組み合わせ」を 1 つ出力してください。
-もし、そのような組み合わせが存在しない場合は-1 -1 -1と出力してください。
 
------問題ここまで----- */
-/* -----解説等-----
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-足の本数が過不足のない範囲であれば、老人をできるだけ増やしておけば数が足りる。
+	LL N, M; cin >> N >> M;
+	int R = M - 2 * N;
+	int Z = R / 2;
+	int Y = R % 2;
+	int X = N - Y - Z;
+	if (X + Y + Z == N && 2 * X + 3 * Y + 4 * Z == M && X >= 0 && Y >= 0 && Z >= 0) {
+		cout << X << " " << Y << " " << Z << endl;
+	}
+	else {
+		cout << "-1 -1 -1" << endl;
+	}
 
- ----解説ここまで---- */
-
-ll N, M;
-
-ll ans = 0LL;
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    cin >> N >> M;
-    if (M - 2 * N < 0 || 4 * N - M < 0) {
-        cout << "-1 -1 -1" << endl;
-    }
-    else {
-        int s = M - 2 * N;
-        int z = s / 2;
-        int y = s % 2;
-        int x = N - y - z;
-        cout << x << " " << y << " " << z << endl;
-    }
-
-    return 0;
+	return 0;
 }
