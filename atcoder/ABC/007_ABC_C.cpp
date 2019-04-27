@@ -1,74 +1,80 @@
-#include<iostream>
-#include<queue>
-#include<string>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-const int INF = 1e9;
-typedef long long ll;
-int dx[4] = { 1,-1,0,0 };
-int dy[4] = { 0,0,1,-1 };
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* -----  2017/03/06  Problem: ABC007 C / Link: http://abc007.contest.atcoder.jp/tasks/abc007_3 ----- */
-/* ------問題------
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-幅優先探索迷路
+/* -----  2019/04/19  Problem: ABC 007 C / Link: http://abc007.contest.atcoder.jp/tasks/abc007_c  ----- */
 
------問題ここまで----- */
-/* -----解説等-----
+inline bool IN(int y, int x, int H, int W) { return (0 <= y && y < H && 0 <= x && x < W); }
 
-幅優先探索を使って迷路を探索する。
-この前のマラソンでmake_pairをしこたま書いたのでそろそろライブラリにしたい。
+int bfs2D(pair<int, int> s, pair<int, int> t, int Height, int Width, vector<string> & masu) {
+	vector<vector<int> > d(Height, vector<int>(Width, 1e9));
 
- ----解説ここまで---- */
 
-#define W_MAX 50
-#define H_MAX 50
-ll N, H, W;
-int SY, SX, GY, GX;
-string S[H_MAX];
-int d[H_MAX][W_MAX];
-ll ans = 0LL;
+	d[s.first][s.second] = 0;
+	queue<pair<int, pair<int, int>>>q;
+	q.push(make_pair(0, s));
 
-int bfs(int sy, int sx, int ty, int tx) {
-    queue<pair<int, int>>Q;
-    Q.push(make_pair(sy, sx));
-    d[sy][sx] = 0;
+	while (!q.empty()) {
+		pair<int, pair<int, int>>a = q.front(); q.pop();
+		int dist = a.first; pair<int, int> pos = a.second;
+		if (d[pos.first][pos.second] < dist)continue;
+		FOR(k, 0, 4) {
+			int ny = pos.first + DY[k]; int nx = pos.second + DX[k];
+			if (IN(ny, nx, Height, Width)) {
+				if (masu[ny][nx] != '#')
+					if (d[ny][nx] > d[pos.first][pos.second] + 1) {
+						d[ny][nx] = d[pos.first][pos.second] + 1;
+						q.push(make_pair(d[ny][nx], pair<int, int>(ny, nx)));
+					}
+			}
+		}
+	}
 
-    while (!Q.empty()) {
-        pair<int, int> q = Q.front();
-        int ny = q.first; int nx = q.second;
-        Q.pop();
-        FOR(i, 0, 4) {
-            int yy = ny + dy[i]; int xx = nx + dx[i];
-            if (0 <= yy&&yy < H && 0 <= xx&&xx<W)
-                if(S[yy][xx]=='.')
-                if (d[yy][xx] > d[ny][nx] + 1) {
-                    d[yy][xx] = d[ny][nx] + 1;
-                    Q.push(make_pair(yy, xx));
-                }
-        }
-
-    }
-
-    return d[ty][tx];
+	return d[t.first][t.second]; // (int)
 }
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
 
-    cin >> H >> W;
-    cin >> SY >> SX >> GY >> GX;
-    SY--; SX--; GY--; GX--;
-    FOR(i, 0, H)cin >> S[i];
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-    FOR(i, 0, H)FOR(j, 0, W)d[i][j] = INF;
+	LL H, W; cin >> H >> W;
+	PII s; cin >> s.first >> s.second;
+	s.first--, s.second--;
+	PII t; cin >> t.first >> t.second;
+	t.first--, t.second--;
+	vector<string> vs(H);
+	for (int i = 0; i < H; ++i) {
+		cin >> vs[i];
+	}
+	auto res = bfs2D(s, t, H, W, vs);
 
-    ans = bfs(SY, SX, GY, GX);
+	LL ans = res;
 
-    cout << ans << endl;
 
-    return 0;
+	cout << ans << "\n";
+
+	return 0;
 }
