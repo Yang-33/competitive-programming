@@ -1,80 +1,57 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> pii;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
 #define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
-#define debug(x) cout << #x << ": " << x << endl
-#define ALL(x) (x).begin(),(x).end()
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 
-const int INF = 1e9;
-const ll LINF = 1e16;
+/* -----  2019/04/29  Problem: AOJ 1192 / Link: https://onlinejudge.u-aizu.ac.jp/challenges/search/volumes/1192  ----- */
+
 
 int main() {
 	cin.tie(0);
 	ios_base::sync_with_stdio(false);
 
-	int H;
-	int c = 0;
 	while (1) {
-		cin >> H;
-		if (H == 0) break;
-		vector<vector<int>> yama(H + 2, vector<int>(7, INF));
-		for (int i = H; i >= 1; i--) {
-			for (int j = 1; j <= 5; j++) {
-				cin >> yama[i][j];
+		int X, Y, S; cin >> X >> Y >> S;
+		if (X == 0 && Y == 0 && S == 0)break;
+
+		LL ans = 0LL;
+		FOR(a, 1, 2000) {
+			FOR(b, 1, 2000) {
+				{
+					LL sum = (a * (100 + X)) / 100 + (b * (100 + X) )/ 100;
+					if (sum != S)continue;
+				}
+				LL retA = a * (100 + Y) / 100;
+				LL retB = b * (100 + Y) / 100;
+				ans = max(ans, retA + retB);
+
 			}
+
 		}
-		//cout << "hello" << endl;
-		int ret = 0;
-		bool f = false;
-		do {
+		cout << (ans) << "\n";
 
-			f = false;
-			for (int i = 1; i <= H; i++) {
-				int count = 0;
-				int n = -1;
-				for (int j = 1; j <= 6; j++) {
-					if (yama[i][j] != n) {
-						if (count >= 3) {
-							if (n != INF) {
-								ret += (count*n);
-								f = true;
-								for (int k = j - count; k < j; k++) {
-									yama[i][k] = INF;
-								}
-							}
-							break;
-						}
-						count = 1;
-						n = yama[i][j];
-					}
-					else {
-						count++;
-					}
-				}
-			}
-		
 
-			for (int i = 1; i <= H; i++) {
-				for (int j = 1; j <= 5; j++) {
-					if (yama[i][j] == INF) {
-						for (int k = i + 1; k <= H; k++) {
-							if (yama[k][j] != INF) {
-								yama[i][j] = yama[k][j];
-								yama[k][j] = INF;
-								break;
-							}
-						}
-					}
-				}
-			}
-
-		} while (f);
-		cout << ret << endl;
-		c++;
 	}
-
 	return 0;
+
 }
