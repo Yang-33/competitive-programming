@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-using VS = vector<string>;    using LL = long long;
+using VS = vector<string>;    using LL = int;
 using VI = vector<int>;       using VVI = vector<VI>;
 using PII = pair<int, int>;   using PLL = pair<LL, LL>;
 using VL = vector<LL>;        using VVL = vector<VL>;
@@ -14,63 +14,62 @@ using VL = vector<LL>;        using VVL = vector<VL>;
 #define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
 #define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
 #define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
-#define debug(x) cerr << #x << ": " << x << endl
-const int INF = 1e9;                          const LL LINF = 1e16;
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+//const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
-int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2018/06/10  Problem: AOJ 2332 / Link: http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=2332  ----- */
-/* ------問題------
+/* -----  2019/05/26  Problem: AOJ 2332 / Link: https://onlinejudge.u-aizu.ac.jp/challenges/search/volumes/2332  ----- */
 
-全時空統一ディメンション・スゴロク・トーナメント。500 兆人を超える参加者の中から、ただ１人 のスゴロク絶対王者を決定するその大会に、あなたは２１世紀の地球代表として参加している。
 
-今あなたが挑戦している課題は、自分自身をコマとした１次元スゴロク。端のスタートマスから出発 して、１から６までの目が一つずつ書かれた巨大な６面ダイスを振って出た目の数だけ進むことを繰 り返す、あなたもよく知っている形式のスゴロクだ。スタートマスとは反対の端にあるゴールマスに 止まるとゴールとなる。もちろん、ゴールするまでにサイコロを振った回数が少なければ少ないほど 良い成績となる。
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-マスの中には特殊な効果を持ったマス「○マス進む」と「○マス戻る」が存在し、そこに止まってし まうと、指定されたマス数だけ進む、もしくは戻らなければならない。マスの効果で動いた結果、ふ たたび効果のあるマスに止まった場合は、続けて指示どおりに移動する。
-
-しかし、これは一筋縄では攻略できない時空スゴロクだ。恐るべきことに、たとえば「３マス進む」 の３マス先に「３マス戻る」が置かれていることもありうる。このようなマスに止まり、マスの効果 で無限ループに陥ってしまった場合は、永遠にマスを往復し続けなければならない。
-
-だが幸いなことに、あなたの身体には、望んだ事象を全事象に変えることのできる異能『確率湾曲』 が宿っている。この能力を使えば、サイコロの出目を自由に操ることも可能。このアドバンテージを 活かして、無限ループに陥らないようにしながら進んでいくとき、ゴールするまでにサイコロを振る 回数の最小値はいくつになるだろうか。
-
------問題ここまで----- */
-/* -----解説等-----
-
-bfsの基本は"更新できたら遷移を追加"であることをおもいだせば、やるだけ
-
-----解説ここまで---- */
-
-int main(void) {
-	int N;
-	cin >> N;
-	vector<int>a(N);
-	FOR(i, 0, N) {
+	LL N; cin >> N;
+	vector<LL> a(N);
+	for (int i = 0; i < N; ++i) {
 		cin >> a[i];
 	}
-	VI m(N + 1, 1e9);
+	// p >= a.back()がゴール
+	// それぞれのマスはほぼ1度しか訪れない
 	queue<int>q;
-	q.push(0);
-	m[0] = 0;
+	const int INF = 1e9;
+	VL visit(N, INF);
+	auto IFPUSH = [&](int nx, int c) {
+		if (visit[nx] > c) {
+			visit[nx] = c;
+			q.push(nx);
+		}
+	};
+	IFPUSH(0, 0);
+	// PIIだと4.03s, intだと0.03なんだけど　何
+
+	LL ans = INF;
 	while (!q.empty()) {
-		int pos = q.front(); q.pop();
-		if (a[pos] == 0) {
-			FOR(k, 1, 6 + 1) {
-				int nx = min(N - 1, pos + k);
-				if (m[nx] > m[pos] + 1) {
-					m[nx] = m[pos] + 1;
-					q.push(nx);
-				}
-			}
+		auto it = q.front(); q.pop();
+		//if (it.second == N - 1)continue;
+		if (a[it]) {
+			LL nx = it + a[it];
+			nx = min(nx, N - 1);
+			IFPUSH(nx, visit[it]);
 		}
 		else {
-			int nx = pos + a[pos];
-			if (m[nx] > m[pos]) {
-				m[nx] = m[pos];
-				q.push(nx);
+			FOR(add, 1, 6 + 1) {
+				LL nx = it + add;
+				nx = min(nx, N - 1);
+				IFPUSH(nx, visit[it] + 1);
 			}
 		}
-	}
 
-	cout << m[N - 1] << endl;
+	}
+	DD(De(visit));
+	ans = visit[N - 1];
+	cout << (ans) << "\n";
 
 	return 0;
 }
