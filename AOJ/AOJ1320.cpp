@@ -14,24 +14,17 @@ using VL = vector<LL>;        using VVL = vector<VL>;
 #define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
 #define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
 #define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
-#define debug(x) cerr << #x << ": " << x << endl
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
 const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
-int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2018/06/10  Problem: AOJ 1320 / Link: http://judge.u-aizu.ac.jp/onlinejudge/description.jsp?id=1320  ----- */
-/* ------問題------
+/* -----  2019/06/01  Problem: AOJ 1320 / Link: https://onlinejudge.u-aizu.ac.jp/challenges/search/volumes/1320  ----- */
 
-最も短いSを求めよ
-
------問題ここまで----- */
-/* -----解説等-----
-
-まず部分列がどこかに含まれるのなら、必要ない。(必要ないので)
-あとはどの順番でつなぐかだけ考えればいいので、bitDPをすればよい。
-O(2^N*N^2)
-
-----解説ここまで---- */
 
 VS compression(VS vs) {
 	SORT(vs);
@@ -42,10 +35,10 @@ VS compression(VS vs) {
 	FOR(i, 0, N) {
 		FOR(j, 0, N) {
 			if (i == j)continue;
-			if (vs[i].find(vs[j])!=string::npos) {
+			if (vs[i].find(vs[j]) != string::npos) {
 				need[j] = 0;
 			}
-			
+
 		}
 	}
 	VS ret;
@@ -58,11 +51,11 @@ VS compression(VS vs) {
 map<PII, int>Mp;
 int cost(int i, int k, VS &vs) {
 	// vsのiにkをつなげたときにどれだけsuffixが増えるか、内包されることはない
-	if (Mp.find(PII(i,k))!=Mp.end())return Mp[PII(i,k)];
+	if (Mp.find(PII(i, k)) != Mp.end())return Mp[PII(i, k)];
 	int len = min(vs[i].size(), vs[k].size());
 	FORR(j, len, 0 - 1) {
-		if (vs[i].substr(SZ(vs[i])-j)==vs[k].substr(0,j)) {
-			return Mp[PII(i,k)] = SZ(vs[k])-j;
+		if (vs[i].substr(SZ(vs[i]) - j) == vs[k].substr(0, j)) {
+			return Mp[PII(i, k)] = SZ(vs[k]) - j;
 		}
 	}
 }
@@ -91,12 +84,12 @@ int main() {
 				if (bit & 1 << i) {
 					FOR(k, 0, N) {
 						if (bit & 1 << k)continue;
-						dp[bit|1<<k][k] = min(dp[bit|1<<k][k], dp[bit][i]+cost(i,k,vs));
+						dp[bit | 1 << k][k] = min(dp[bit | 1 << k][k], dp[bit][i] + cost(i, k, vs));
 					}
 				}
 			}
 		}
-		int ans =INF;
+		int ans = INF;
 		FOR(i, 0, N) {
 			ans = min(ans, dp[(1 << N) - 1][i]);
 		}
