@@ -1,89 +1,69 @@
-#include<iostream>
-
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-#define MOD 1000000007
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* 2017 01/19 問題 ----- ABC 050 C /Link http://abc050.contest.atcoder.jp/tasks/arc066_a */
-/* -----解説等-----
-問題: 1~N までの番号がついた、N 人の人がいます。
-彼らは昨日、ある順番で左右一列に並んでいましたが、今日になってその並び方が分からなくなってしまいました。
-しかし、彼らは全員、「自分の左に並んでいた人数と自分の右に並んでいた人数の差の絶対値」を覚えています。
-彼らの報告によると、人 i の、「自分の左に並んでいた人数と自分の右に並んでいた人数の差の絶対値」は Ai です。
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-彼らの報告を元に、元の並び方が何通りあり得るかを求めてください。 ただし、答えは非常に大きくなることがあるので、109+7 で割った余りを出力してください。
-また、彼らの報告が間違っており、ありうる並び方がないこともありえます。 その際は 0 を出力してください。
+/* -----  2019/04/03  Problem: ABC 050 C / Link: http://abc050.contest.atcoder.jp/tasks/abc050_c  ----- */
+template <std::uint_least32_t MODULO> class modint {
+public:
+using uint32 = std::uint_least32_t; using uint64 = std::uint_least64_t; using iint64 = std::int_fast64_t; class optimize_tag_t {}; static constexpr optimize_tag_t optimize_tag{}; public:using value_type = uint32; value_type a; static constexpr value_type cst(iint64 x) noexcept { x %= static_cast<iint64>(MODULO); if (x < static_cast<iint64>(0)) { x += static_cast<iint64>(MODULO); }return static_cast<value_type>(x); }constexpr modint(optimize_tag_t, const value_type &x) noexcept : a(x) {}constexpr modint() noexcept : a(static_cast<value_type>(0)) {}constexpr modint(const iint64 &x) noexcept : a(cst(x)) {}constexpr modint operator+(const modint &o) const noexcept { return modint(optimize_tag, a + o.a < MODULO ? a + o.a : a + o.a - MODULO); }constexpr modint operator-(const modint &o) const noexcept { return modint(optimize_tag, a < o.a ? a + MODULO - o.a : a - o.a); }constexpr modint operator*(const modint &o) const noexcept { return modint(optimize_tag, static_cast<value_type>(static_cast<uint64>(a) * static_cast<uint64>(o.a) % static_cast<uint64>(MODULO))); }constexpr modint operator/(const modint &o) const { return modint(optimize_tag, static_cast<value_type>(static_cast<uint64>(a) * static_cast<uint64>((~o).a) % static_cast<uint64>(MODULO))); }modint &operator+=(const modint &o) noexcept { if ((a += o.a) >= MODULO)a -= MODULO; return *this; }modint &operator-=(const modint &o) noexcept { if (a < o.a)a += MODULO; a -= o.a; return *this; }modint &operator*=(const modint &o) noexcept { a = static_cast<value_type>(static_cast<uint64>(a) * static_cast<uint64>(o.a) % static_cast<uint64>(MODULO)); return *this; }modint &operator/=(const modint &o) { a = static_cast<uint64>(a) * (~o).a % MODULO; return *this; }constexpr modint inverse() const noexcept { assert(a != static_cast<value_type>(0) && "0 does not have inverse"); return pow(static_cast<uint64>(MODULO - static_cast<value_type>(2))); }constexpr modint operator~() const noexcept { return inverse(); }constexpr modint operator-() const noexcept { if (a == static_cast<value_type>(0)) { return modint(optimize_tag, static_cast<value_type>(0)); } else { return modint(optimize_tag, MODULO - a); } }modint &operator++() noexcept { if (++a == MODULO) { a = static_cast<value_type>(0); }return *this; }modint &operator--() noexcept { if (a == static_cast<value_type>(0)) { a = MODULO; }--a; return *this; }constexpr bool operator==(const modint &o) const noexcept { return a == o.a; }constexpr bool operator!=(const modint &o) const noexcept { return a != o.a; }constexpr bool operator<(const modint &o) const noexcept { return a < o.a; }constexpr bool operator<=(const modint &o) const noexcept { return a <= o.a; }constexpr bool operator>(const modint &o) const noexcept { return a > o.a; }constexpr bool operator>=(const modint &o) const noexcept { return a >= o.a; }constexpr explicit operator bool() const noexcept { return a; }constexpr explicit operator value_type() const noexcept { return a; }modint pow(iint64 inx) const noexcept { if (inx < 0)assert(a != static_cast<value_type>(0) && "not pow index < 0"); uint64 x = inx; uint64 t = a, u = 1; while (x) { if (x & 1)u = u * t % MODULO; t = (t * t) % MODULO; x >>= 1; }return modint(optimize_tag, static_cast<value_type>(u)); }
+constexpr value_type get() const noexcept { return a; }
+};
+using mint = modint<MOD>;
 
-制約
-1≦N≦10^5
-0≦A_i≦N?1
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-元の並び順としてありうるものが何通りあるか求め、109+7 で割った余りを出力せよ。
+	LL N; cin >> N;
+	vector<LL> a(N);
+	for (int i = 0; i < N; ++i) {
+		cin >> a[i];
+	}
+	bool ok = 1; {
+		map<LL, LL>M;
+		for (auto it : a) {
+			if (it % 2 == N % 2)ok = 0;
+			M[it]++;
+		}
 
-正確な順番を復元した際、区別をしない置き方は一意に定まる。
-以下の条件を満たさねばならない
-N:奇数のとき　正の偶数が N/2 種類(2こ) + 0
-N:偶数のとき　正の奇数が N/2 種類(2こ) +
-組み合わせは2^(2/N).
-場合分けとチェックを繰り返す。
+		for (auto it : M) {
+			if (it.first == 0) {
+				ok &= it.second == 1;
+			}
+			else {
+				ok &= (it.first <= N - 1) && (it.second==2);
+			}
+		}
+	}
 
-*/
+	mint ans = 0;
+	if (ok) {
+		ans = mint(2).pow(N / 2);
+	}
 
-int N;
-ll ans = 1;
-bool flag = true;
-int cnt[100000 / 2];
+	cout << (ans).get() << "\n";
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    cin >> N;
-
-    if (N % 2 == 0) {
-        FOR(i, 0, N) {
-            int a; cin >> a;
-
-            if (a % 2 == 0 || a > N)flag = false;
-
-            cnt[a / 2]++;
-        }
-        
-        FOR(i, 0, N / 2) {
-            if (cnt[i] != 2)flag = false;
-        }
-        FOR(i, 0, N / 2) {
-            ans = (ans * 2) % MOD;
-        }
-
-    }
-    else {
-        int zero = 0;
-        FOR(i, 0, N) {
-            int a; cin >> a;
-
-            if (a % 2 == 1 || a > N)flag = false;
-            if (a != 0) {
-                cnt[a / 2]++;
-            }
-            else zero++;
-        }
-        FOR(i, 1, N / 2+1) {
-            if (cnt[i] != 2)flag = false;
-        }
-        if (zero != 1)flag = false;
-        FOR(i, 0, N / 2) {
-            ans = (ans * 2) % MOD;
-        }
-
-    }
-
-
-    if (flag == false)ans = 0;
-    cout << ans << endl;
-
-    return 0;
+	return 0;
 }

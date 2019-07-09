@@ -1,75 +1,52 @@
-#include<iostream>
-#include<string>
-//#include<bitset>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* 2017/01/21 問題 ----- ABC045 C /Link http://abc045.contest.atcoder.jp/tasks/arc061_a  */
-/* -----解説等-----
-問題: 1 以上 9 以下の数字のみからなる文字列 S が与えられます。
-この文字列の中で、あなたはこれら文字と文字の間のうち、いくつかの場所に + を入れることができます。
-一つも入れなくてもかまいません。 ただし、+ が連続してはいけません。
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-このようにして出来る全ての文字列を数式とみなし、和を計算することができます。
-
-ありうる全ての数式の値を計算し、その合計を出力してください。
-
-制約
-1?|S|?10
-S に含まれる文字は全て 1 ? 9 の数字
+/* -----  2019/04/04  Problem: ABC 045 C / Link: http://abc045.contest.atcoder.jp/tasks/abc045_c  ----- */
 
 
-Sが小さい。
-全列挙をする。=> 2^10≒10^3
-now = now*10 + s[i] として頭の数から足しこんでいき、
-「+」が入る場所に関して足す数をリセットして足しこむことを繰り返す。
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-(1<<(-1))はコーナーかなあと思ったけど落ちなかった。
-確認したら 1<<-1は未定義で０
-j=0 で 1<<(j-1)は INT_MIN であった => -2,147,483,648
-が、二進数表示は０であった => 0
-そもそも非負整数でシフトするのだから　例外や未定義により　1<<n (n={x|x≦0}) は ０ として今はとりあえずよいだろう。
+	string s; cin >> s;
+	int N = SZ(s);
+	LL ans = 0;
+	FOR(state, 0, 1 << (N - 1)) {
+		LL sum = s.front() - '0';
+		FOR(i, 0, N - 1) {
+			if (state & 1 << i) {
+				ans += sum;
+				sum = 0;
+			}
+			sum *= 10;
+			sum += s[i + 1] - '0';
+		}
+		ans += sum;
+	}
+	cout << ans << "\n";
 
-*/
-
-string S;
-ll ans = 0;
-int n;
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    cin >> S;
-    n = S.size();
-    
-    /*int j = 0;
-    cout << "1<<(-1) : " << (1 <<( j-1)) << endl;
-    cout << static_cast<bitset<8> >(1<<(j-1)) << endl;
-　　*/
-
-    for (int i = 0; i < (1 << (n - 1)); i++) {
-        ll sum = 0; ll cur = 0;
-
-        FOR(j, 0, n) {
-            if (j == 0) {
-                cur = S[j] - '0';
-                continue;
-            }
-            if (i & (1 << (j - 1))) {
-                sum += cur;
-                cur = 0;
-            }
-            cur = cur * 10 + (S[j] - '0');
-        }
-        sum += cur;
-        ans += sum;
-    }
-
-    cout << ans << endl;
-
-    return 0;
+	return 0;
 }

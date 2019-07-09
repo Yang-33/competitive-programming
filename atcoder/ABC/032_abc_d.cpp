@@ -1,159 +1,137 @@
-#include<iostream>
-#include<cstdio>
-#include<algorithm>
-#include<cmath>
-#include<string>
-#include<cstring>
-#include<vector>
-#include<map>
-#include<list>
-#include<stack>
-#include<queue>
-#include<climits> //INT_MIN/MAX
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-#define FORR(i,s,e) for(ll (i)=(s);(i)>(e);(i)--)
-#define debug(x) cout<<#x<<": "<<x<<endl
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* 2017/01/31 –â‘è ----- ABC032 D /Link http://abc032.contest.atcoder.jp/tasks/abc032_d */
-/* -----‰ğà“™-----
-–â‘è: 0/1ƒiƒbƒvƒTƒbƒN–â‘è‚ğ‰ğ‚¢‚Ä‚­‚¾‚³‚¢B0/1ƒiƒbƒvƒTƒbƒN–â‘è‚Æ‚ÍˆÈ‰º‚Ì‚æ‚¤‚È–â‘è‚Ì‚±‚Æ‚Å‚·B
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 
-N ŒÂ‚Ì‰×•¨‚ª‚ ‚èAi(1…i…N) ”Ô–Ú‚Ì‰×•¨‚É‚Í‰¿’l vi ‚Æd‚³ wi ‚ªŠ„‚è“–‚Ä‚ç‚ê‚Ä‚¢‚éB
-‹–—ed—Ê W ‚ÌƒiƒbƒvƒTƒbƒN‚ª1‚Â‚ ‚éB
-d‚³‚Ì˜a‚ª W ˆÈ‰º‚Æ‚È‚é‚æ‚¤‚É‰×•¨‚ÌW‡‚ğ‘I‚ÑƒiƒbƒvƒTƒbƒN‚É‹l‚ß‚Ş‚Æ‚«A‰¿’l‚Ì˜a‚ÌÅ‘å’l‚ğ‹‚ß‚æB
-‚½‚¾‚µA“¯‚¶‰×•¨‚Íˆê“x‚µ‚©‘I‚Ô‚±‚Æ‚ª‚Å‚«‚È‚¢B
-1 s–Ú‚É‚ÍA‰×•¨‚Ì”‚ğ•\‚·®” N(1…N…200) ‚ÆƒiƒbƒvƒTƒbƒN‚Ì‹–—ed—Ê‚ğ•\‚·®” W(1…W…109) ‚ª‹ó”’‹æØ‚è‚Å—^‚¦‚ç‚ê‚éB
-2 s–Ú‚©‚ç‚Ì N s‚É‚ÍAŠe‰×•¨‚Ìî•ñ‚ª—^‚¦‚ç‚ê‚éB
-‚»‚Ì‚¤‚¿ i(1…i…N) s–Ú‚É‚ÍAi ”Ô–Ú‚Ì‰×•¨‚Ì‰¿’l‚ğ•\‚·®” vi(1…vi…109) ‚Æd‚³‚ğ•\‚·®” wi(1…wi…109) ‚ª‹ó”’‹æØ‚è‚Å—^‚¦‚ç‚ê‚éB
-uN…30vAu‘S‚Ä‚Ìi(1…i…N) ‚É‚Â‚¢‚Ä 1…wi…1000vAu‘S‚Ä‚Ìi(1…i…N) ‚É‚Â‚¢‚Ä 1…vi…1000v‚Æ‚¢‚¤ 3 ‚Â‚ÌğŒ‚Ì‚¤‚¿­‚È‚­‚Æ‚à1‚Â‚ÌğŒ‚ª¬‚è—§‚ÂB
-•”•ª“_
-‚±‚Ì–â‘è‚É‚Í•”•ª“_‚ªİ’è‚³‚ê‚Ä‚¢‚éB–“_‚Í 100 “_‚Å‚ ‚éB
-
-N…30 ‚ğ–‚½‚·ƒf[ƒ^ƒZƒbƒg 1 ‚É³‰ğ‚µ‚½ê‡‚ÍA34 “_‚ª—^‚¦‚ç‚ê‚éB
-N…200 ‚©‚Â‘S‚Ä‚Ì i(1…i…N) ‚É‚Â‚¢‚Ä 1…wi…1000 ‚ğ–‚½‚·ƒf[ƒ^ƒZƒbƒg 2 ‚É³‰ğ‚µ‚½ê‡‚ÍAã‹L‚Ì“_”‚Æ‚Í•Ê‚É 33 “_‚ª—^‚¦‚ç‚ê‚éB
-N…200 ‚©‚Â‘S‚Ä‚Ì i(1…i…N) ‚É‚Â‚¢‚Ä 1…vi…1000 ‚ğ–‚½‚·ƒf[ƒ^ƒZƒbƒg 3 ‚É³‰ğ‚µ‚½ê‡‚ÍAã‹L‚Ì“_”‚Æ‚Í•Ê‚É 33 “_‚ª—^‚¦‚ç‚ê‚éB
-
-
-‰ğ–@
-ƒf[ƒ^ƒZƒbƒg‚É‚æ‚Á‚ÄAˆÈ‰º‚Ì‚à‚Ì‚ğ‘I‘ğ‚³‚¹‚é
-
-”¼•ª‘S—ñ‹“ => Å¬‚ğ‚Æ‚é‚â‚ÂDP => ‚¨‚È‚¶‚İDP
-
-Å“K‚È‚à‚Ì‚ğ‚»‚ê‚¼‚ê‚Ìƒf[ƒ^ƒZƒbƒg‚É‘Î‚µ‚Ä‘I‚ñ‚Å‚ ‚°‚ê‚Î‚æ‚¢B
-Å¬‚ğ‚Æ‚é‚â‚Â ‚n( N*MAX_V_SUM )     dp[ NŒÂ‚Ü‚Å¤•i‚ğ‘I‘ğ‚Å‚«‚é ][ ‰¿’l‚ª‚u ]:= d‚³‚ÌÅ¬’l
-
-inf ˆÈ‰º‚©‚Â WˆÈ‰º‚ÅÅ‘å‚Ì dp[N][j]‚Ìj‚ğ‘I‘ğ
-‚¨‚È‚¶‚İ ‚n( N*W )    dp[ ‚mŒÂ‚Ü‚Å‚Ì¤•i‚ğ‘I‘ğ‚Å‚«‚é ][ d‚³‚ªWˆÈ‰º ]:= Å‘å‚Ì‰¿’l
-
-*/
-
-#define INF (LLONG_MAX/10)
-ll N;
-ll W; ll v[200], w[200];
-ll dp[210][210 * 1000];
-pair<ll, ll>ps[1 << (32 / 2)];
-bool flag = false;
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
+/* -----  2019/04/06  Problem: ABC 032 D / Link: http://abc032.contest.atcoder.jp/tasks/abc032_d  ----- */
 
 
-    cin >> N >> W;
-    FOR(i, 0, N) {
-        cin >> v[i] >> w[i];
-        if (w[i] > 1000)flag = true;
-    }
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-    if (N < 31) { //meet in the middle
-                  /* solve */
-        ll fn = N / 2; /* first half N */
+	LL N, W; cin >> N >> W;
+	vector<LL> v(N), w(N);
+	for (int i = 0; i < N; ++i) {
+		cin >> v[i] >> w[i];
+	}
+	auto chmin = [](LL &a, const LL b) {
+		a = min(a, b);
+	};
+	auto chmax = [](LL& a, const LL b) {
+		a = max(a, b);
+	};
 
-        for (ll i = 0; i < (1 << fn); i++) {
-            ll sw1 = 0, sv1 = 0; /* part source w and source v */
-            FOR(j, 0, fn) {
-                if ((i >> j) & 1) {
-                    sw1 += w[j];
-                    sv1 += v[j];
-                }
-            }
-            ps[i] = make_pair(sw1, sv1);
-        }
+	LL ans = 0;
+	if (N <= 30) {
+		int n1 = N / 2;
+		vector<PLL>se;
+		FOR(s, 0, 1 << n1) {
+			LL vsum = 0, wsum = 0;
+			FOR(i, 0, n1) {
+				if (s & 1 << i) {
+					vsum += v[i];
+					wsum += w[i];
+				}
+			}
+			se.push_back(PLL(wsum, vsum));
+		}
+		SORT(se);
+		// vã®æ˜‡é †ã§ãªã„ã‚‚ã®ã¯å‰Šé™¤
+		vector<PLL>new_se; new_se.push_back(se.front());
+		for (auto it : se) {
+			if (new_se.back().second < it.second) {
+				new_se.push_back(it);
+			}
+		}
+		int n2 = N - n1;
+		FOR(s, 0, 1 << n2) {
+			LL vsum = 0, wsum = 0;
+			FOR(j, 0, n2) {
+				if (s & 1 << j) {
+					int i = j + n1;
+					vsum += v[i];
+					wsum += w[i];
+				}
+			}
+			// W-wsumä»¥ä¸‹ã®é›†åˆã®ã†ã¡ï¼Œæœ€å¤§å€¤ã‚’ã‚‚ã¤vsum'ã‚’æ¤œç´¢
+			{
+				auto it = lower_bound(ALL(new_se), PLL(W - wsum + 1, -LINF));
+				if (it != new_se.begin()) {
+					it--;
+					ans = max(ans, vsum + it->second);
+				}
+			}
 
-        // Optimisation
-        sort(ps, ps + (1 << fn));
-        ll m = 1; /* new ps point => m */
-        for (ll i = 0; i < (1 << fn); i++) {
-            if (ps[m - 1].second < ps[i].second) {
-                ps[m++] = ps[i];
-            }
-        }
+		}
+	}
+	else if (*max_element(ALL(w)) <= 1000) {
+		// vmaxã®dp
+		const int dpsz = accumulate(ALL(w), 0LL);
+		VL dp(dpsz + 1, -1);
+		dp[0] = 0;
+		FOR(i, 0, N) {
+			VL nx = dp;
+			FOR(ww, 0, dpsz - w[i] + 1) {
+				if (dp[ww] != -1) {
+					chmax(nx[ww + w[i]], dp[ww] + v[i]);
+				}
+			}
+			nx.swap(dp);
+		}
+		LL ret = 0;
+		FOR(i, 0, min((LL)dpsz, W) + 1) {
+			chmax(ret, dp[i]);
+		}
 
-        ll ans = 0;
-        ll sn = N - fn; /*second half N */
-        FOR(i, 0, (1 << sn)) {
-            ll sw2 = 0, sv2 = 0;
-            FOR(j, 0, sn) {
-                if ((i >> j) & 1) {
-                    sw2 += w[fn + j];
-                    sv2 += v[fn + j];
-                }
-            }
+		ans = ret;
+	}
+	else
+	{ // max v <= 1000
+		// ä¾¡å€¤ãŒv*nã®ã†ã¡ï¼Œæœ€å°ã®é‡ã•dp
+		const int dpsz = accumulate(ALL(v), 0LL);
+		VL dp(dpsz + 1, LINF);
+		dp[0] = 0;
+		FOR(i, 0, N) {
+			VL nx = dp;
+			FOR(vv, 0, dpsz - v[i] + 1) {
+				if (dp[vv] == LINF)continue;
+				chmin(nx[vv + v[i]], dp[vv] + w[i]);
+			}
+			nx.swap(dp);
+		}
+		LL ret = 0;
+		FOR(i, 0, dpsz + 1) {
+			if (dp[i] <= W) {
+				ret = i;
+			}
+		}
 
-            if (sw2 <= W) {
-                ll tv; /* part target v */
-                tv = (lower_bound(ps, ps + m, make_pair(W - sw2, INF)) - 1)->second;
-                ans = max(ans, sv2 + tv);
-            }
-        }
-
-        /* out */
-        cout << ans << endl;
-    }
-    else if (flag) { // min dp case 3
-        FOR(i, 0, 1000 * 200 + 1) {
-            dp[0][i] = INF;
-        }//Å¬’l‚ª‚Ù‚µ‚¢‚Ì‚ÅINF‚ÉB
-        dp[0][0] = 0;
-
-
-        FOR(i, 0, N) {//•i•¨
-            FOR(j, 0, 200 * 1000 + 1) {//‰¿’l
-                if (j - v[i] >= 0) {
-                    //¶¬‚µ‚½ó‘Ô‚ª“¯‚¶ƒ‹[ƒv‚Å‰e‹¿‚ğ—^‚¦‚È‚¢‚æ‚¤‚É‚·‚é‚Ì‚ÅŸŒ³Šg’£=>Ÿ‚Ìó‘Ô‚É‚Ì‚İ‰e‹¿‚³‚¹‚é
-                    dp[i + 1][j] = min(dp[i][j], dp[i][j - v[i]] + w[i]);
-                }
-                else {
-                    dp[i + 1][j] = dp[i][j]; //‰½‚à‚Å‚«‚È‚¢‚Ì‚Å‘O‚Ìó‘Ô‚ğˆø‚«Œp‚®
-                }
-            }
-        }
-
-        ll ans = 0;
-        FOR(j, 0, 200 * 1000 + 1) {
-            if (dp[N][j] <= W)
-                ans = j; //‘å‚«‚¡‚Ì‚ª‚Ù‚µ‚¡‚Ì?
-
-        }
-
-        cout << ans << endl;
-    }
-    else { // typical dp case2
-        FOR(i, 0, N) {
-            FOR(j, 0, W + 1) {
-                if (j - w[i] >= 0)
-                    dp[i + 1][j] = max(dp[i][j], dp[i][j - w[i]] + v[i]);
-                else dp[i + 1][j] = dp[i][j];
-            }
-        }
-        /* “Y‚¦š‚ğ‚¸‚ç‚µ‚½‚Ì‚Å’ˆÓiŠg’£‚µ‚½‚Ì‚ğ–Y‚ê‚Ä‚¢‚½j */
-        cout << dp[N][W] << endl;
-    }
+		ans = ret;
+	}
 
 
-    return 0;
+	cout << (ans) << "\n";
+
+	return 0;
 }

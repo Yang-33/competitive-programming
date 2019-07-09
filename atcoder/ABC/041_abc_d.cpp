@@ -1,58 +1,73 @@
-#include<iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* 2017/01/26 問題 ----- ABC041 D /Link http://abc041.contest.atcoder.jp/tasks/abc041_d */
-/* -----解説等-----
-問題: N 匹のうさぎがいます。 うさぎは 1 から N まで番号が振られています。
-これら N 匹のうさぎが徒競走をしました。 同着はいませんでした。 このとき、着順は N! 通り考えられます。
-高橋君は M 人の観客から情報を集めました。 i 番目の観客によると、うさぎ xi はうさぎ yi よりも先にゴールしたそうです。
-すべての観客の情報に合致するような着順が何通り考えられるか求めてください。
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-N!は10^13程度であるから全探索ではTLE.巡回セールスマン問題のときの様に状態を二進数で表してbitDPをすれば
-O(N*2^N)で計算可能になる.X_iはY_iよりも先に訪れるという制約から現在みている状態でそれは正しいかを判定していけばよい。
-時間がかかってしまったのでちゃっちゃと解きたい。
+/* -----  2019/04/04  Problem: ABC 041 D / Link: http://abc041.contest.atcoder.jp/tasks/abc041_d  ----- */
 
-*/
 
-int N, M;
-int x[121], y[121];
-ll dp[1 << 16];
-bool can_use[1 << 16];
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
+	int N, M; cin >> N >> M;
+	VVI NG(N, VI(N, 0));
+	FOR(i, 0, M) {
+		int a, b; cin >> a >> b;
+		a--, b--;
+		NG[b][a] = 1;
+	}
+	// NG[stateof][nx]=1縺ｪ繧峨□繧√�
+	VVL dp(1 << N, VL(N, 0));
+	FOR(i, 0, N) {
+		dp[1 << i][i] = 1;
+	}
 
-    cin >> N >> M;
-    FOR(i, 0, M) {
-        cin >> x[i] >> y[i];
-        x[i]--; y[i]--;
-    }
+	FOR(state, 0, 1 << N) {
+		FOR(i, 0, N) {
+			if (state & 1 << i) {
+				FOR(to, 0, N) {
+					if (state & 1 << to)continue;
+					bool ok = 1;
+					FOR(j, 0, N) {
+						if (state & 1 << j) {
+							ok &= !NG[j][to];
+						}
+					}
 
-    FOR(i, 0, (1 << N)) { // xがyより先
-        can_use[i] = true;
-        FOR(j, 0, M) {
-            if ((!((i >> x[j]) & 1)) && ((i >> y[j]) & 1)) {
-                can_use[i] = false;
-            }
-        }
-    }
+					if (ok) {
+						dp[state | (1 << to)][to] += dp[state][i];
+					}
+				}
+			}
+		}
+	}
+	LL ans = 0;
+	FOR(i, 0, N) {
+		ans += dp[(1 << N) - 1][i];
+	}
+	cout << ans << "\n";
 
-    dp[0] = 1;
-
-    FOR(i, 0, (1 << N)) {
-        FOR(j, 0, N) {
-            if ((!((i >> j) & 1)) && can_use[i | (1 << j)]) {
-                dp[i | (1 << j)] += dp[i];
-            }
-        }
-    }
-
-    cout << dp[(1 << N) - 1] << endl;
-
-    return 0;
+	return 0;
 }

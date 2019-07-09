@@ -1,43 +1,60 @@
-#include<iostream>
-#include<algorithm>
-#include<cmath>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* 2017/01/26 問題 ----- ABC040 C /Link http://abc040.contest.atcoder.jp/tasks/abc040_c */
-/* -----解説等-----
-問題: N 本の木の柱が左から右へ一列に並んだアスレチックがあります。左から i 本目の柱の高さは ai センチメートルです。
-高橋君は左から 1 本目の柱からスタートし、右へ柱を渡っていき N 本目の柱まで行こうとしています。
-高橋君がある柱にいるとき、次には現在の柱から 1 個もしくは 2 個右にある柱のどちらかへ移動することができます。
-移動するときには、現在いる柱の高さと、移動後の柱の高さの差の絶対値のぶんだけコストがかかります。
-N 本目の柱まで行くとき、コストの合計の最小値はいくらになるでしょうか。
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-状態遷移を考える。現状態に到達するためには1つ前あるいは2つ前の情報を持ってこればよい。
-初期値はdp[0]=0,dp[1]=|a[0]-a[1]|
+/* -----  2019/04/05  Problem: ABC 040 C / Link: http://abc040.contest.atcoder.jp/tasks/abc040_c  ----- */
 
-*/
 
-int N;
-int a[100000];
-int dp[100000];
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
+	LL N; cin >> N;
+	vector<LL> a(N);
+	for (int i = 0; i < N; ++i) {
+		cin >> a[i];
+	}
+	auto chmin = [](LL &a, const LL b) {
+		a = min(a, b);
+	};
+	auto chmax = [](LL& a, const LL b) {
+		a = max(a, b);
+	};
 
-    cin >> N;
+	VL dp(N, LINF);
+	dp[0] = 0;
+	FOR(i, 0, N) {
+		FOR(j, 1, 2 + 1) {
+			int nx = i + j;
+			if (nx < N) {
+				chmin(dp[nx], dp[i] + abs(a[i] - a[nx]));
+			}
+		}
+	}
+	LL ans = dp[N - 1];
+	cout << (ans) << "\n";
 
-    FOR(i, 0, N) {
-        cin >> a[i];
-    }
-    dp[1] = abs(a[1] - a[0]);
-    FOR(i, 0, N - 2) {
-        dp[i + 2] = min(dp[i] + abs(a[i] - a[i + 2]), dp[i + 1] + abs(a[i + 1] - a[i + 2]));
-    }
-    cout << dp[N - 1] << endl;
-
-    return 0;
+	return 0;
 }

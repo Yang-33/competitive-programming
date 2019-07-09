@@ -1,117 +1,72 @@
-#include<iostream>
-#include<cstdio>
-#include<algorithm>
-#include<cmath>
-#include<string>
-#include<cstring>
-#include<vector>
-#include<map>
-#include<list>
-#include<stack>
-#include<queue>
-#include<climits> //INT_MIN/MAX
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-#define FORR(i,s,e) for(ll (i)=(s);(i)>(e);(i)--)
-#define MOD 1000000007
-#define llong long long
-#define debug(x) cout<<#x<<": "<<x<<endl
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* 2017/01/25 問題 ----- ABC042 D /Link http://abc042.contest.atcoder.jp/tasks/arc058_b */
-/* -----解説等-----
-問題: 縦 H マス、横 W マスのマス目があります。
-いろはちゃんは、今一番左上のマス目にいます。
-そして、右か下に1マス移動することを繰り返し、一番右下のマス目へと移動します。
-ただし、下から A 個以内、かつ左から B 個以内のマス目へは移動することは出来ません。
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-移動する方法は何通りあるか求めてください。
+/* -----  2019/04/04  Problem: ABC 042 D / Link: http://abc042.contest.atcoder.jp/tasks/abc042_d  ----- */
 
-なお、答えは非常に大きくなることがあるので、答えは 10^9+7 で割ったあまりを出力してください。
 
-組み合わせ・逆元の問題
-既に類似した問題を解いたことがあるのですぐにＡＣ
-割り算のMODは取ることができないのでフェルマーの定理から逆元を用いて組み合わせを求める。
+template <std::uint_least32_t MODULO> class modint {
+public:
+using uint32 = std::uint_least32_t; using uint64 = std::uint_least64_t; using iint64 = std::int_fast64_t; class optimize_tag_t {}; static constexpr optimize_tag_t optimize_tag{}; public:using value_type = uint32; value_type a; static constexpr value_type cst(iint64 x) noexcept { x %= static_cast<iint64>(MODULO); if (x < static_cast<iint64>(0)) { x += static_cast<iint64>(MODULO); }return static_cast<value_type>(x); }constexpr modint(optimize_tag_t, const value_type &x) noexcept : a(x) {}constexpr modint() noexcept : a(static_cast<value_type>(0)) {}constexpr modint(const iint64 &x) noexcept : a(cst(x)) {}constexpr modint operator+(const modint &o) const noexcept { return modint(optimize_tag, a + o.a < MODULO ? a + o.a : a + o.a - MODULO); }constexpr modint operator-(const modint &o) const noexcept { return modint(optimize_tag, a < o.a ? a + MODULO - o.a : a - o.a); }constexpr modint operator*(const modint &o) const noexcept { return modint(optimize_tag, static_cast<value_type>(static_cast<uint64>(a) * static_cast<uint64>(o.a) % static_cast<uint64>(MODULO))); }constexpr modint operator/(const modint &o) const { return modint(optimize_tag, static_cast<value_type>(static_cast<uint64>(a) * static_cast<uint64>((~o).a) % static_cast<uint64>(MODULO))); }modint &operator+=(const modint &o) noexcept { if ((a += o.a) >= MODULO)a -= MODULO; return *this; }modint &operator-=(const modint &o) noexcept { if (a < o.a)a += MODULO; a -= o.a; return *this; }modint &operator*=(const modint &o) noexcept { a = static_cast<value_type>(static_cast<uint64>(a) * static_cast<uint64>(o.a) % static_cast<uint64>(MODULO)); return *this; }modint &operator/=(const modint &o) { a = static_cast<uint64>(a) * (~o).a % MODULO; return *this; }constexpr modint inverse() const noexcept { assert(a != static_cast<value_type>(0) && "0 does not have inverse"); return pow(static_cast<uint64>(MODULO - static_cast<value_type>(2))); }constexpr modint operator~() const noexcept { return inverse(); }constexpr modint operator-() const noexcept { if (a == static_cast<value_type>(0)) { return modint(optimize_tag, static_cast<value_type>(0)); } else { return modint(optimize_tag, MODULO - a); } }modint &operator++() noexcept { if (++a == MODULO) { a = static_cast<value_type>(0); }return *this; }modint &operator--() noexcept { if (a == static_cast<value_type>(0)) { a = MODULO; }--a; return *this; }constexpr bool operator==(const modint &o) const noexcept { return a == o.a; }constexpr bool operator!=(const modint &o) const noexcept { return a != o.a; }constexpr bool operator<(const modint &o) const noexcept { return a < o.a; }constexpr bool operator<=(const modint &o) const noexcept { return a <= o.a; }constexpr bool operator>(const modint &o) const noexcept { return a > o.a; }constexpr bool operator>=(const modint &o) const noexcept { return a >= o.a; }constexpr explicit operator bool() const noexcept { return a; }constexpr explicit operator value_type() const noexcept { return a; }modint pow(iint64 inx) const noexcept { if (inx < 0)assert(a != static_cast<value_type>(0) && "not pow index < 0"); uint64 x = inx; uint64 t = a, u = 1; while (x) { if (x & 1)u = u * t % MODULO; t = (t * t) % MODULO; x >>= 1; }return modint(optimize_tag, static_cast<value_type>(u)); }
+constexpr value_type get() const noexcept { return a; }
+};
+using mint = modint<MOD>;
+const mint mintzero = mint(0); const mint mintone = mint(1);
+mint modinv(mint a) { return mintone / mint(a); }
+vector<mint> fact, inv_fact;
 
-nCk=n!/((n-k)!*(k!))
-nCkの計算をしていく際にmodをとると割り算に対してはその計算ができないので、
-p:素数としてフェルマーの小定理とaとpが互いに素でることを考慮して、変形して逆元を考えれば
-a^(p-1)≡1 (mod p)　->  a^(p-2)*a≡1 (mod p)
--> a^(p-2)≡1/a (mod p) ->b/a (mod p) = b*a^(p-2) (mod p)
-となる
-
-単一の逆元は、
-Int inv[1000010];
-inv[1] = 1;
-for (int i = 2; i <= N; ++i)
-inv[i] = P - (P / i) * inv[P % i] % P;　(mod P)
-
-として求めることができる。これを用いて階乗とその逆元は
-I
-nt fac[1000010], facInv[1000010];
-fac[0] = facInv[0] = 1;
-for (int i = 1; i <= N; ++i) {
-fac[i] = (fac[i - 1] * i) % P;
-facInv[i] = (facInv[i - 1] * inv[i]) % P;
+void init_fact(int n) {
+	fact.resize(n);
+	fact[0] = mintone;
+	for (int i = 1; i < n; i++) {
+		fact[i] = fact[i - 1] * mint(i);
+	}
+	inv_fact.resize(n);
+	inv_fact[n - 1] = modinv(fact[n - 1]);
+	for (int i = n - 2; i >= 0; i--) {
+		inv_fact[i] = mint(i + 1) * inv_fact[i + 1];
+	}
 }
-pow_mod(a,mod-2,mod)を用いなくてもこのように求めることもできる。
-
-invers前準備O(N+N+N) 使用O(1) <単一逆元の利用>
-powmod前準備O(N+N*log(MOD)) 使用O(1) <フェルマーの小定理から>
-
-*/
-
-#define MAX 230000
-int H, W, A, B;
-ll fact[MAX], rfact[MAX];
-
-ll mod_pow(ll x, ll p, ll mod) {
-    ll a = 1;
-    while (p) {
-        if (p % 2) a = a * x % mod;
-        x = x * x % mod;
-        p /= 2;
-    }
-    return a;
+mint nCr(int n, int r) {
+	if (n < r || n < 0 || r < 0) return mintzero;
+	return fact[n] * inv_fact[r] * inv_fact[n - r];
 }
 
-//逆元
-ll mod_inverse(ll a, ll m) {
-    return mod_pow(a, m - 2, m);
-}
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
+	init_fact(200005);
+	LL H, W, A, B; cin >> H >> W >> A >> B;
+	mint ans = 0;
+	FOR(i, 0, H - A) {
+		mint sub = (nCr(B - 1 + i, B - 1)*nCr(W - B - 1 + H - 1 - i, W - B - 1));
+		ans += sub;
+	}
 
-ll nCr(int n, int r) {
-    return fact[n] * rfact[r] % MOD * rfact[n - r] % MOD;
-}
+	cout << ans.get() << endl;
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    int H, W, A, B;
-    cin >> H >> W >> A >> B;
-    ll ans = 0;
-
-
-    fact[0] = rfact[0] = 1;
-
-    for (int i = 1; i < MAX; i++) {
-        fact[i] = (fact[i - 1] * i) % MOD;
-        rfact[i] = mod_inverse(fact[i], MOD);
-    }
-
-    for (int i = B + 1; i <= W; i++) {
-        int h = H - A - 1, w = i - 1;
-        ll tmp = nCr(h + w, h);
-        h = A - 1, w = W - i;
-        tmp *= nCr(h + w, w);
-        ans += tmp % MOD;
-    }
-
-    cout << ans%MOD << endl;
-
-    return 0;
+	return 0;
 }

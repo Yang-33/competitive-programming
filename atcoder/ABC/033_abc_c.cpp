@@ -1,59 +1,58 @@
-#include<iostream>
-#include<string>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-#define debug(x) cout<<#x<<": "<<x<<endl
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* 2017/01/29 –â‘è ----- ABC033 C /Link http://abc033.contest.atcoder.jp/tasks/abc033_c */
-/* -----‰ğà“™-----
-–â‘è: Ÿ‚Ì‚æ‚¤‚È§–ñ‚ğ–‚½‚·”® S ‚ª—^‚¦‚ç‚ê‚Ü‚·B
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 
-‰‰Zq‚Í + (‰ÁZ) ‚Æ * (æZ) ‚Ì‚İ‚©‚ç‚È‚éBæZ‚ğ—Dæ‚µ‚ÄŒvZ‚·‚éB
-Š‡ŒÊ‚Í‘¶İ‚µ‚È‚¢B
-‚»‚ê‚¼‚ê‚Ì€‚ÍA 1 Œ…‚Ì®”‚Å‚ ‚éB
-—á‚¦‚ÎA1+3*4*0 A 1+2+3+4+5 ‚È‚Ç‚Ì”®‚Í‚±‚ÌğŒ‚ğ–‚½‚µ‚Ü‚·‚ªA
-12+3+5A4*6*7-3A(3+4)*5+2 ‚Ì‚æ‚¤‚È”®‚Í ğŒ‚ğ–‚½‚³‚È‚¢‚½‚ßA“ü—Í‚Æ‚µ‚Ä—^‚¦‚ç‚ê‚Ü‚¹‚ñB
-
-‚ ‚È‚½‚ÍA‚±‚Ì”®‚Ì‚¤‚¿”š‚Ì•”•ª‚ğ‚¢‚­‚Â‚©‘I‚ñ‚Å 0 ‚É‘‚«Š·‚¦‚é‚±‚Æ‚ÅA‚±‚Ì®‚Ì’l‚ğ 0 ‚É‚µ‚½‚¢‚Å‚·B
-®‚Ì’l‚ğ 0 ‚É‚·‚é‚½‚ß‚É 0 ‚É‘‚«Š·‚¦‚È‚¯‚ê‚Î‚È‚ç‚È‚¢”š‚ÌŒÂ”‚ÌÅ¬’l‚ğ‹‚ß‚Ä‚­‚¾‚³‚¢B
-
-
-ó‘Ô‚ğO‚Â‚É•ª‚¯‚é‚±‚Æ‚ª‚Å‚«‚éB
-+...+‚Ì‚ ‚¢‚¾‚É(...‚Í”š‚â‰‰Z*) 0‚ª‘¶İ‚µ‚È‚¢
-+...+‚Ì‚ ‚¢‚¾‚É(...‚Í”š‚â‰‰Z*) 0‚ª‘¶İ‚·‚é
-+...+‚ğŒ©Ø‚Á‚½
-
-ƒ[ƒ‚ğ”­Œ©‚µ‚½‚ç‹æŠÔ‚Ì’†‚Å‚O‚ğ’Ç‰Á‚µ‚È‚­‚Ä‚à‚æ‚­A‚È‚¯‚ê‚Î‚Â‚¢‚©‚ğ‚·‚éB
-ÅŒã‚Ì‹æŠÔ‚Í+‚ª“oê‚µ‚È‚¢‚Ì‚Å©•ª‚Å‰ÁZ‚ğ‚³‚¹‚éB
-‚à‚µ‚­‚Í +S+ ‚Æ‚µ‚Ä‚à‚æ‚¢B
-
-*/
-
-string S;
-int flag = 1;
-int ans = 0;
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
+/* -----  2019/04/06  Problem: ABC 033 C / Link: http://abc033.contest.atcoder.jp/tasks/abc033_c  ----- */
 
 
-    cin >> S;
-    FOR(i, 0, S.size()) {
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-        if (S[i] == '0')flag = 0;
-        if (S[i] == '+') {
-            ans += flag;
-            flag = 1;
-        }
+	string s; cin >> s;
+	// +ã§åˆ‡ã‚‹
+	vector<string>a;
+	string kou;
+	FOR(i, 0, SZ(s)) {
+		if (s[i] == '+') {
+			a.push_back(kou);
+			kou.clear();
+		}
+		else {
+			kou += string(1, s[i]);
+		}
+	}
+	if (SZ(kou))a.push_back(kou);
+	// *å†…ã«0ã®ã¿ãŒã‚ã‚Œã°ãã‚Œã‚’ä½¿ç”¨ï¼Œãã†ã§ãªã‘ã‚Œã°1
+	LL ans = 0LL;
+	for (auto it : a) {
+		ans += !(count(ALL(it), '0') > 0);
+	}
 
-    }
-    ans += flag;
 
-    cout << ans << endl;
 
-    return 0;
+	cout << (ans) << "\n";
+
+	return 0;
 }

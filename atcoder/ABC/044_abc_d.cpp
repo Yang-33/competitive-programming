@@ -1,58 +1,65 @@
-#include<iostream>
-#include<string>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* 2017/01/21 –â‘è -----  ABC044 D /Link http://abc043.contest.atcoder.jp/tasks/arc059_b */
-/* -----‰ğà“™-----
-–â‘è: •¶š—ñ t ‚É‚Â‚¢‚ÄAt ‚Ì’·‚³‚ª 2 ˆÈã‚Å‚ ‚èA‚©‚Â t ‚Ì’†‚Ì•¶š‚Ì‚¤‚¿‰ß”¼”‚ª“¯‚¶•¶š‚Å‚ ‚é‚Æ‚«At ‚ğƒAƒ“ƒoƒ‰ƒ“ƒX‚Å‚ ‚é‚ÆŒÄ‚Ô‚±‚Æ‚É‚µ‚Ü‚·B
-—á‚¦‚ÎAvoodoo ‚â melee ‚ÍƒAƒ“ƒoƒ‰ƒ“ƒX‚Å‚ ‚èAnoon ‚â a ‚ÍƒAƒ“ƒoƒ‰ƒ“ƒX‚Å‚Í‚ ‚è‚Ü‚¹‚ñB
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-¬•¶š‚ÌƒAƒ‹ƒtƒ@ƒxƒbƒg‚©‚ç‚È‚é•¶š—ñ s ‚ª—^‚¦‚ç‚ê‚Ü‚·B
-s ‚ÉƒAƒ“ƒoƒ‰ƒ“ƒX‚È (˜A‘±‚·‚é) •”•ª•¶š—ñ‚ª‘¶İ‚·‚é‚©”»’è‚µ‚Ä‚­‚¾‚³‚¢B
-‘¶İ‚·‚éê‡‚ÍAs ‚Ì’†‚Å‚»‚Ì‚æ‚¤‚È•”•ª•¶š—ñ‚ª‘¶İ‚·‚éˆÊ’u‚ğˆê‚Â¦‚µ‚Ä‚­‚¾‚³‚¢B
+/* -----  2019/04/04  Problem: ABC 044 D / Link: http://abc044.contest.atcoder.jp/tasks/abc044_d  ----- */
 
-§–ñ
-2…|s|…105
-s ‚Í¬•¶š‚ÌƒAƒ‹ƒtƒ@ƒxƒbƒg‚Ì‚İ‚©‚ç‚È‚éB
 
-o—Í
-s ‚ÉƒAƒ“ƒoƒ‰ƒ“ƒX‚È•”•ª•¶š—ñ‚ª‘¶İ‚µ‚È‚¢ê‡‚ÍA-1 -1 ‚Æo—Í‚¹‚æB
-s ‚ÉƒAƒ“ƒoƒ‰ƒ“ƒX‚È•”•ª•¶š—ñ‚ª‘¶İ‚·‚éê‡‚ÍA‚»‚Ì‚æ‚¤‚È•”•ª•¶š—ñ‚Ìˆê‚Â‚ğ sa,sa+1,csb (1…a<b…|s|) ‚Æ‚µ‚ÄAa b ‚Æo—Í‚¹‚æB
-‚»‚Ì‚æ‚¤‚È•”•ª•¶š—ñ‚ª•¡”‘¶İ‚·‚éê‡‚ÍA‚¢‚¸‚ê‚à³‰ğ‚Æ‚İ‚È‚³‚ê‚éB
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-ƒAƒ“ƒoƒ‰ƒ“ƒX‚È•”•ª•¶š—ñ‚ğ”­Œ©‚·‚éÛA‰ß”¼”‚ª“¯‚¶•¶š‚Å‚ ‚é‚±‚Æ‚Íãè‚­2•¶šíŒ¸‚µ‚Ä‚à
-ƒAƒ“ƒoƒ‰ƒ“ƒX‚È•”•ª•¶š—ñ‚ª‘¶İ‚·‚é‚©æ‚èœ‚¢‚½˜A‘±‚µ‚½2•¶š‚ªƒAƒ“ƒoƒ‰ƒ“ƒX‚»‚Ì‚à‚Ì‚©‚Å‚ ‚é‚©‚ç
-‚±‚ê‚Í•”•ª–â‘è‚É‹A’…‚Å‚«‚éB
-‚µ‚½‚ª‚Á‚Ä2•¶š‚©3•¶š‚©‚Ì”ÍˆÍ‚ğŒ©‚ê‚ÎOK.
+	// nã‚’bé€²æ•°ã«ã—ã¦ã€ãã®æ¡å’ŒãŒsã«ãªã‚‹ã‚ˆã†ãªbã¯å­˜åœ¨ã™ã‚‹ã‹?
+	LL N, S; cin >> N >> S;
+	LL ans = LINF;
+	function<LL(LL, LL)> f = [&](LL b, LL n) {
+		if (n < b)return n;
+		else return f(b, n / b) + (n % b);
+	};
 
-*/
+	for (LL b = 2; b*b <= N; b++) {
+		if (f(b, N) == S) {
+			ans = min(ans, b);
+		}
+	}
 
-string S;
+	// å¤§ãã„bã«å¯¾ã—ã¦ã¯2æ¡ã§ã‚ã‚‹ã‹ã‚‰ã€å¼å¤‰å½¢ã§è§£ã‘ã‚‹
+	// xb+y = N, x+y=S
+	// x+N-xb =S, b =(x+N-S )// x
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
+	// x=0
+	if (N == S)ans = min(ans, N + 1);
+	for (LL x = 1; x*x <= N; x++) {
+		LL b = (x + N - S) / x;
+		LL y = S - x;
+		if (b > 1 && x < b && y >= 0 && y < b&& f(b, N) == S) {
+			ans = min(ans, b);
+		}
+	}
+	if (ans == LINF)ans = -1;
+	cout << ans << "\n";
 
-    cin >> S;
-
-    FOR(i, 1, S.size()) {
-        if (S[i - 1] == S[i]) {
-            cout << i << " " << i + 1 << endl;
-            return 0;
-        }
-        else if (i > 1) {
-            if (S[i - 2] == S[i]) {
-                cout << i - 1 << " " << i + 1 << endl;
-                return 0;
-            }
-        }
-
-    }
-    cout << -1 << " " << -1 << endl;
-
-    return 0;
+	return 0;
 }

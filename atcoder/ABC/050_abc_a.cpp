@@ -1,29 +1,45 @@
-#include<iostream>
-#include<string>
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* 2017/01/19 問題 -----  ABC050 A /Link http://abc050.contest.atcoder.jp/tasks/abc050_a */
-/* -----解説等-----
-問題: joisinoお姉ちゃんは、A op B という式の値を計算したいと思っています。 ここで、A,B は整数で、op は、+ または - の記号です。
-あなたの仕事は、joisinoお姉ちゃんの代わりにこれを求めるプログラムを作ることです。
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-if文。
+/* -----  2019/04/03  Problem: ABC 050 A / Link: http://abc050.contest.atcoder.jp/tasks/abc050_a  ----- */
 
-*/
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-    ll a, b, ans;
-    string s;
-    cin >> a >> s >> b;
-    if (s == "+")ans = a + b;
-    else ans = a - b;
-        cout << ans<< endl;
+	LL A, B;
+	char c;
+	cin >> A >> c >> B;
+	LL ans = 0;
+	if (c == '+')ans = A + B;
+	else ans = A - B;
+	
+	
+	cout << (ans) << "\n";
 
-    return 0;
+	return 0;
 }

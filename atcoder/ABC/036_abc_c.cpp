@@ -1,66 +1,78 @@
-#include<iostream>
-#include<cstdio>
-#include<algorithm>
-#include<cmath>
-#include<string>
-#include<cstring>
-#include<vector>
-#include<map>
-#include<list>
-#include<stack>
-#include<queue>
-#include<climits> //INT_MIN/MAX
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-#define FORR(i,s,e) for(ll (i)=(s);(i)>(e);(i)--)
-#define MOD 1000000007
-#define debug(x) cout<<#x<<": "<<x<<endl
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* 2017/01/29 問題 ----- ABC036 C /Link http://abc036.contest.atcoder.jp/tasks/abc036_c */
-/* -----解説等-----
-問題: N 人の人が座っています。 i 番目の人の座圧は ai です。 すぬけ君は、大小関係を保存したまま座圧のデータを圧縮して保存することにしました。 以下の条件を満たす数列 b1,…,bN を求めてください。
-bi はすべて非負整数である。
-ai<aj ならば bi<bj である。
-ai=aj ならば bi=bj である。
-上の条件を満たす配列のうち、bi の最大値が最小となる。
-このような条件をみたす b は一意に定まることが知られています。
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-制約
-1?N?10^5
-0?ai?10^9
-ai は整数である。
+/* -----  2019/04/05  Problem: ABC 036 C / Link: http://abc036.contest.atcoder.jp/tasks/abc036_c  ----- */
 
-座標圧縮だ！おわり！
-別配列にその圧縮座標を書き込むが今回はそれを出力してしまえばよい。
+template<class T>
+vector<int> compress_elements(const vector<T>& a) {
+	vector<T> b = a;
+	sort(b.begin(), b.end());
+	b.erase(unique(b.begin(), b.end()), b.end());
+	vector<int>res((int)a.size());
+	for (int i = 0; i < (int)a.size(); i++) {
+		res[i] = lower_bound(b.begin(), b.end(), a[i]) - b.begin();
+	}
+	return res;
+}
+// 隕∫ｴ繧貞悸邵ｮ縺吶ｋ
 
-*/
 
-int N;
-int a[100000];
-vector<int>x;
+template<class T>
+map<T, int> make_compress_elements_map(const vector<T>& a) {
+	vector<T> b = a;
+	map<T, int>compress_map;
+	int N = (int)b.size();
+	vector<T> rev_map(N);
+	SORT(b);
+	UNIQ(b);
+	FOR(i, 0, (int)b.size()) {
+		compress_map[b[i]] = i;
+		rev_map[i] = b[i];
+	}
+	return compress_map;
+	// return rev;
+}
+// 隕∫ｴ繧貞悸邵ｮ縺吶ｋmap縺ｨ蝨ｧ邵ｮ縺励◆蛟､縺九ｉ蠕ｩ蜈�縺吶ｋ繧�縺､
 
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
 
-    cin >> N;
-    FOR(i, 0, N) {
-        cin >> a[i];
-        x.push_back(a[i]);
-    }
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-    sort(x.begin(), x.end());
-    x.erase(unique(x.begin(), x.end()), x.end());
+	LL N; cin >> N;
+	vector<LL> a(N);
+	for (int i = 0; i < N; ++i) {
+		cin >> a[i];
+	}
+	auto compress_map = make_compress_elements_map(a);
+	for (auto it : a) {
+		cout << compress_map[it] << endl;
+	}
 
-    int p;
-    FOR(i, 0, N) {
-        p = lower_bound(x.begin(), x.end(), a[i]) - x.begin();
-        cout << p << endl;
-    }
 
-    return 0;
+	return 0;
 }

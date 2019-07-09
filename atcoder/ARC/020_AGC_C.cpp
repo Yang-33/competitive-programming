@@ -24,36 +24,42 @@ const int INF = 1e9;                          const LL LINF = 1e16;
 const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-/* -----  2019/04/05  Problem: ABC 039 C / Link: http://abc039.contest.atcoder.jp/tasks/abc039_c  ----- */
+/* -----  2018/11/22  Problem: AGC 020 C / Link: http://agc020.contest.atcoder.jp/tasks/agc020_c  ----- */
+/* ------問題------
 
+N 個の整数 A1, A2, ..., AN が与えられます。
+A のすべての空でない部分列について、それぞれの和を考えます。このような和は 2N−1 個存在し、この個数は奇数です。
+これらの和を昇順に並べたものを S1, S2, ..., S2N−1 とします。
+これらの中央値、S2N−1 を求めてください。
 
+-----問題ここまで----- */
+/* -----解説等-----
+
+bool dpをbitsetで1/32時間でやるやつ
+
+----解説ここまで---- */
+
+int read() { int in; scanf("%d", &in); return in; }
 int main() {
-	cin.tie(0);
-	ios_base::sync_with_stdio(false);
-
-	string pattern = "WBWBWWBWBWBW";
-	string s; cin >> s;
-	// patternをrotate
-	// 回転させた回数
-
-	vector<string> ans = { "Do","Re","Mi","Fa","So","La","Si" };
-	int ansid = 0;
-	FOR(i, 0, SZ(pattern)) {
-		if (pattern[i] == 'W') {
-			string t = pattern.substr(i) + pattern.substr(0, i);
-			bool ok = 1;
-			FOR(j, 0, SZ(t)) {
-				ok &= t[j] == s[j];
-			}
-			DD(de(t, ok, SZ(t)))
-				if (ok) {
-					break;
-				}
-			ansid++;
+	int N = read();
+	VI a(N);
+	FOR(i, 0, N) {
+		a[i] = read();
+	}
+	int sum = accumulate(ALL(a), 0);
+	const int sz = 2000 * 2000 + 1;
+	bitset<sz>bit;
+	bit[0] = 1;
+	FOR(i, 0, N) {
+		bit |= bit << a[i];
+	}
+	int mid = (sum + 1) / 2;
+	FOR(i, mid, sz) {
+		if (bit[i]) {
+			cout << i << endl;
+			return 0;
 		}
 	}
-
-	cout << (ans[ansid]) << "\n";
 
 	return 0;
 }

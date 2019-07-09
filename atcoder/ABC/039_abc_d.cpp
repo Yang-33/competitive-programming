@@ -1,83 +1,100 @@
-#include<iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* 2017/01/27 –â‘è ----- ABC039 D/Link http://abc039.contest.atcoder.jp/tasks/abc039_d */
-/* -----‰ğà“™-----
-–â‘è: 2 ’l‰æ‘œ‚É‘Î‚µ‚Äs‚¤Aûk‚Æ‚¢‚¤ˆ—‚ª‚ ‚è‚Ü‚·B
-‚È‚¨A2 ’l‰æ‘œ‚Æ‚ÍA‰æ‘f‚ÌF‚ª”’‚©•‚©‚Ì 2 í—Ş‚µ‚©‚È‚¢‰æ‘œ‚Ì–‚Å‚·B
-ûk‚Æ‚ÍA‚»‚ê‚¼‚ê‚Ì‰æ‘f‚É‚Â‚¢‚Ä‚»‚Ì‰æ‘f‚Æü‚è 8 •ûŒü‚Ì‰æ‘f‚Ì‚¤‚¿Aˆê‚Â‚Å‚à•‚¢‰æ‘f‚ª‚ ‚Á‚½‚ç‚»‚Ì‰æ‘f‚ğ•‚­‚·‚é‚Æ‚¢‚¤ˆ—‚Å‚·B
-‚±‚±‚ÅA‰æ‘f”‚ª‚‚³ HA• W ‚Ì 2 ’l‰æ‘œ‚ğl‚¦‚Ü‚·B
-‚±‚Ì‰æ‘œ‚Í‚ ‚é‰æ‘œ‚Éˆê‰ñûk‚ğs‚Á‚½‚à‚Ì‚Å‚ ‚é‚±‚Æ‚ª‚í‚©‚Á‚Ä‚¢‚Ü‚·B
-Œ³‚Ì‰æ‘œ‚Æ‚µ‚Äl‚¦‚ç‚ê‚é‚à‚Ì‚ª‚ ‚é‚©‚ğ”»’è‚µA‚à‚µ‚ ‚é‚È‚ç‚Î‚»‚Ì‚¤‚¿‚Ç‚ê‚© 1 ‚Â‚ğ•œŒ³‚µ‚Ä‚­‚¾‚³‚¢B
-‰æ‘œ‚ÍAH ŒÂ‚ÌAW •¶š‚Ì•¶š—ñ Si ‚Å—^‚¦‚ç‚ê‚Ü‚·BSi ‚Ì j •¶š–Ú‚Í
-Aã‚©‚ç i ŒÂ–ÚA¶‚©‚ç j ŒÂ–Ú‚Ì‰æ‘f‚ÌF‚ğ•\‚µ‚Ä‚¨‚èA. ‚È‚ç”’A# ‚È‚ç•‚Å‚·B
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 
-”’F‚Ìƒ}ƒX‚ª‘¶İ‚·‚ê‚Î‚»‚Ìü‚è‚Ìƒ}ƒX‚É•‚¢ƒ}ƒX‚Í‚È‚¢B
-‚»‚ê‚É‚æ‚Á‚Ä•œŒ³‚µ‚½ƒ}ƒX‚É‘Î‚µ‚ÄF“h‚è‚ğ‚à‚¤ˆê“xs‚¢A‚±‚ê‚ªŒ³‚Ìƒ}ƒX‚Æˆê’v‚·‚ê‚Î•œŒ³‰Â”\Aˆê’v‚µ‚È‚¯‚ê‚Î•œŒ³•s‰Â”\‚Æ‚È‚éB
+/* -----  2019/04/05  Problem: ABC 039 D / Link: http://abc039.contest.atcoder.jp/tasks/abc039_d  ----- */
 
-*/
 
-int N, M;
-char f[105][105];
+const int DY[9] = { 1, -1, 0, 0, 1, -1, 1, -1 ,0 };
+const int DX[9] = { 0, 0, 1, -1, 1, 1, -1, -1 ,0 };
 
-int dx[8] = { 1,1,1,0,0,-1,-1,-1 };
-int dy[8] = { 1,0,-1,1,-1,1,0,-1 };
 
-bool u[105][105];
-char G[105][105];
-char F[105][105];
+int main() {
+	cin.tie(0);
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
+	LL H, W; cin >> H >> W;
+	vector<string> a(H);
+	for (int i = 0; i < H; ++i) {
+		cin >> a[i];
+	}
+	vector<string> origin_state(H, string(W, '#'));
+	FOR(i, 0, H) {
+		FOR(j, 0, W) {
+			if (a[i][j] == '.') {
+				auto is_in = [](int a, int b, int c) { return a <= b && b < c; };
+				FOR(k, 0, 9) {
+					int ny = i + DY[k], nx = j + DX[k];
+					if (is_in(0, ny, H) && is_in(0, nx, W)) {
+						origin_state[ny][nx] = '.';
+					}
+				}
 
-    cin >> N >> M;
+			}
+		}
+	}
+	// å¾©å…ƒ2
+	vector<string> b(H, string(W, '.'));
+	FOR(i, 0, H) {
+		FOR(j, 0, W) {
+			if (origin_state[i][j] == '#') {
+				auto is_in = [](int a, int b, int c) { return a <= b && b < c; };
+				FOR(k, 0, 9) {
+					int ny = i + DY[k], nx = j + DX[k];
+					if (is_in(0, ny, H) && is_in(0, nx, W)) {
+						b[ny][nx] = '#';
+					}
+				}
 
-    FOR(i, 0, N)FOR(j, 0, M)cin >> f[i][j];
+			}
+		}
+	}
+	bool ok = 1;
+	FOR(i, 0, H) {
+		FOR(j, 0, W) {
+			ok &= a[i][j] == b[i][j];
+		}
+	}
+	auto print_possible = [](bool ok, int mode = 0) {
+		if (mode == 0) {
+			cout << ((ok ? "possible\n" : "impossible\n"));
+		}
+		else if (mode == 1) {
+			cout << ((ok ? "Possible\n" : "Impossible\n"));
+		}
+		else if (mode == 2) {
+			cout << ((ok ? "POSSIBLE\n" : "IMPOSSIBLE\n"));
+		}
+		else {
+			assert(0);
+		}
+	};
+	print_possible(ok, 0);
+	if (ok) {
+		FOR(i, 0, H) {
+			cout << origin_state[i] << endl;
+		}
+	}
 
-    FOR(i, 0, N)FOR(j, 0, M) {
-        if (f[i][j] == '.') {
-            u[i][j] = 1;
-            FOR(k, 0, 8) {
-                int nx = i + dx[k], ny = j + dy[k];
-                if (0 <= nx&&nx < N && 0 <= ny&&ny < M) {
-                    u[nx][ny] = 1;
-                }
-            }
-        }
-    }
-
-    FOR(i, 0, N)FOR(j, 0, M) {
-        if (u[i][j]) F[i][j] = '.'; 
-        else F[i][j] = '#';
-    }
-
-    FOR(i, 0, N)FOR(j, 0, M) {
-        G[i][j] = F[i][j];
-        for (int k = 0; k < 8; k++) {
-            int nx = i + dx[k], ny = j + dy[k];
-            if (0 <= nx&&nx < N && 0 <= ny&&ny < M&&F[nx][ny] == '#') {
-                G[i][j] = '#';
-            }
-        }
-    }
-    FOR(i, 0, N)FOR(j, 0, M) {
-        if (G[i][j] != f[i][j]) {
-            cout << "impossible" << endl; 
-            return 0;
-        }
-    }
-
-    cout << "possible" << endl;
-
-    FOR(i, 0, N)FOR(j, 0, M) {
-        cout << F[i][j];
-        if (j == M - 1)cout << endl;
-    }
-
-    return 0;
+	return 0;
 }

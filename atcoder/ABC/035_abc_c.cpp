@@ -1,55 +1,49 @@
-#include<iostream>
-#include<cstdio>
-#include<algorithm>
-#include<cmath>
-#include<string>
-#include<cstring>
-#include<vector>
-#include<map>
-#include<list>
-#include<stack>
-#include<queue>
-#include<climits> //INT_MIN/MAX
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-#define FORR(i,s,e) for(ll (i)=(s);(i)>(e);(i)--)
-#define MOD 1000000007
-#define debug(x) cout<<#x<<": "<<x<<endl
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* 2017/01/29 問題 ----- ABC035 C /Link http://abc035.contest.atcoder.jp/tasks/abc035_c */
-/* -----解説等-----
-問題: 黒の面に0、白の面に1が書かれた N 個のオセロの駒が、どの駒も黒の面が上を向くように一列に並べられています。
-その後、ある区間にある駒を全て裏返すという操作が Q 回だけ行なわれました。
-具体的には i 回目の操作においては、左から li 番目の駒から ri 番目の駒までの駒全てが裏返されました。
-最終的な盤面を求めてください。
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 
-ON/OFFのような操作ではいもす法で区間を管理し、結局何回ひっくり返ったかを最後に区間和として表現しなおせばよい。
+/* -----  2019/04/06  Problem: ABC 035 C / Link: http://abc035.contest.atcoder.jp/tasks/abc035_c  ----- */
 
 
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-*/
+	int N, Q; cin >> N >> Q;
+	VL a(N+1, 0);
+	FOR(i, 0, Q) {
+		int l, r; cin >> l >> r;
+		l--;
+		a[l]++, a[r]--;
+	}
+	FOR(i, 0, N - 1) {
+		a[i + 1] += a[i];
+	}
 
-int N, Q;
-int x[200001];
+	FOR(i, 0, N) {
+		cout << a[i] % 2;
+	}cout << endl;
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    cin >> N >> Q;
-    FOR(i, 0, Q) {
-        int a, b; cin >> a >> b;
-        x[--a]--; x[b]++;
-    }
-    
-    int ans = 0;
-    FOR(i, 0, N) {
-        ans += x[i];
-        cout << (abs(ans)) % 2;
-    }
-    cout << endl;
-    return 0;
+	return 0;
 }

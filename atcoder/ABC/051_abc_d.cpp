@@ -1,88 +1,64 @@
-#include<iostream>
-#include<algorithm>
-#include<cmath>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* 2017/01/18 問題 ----- abc051 d /Link http://abc051.contest.atcoder.jp/tasks/abc051_d */
-/* -----解説等-----
-問題: 自己ループと二重辺を含まない N 頂点 M 辺の重み付き無向連結グラフが与えられます。
-i(1≦i≦M) 番目の辺は頂点 ai と頂点 bi を距離 ci で結びます。 
-ここで、自己ループは ai=bi(1≦i≦M) となる辺のことを表します。 
-また、二重辺は (ai,bi)=(aj,bj) または (ai,bi)=(bj,aj)(1≦i<j≦M) となる辺のことを表します。 
-連結グラフは、どの異なる 2 頂点間にも経路が存在するグラフのことを表します。 
-どの異なる 2 頂点間の、どの最短経路にも含まれない辺の数を求めてください。
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-
-まずは、任意の点から任意の点までの最短経路を求める。
-これは全点間の最短距離を求めることに相当し、ワーシャルフロイド法がこれに適している。
-これによりある辺eが最短距離に使用されているかどうかの判定を行うことができるようになる。
-変数j,kに対して s-> t へのコストをcとすれば
-d[j][k] == d[j][s] + cost(s -> t) + d[t][k]
-を満たすときにはこの辺は使用されていることがわかる。
-これをすべての辺*始点終点に対してすべてチェックすることで使用されていない辺を発見することができる。
-ダイクストラでも解ける。(pqはダメかなあと思う
-)
-
-*/
-
-#define INF 10000000
-int M; int N;
-int d[110][110];
-int s[1010];
-int t[1010];
-int c[1010];
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    cin >> N >> M;
-
-    FOR(i, 0, N) { //for Warshall
-        FOR(j, 0, N) {
-            if (i == j)d[i][j] = 0;
-            else d[i][j] = INF;
-        }
-    }
-    
-   
+/* -----  2019/03/22  Problem: ABC 051 D / Link: http://abc051.contest.atcoder.jp/tasks/abc051_d  ----- */
 
 
-    FOR(i, 0, M) {
-        cin >> s[i] >> t[i] >> c[i];
-        s[i]--; t[i]--;
-        d[s[i]][t[i]] = c[i];
-        d[t[i]][s[i]] = c[i];
-    }
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-    FOR(k, 0, N) { 
-        FOR(i, 0, N) {
-            if (d[i][k] < INF)
-                FOR(j, 0, N) {
-                if (d[k][j] == INF)continue;
-                d[i][j] = min(d[i][j], d[i][k] + d[k][j]);
-            }
-        }
-    }
+	LL N, M; cin >> N >> M;
+	vector<LL>a(M), b(M), c(M);
+	for (int i = 0; i < M; ++i) {
+		cin >> a[i] >> b[i] >> c[i];
+		a[i]--, b[i]--;
+	}
+	VVL d(N, VL(N, LINF));
+	FOR(i, 0, M) {
+		d[a[i]][b[i]] = d[b[i]][a[i]] = min(d[a[i]][b[i]], c[i]);
+	}
+	FOR(i, 0, N) {
+		d[i][i] = 0;
+	}
+	
+	FOR(k, 0, N)FOR(i, 0, N)FOR(j, 0, N)d[i][j] = min(d[i][j], d[i][k] + d[k][j]);
 
-    //使用したかのチェック
-    ll ans=0;
-    FOR(i, 0, M) {// M辺についてcheck
-        int yes = 1;
-        FOR(j, 0, N) {
-            FOR(k, 0, N) {
-                if(j!=k)
-                //最短経路であるか否か
-                if (d[j][k] == d[j][s[i]] + c[i] + d[t[i]][k])yes = 0;
-            }
-        }
-        ans += yes;
-    }
-    cout << ans << endl;
+	LL ans = 0LL;
+	FOR(i, 0, M) {
+		bool use = 0;
+		FOR(j, 0, N) {
+			use |= (d[j][a[i]] + c[i] == d[j][b[i]]);
+			use |= (d[j][b[i]] + c[i] == d[j][a[i]]);
+		}
+		if (!use)ans++;
+	}
+	
+	
+	cout << (ans) << "\n";
 
-    return 0;
+	return 0;
 }

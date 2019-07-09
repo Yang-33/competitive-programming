@@ -1,43 +1,50 @@
-#include<iostream>
-#include<algorithm>
-#include<vector>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-#define FORR(i,s,e) for(ll (i)=(s);(i)>(e);(i)--)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* 2017/01/26 問題 ----- ABC041 C Name/Link https://abc041.contest.atcoder.jp/tasks/abc041_c */
-/* -----解説等-----
-問題: 高橋学級には N 人の生徒がいます。 生徒は 1 から N まで出席番号が振られています。
-i 番目の生徒の身長は ai です。 ai はすべて相異なります。
-高橋先生は N 人の生徒を背の高い方から順に並べました。 N 人の生徒の出席番号を背の高い方から順に出力してください。
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-ソート前にその値にリンクした添え字を復元ができるようにペア―で保存しておけばよい。
-FORRで落ちかけた。
+/* -----  2019/04/04  Problem: ABC 041 C / Link: http://abc041.contest.atcoder.jp/tasks/abc041_c  ----- */
 
-*/
 
-int N;
-vector<pair<int,int>> a;
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
+	LL N; cin >> N;
+	vector<LL> a(N);
+	for (int i = 0; i < N; ++i) {
+		cin >> a[i];
+	}
 
-    cin >> N;
+	VI ids(N, 0);
+	iota(ALL(ids), 0);
+	sort(ALL(ids), [&](int i, int j) {
+		return a[i] > a[j];
+	});
+	for (auto it : ids) {
+		cout << it + 1 << endl;
+	}
 
-    FOR(i, 0, N) {
-        int x; cin >> x;
-        a.push_back(make_pair(x,i+1));
-    }
-    sort(a.begin(), a.end());
-    
-
-    FORR(i, N-1, -1) {
-        cout << a[i].second << endl;
-    }
-
-    return 0;
+	return 0;
 }

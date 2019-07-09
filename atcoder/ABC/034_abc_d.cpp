@@ -1,77 +1,68 @@
-#include<iostream>
-#include<cstdio>
-#include<algorithm>
-#include<cmath>
-#include<string>
-#include<cstring>
-#include<vector>
-#include<map>
-#include<list>
-#include<stack>
-#include<queue>
-#include<climits> //INT_MIN/MAX
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-#define FORR(i,s,e) for(ll (i)=(s);(i)>(e);(i)--)
-#define MOD 1000000007
-#define debug(x) cout<<#x<<": "<<x<<endl
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* 2017/01/29 問題 ----- ABC034 D /Link http://abc034.contest.atcoder.jp/tasks/abc034_d */
-/* -----解説等-----
-問題: 食塩水が入った容器が N 個あります。 容器には 1 から N までの番号がついています。
-i 番の容器には濃度 pi パーセントの食塩水が wi グラム入っています。
-高橋君は、K 個の容器を選び、選んだ容器の中に入っている食塩水をすべて混ぜ合わせることにしました。
-高橋君の混ぜた食塩水の濃度として考えられる最大値を求めてください。
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+
+/* -----  2019/04/06  Problem: ABC 034 D / Link: http://abc034.contest.atcoder.jp/tasks/abc034_d  ----- */
 
 
-初めは 各液体について塩と水に値を分けておき、
-dp[ 昇順で使用可能な個数 ][ 使用した個数 ] := max濃度 (salt,water)かと思ったが
-実装がよくわからなくなってしまった。=> できる
-だがこれだと10^4ぐらいでTLEしてしまう。
-平均最大化の考えを用いれば 100*NlogN 回ぐらい。
-求めたいモノをxとして size[S]=K となる集合Sについて
-ΣSomea_i[i∈S]/ΣSomeb_i[i∈S] ≧x となるxがほしいので
-これを二分探索すればよい。
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-今回は Σ(塩)/Σ(水) ≧ X (%) => Σ( 塩 - X*水 ) ≧ 0
+	LL N, K; cin >> N >> K;
+	vector<LL> w(N), p(N);
+	for (int i = 0; i < N; ++i) {
+		cin >> w[i] >> p[i];
+	}
+	auto f = [&](double x) {
+		vector<double>a(N);
 
-*/
+		FOR(i, 0, N) {
+			a[i] = (double)w[i] * (p[i] - x);
+		}
+		RSORT(a);
+		double sum = 0;
+		FOR(i, 0, K) {
+			sum += a[i];
+		}
 
-int K, N;
-int w[1000], p[1000];
-double l = 0.0, r = 1.0, mid;
-double v[1000];
+		return sum >= 0;
+	};
 
-bool CCC(double x) {
-    FOR(i, 0, N) {
-        v[i] = (p[i] / 100.0 - x)*w[i];
-    }
-    sort(v, v + N);
-    double sum = 0;
-    FOR(i, 0, K) {
-        sum += v[N - 1 - i];
-    }
-    return sum >= 0;
-}
+	double L = 0, R = 100.0;
+	FOR(i, 0, 100) {
+		double mid = (L + R) / 2;
+		if (f(mid)) {
+			L = mid;
+		}
+		else {
+			R = mid;
+		}
+	}
+	double ans = L;
+	cout << fixed << setprecision(10) << ans << endl;
 
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
 
-    cin >> N >> K;
-    FOR(i, 0, N) {
-        cin >> w[i] >> p[i];
-    }
-    
-    FOR(i,0,100){
-        mid = (r+l)/ 2.0;
-        if (CCC(mid))l = mid;
-        else r = mid;
-    }
-
-    printf("%.12lf",mid*100.0);
-    return 0;
+	return 0;
 }

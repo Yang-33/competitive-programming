@@ -1,67 +1,53 @@
-#include<iostream>
-#include<cstdio>
-#include<algorithm>
-#include<cmath>
-#include<string>
-#include<cstring>
-#include<vector>
-#include<map>
-#include<list>
-#include<stack>
-#include<queue>
-#include<climits> //INT_MIN/MAX
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-#define debug(x) cout<<#x<<": "<<x<<endl
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* 2017/01/21 問題 ----- ABC046 C /Link http://abc046.contest.atcoder.jp/tasks/arc062_a */
-/* -----解説等-----
-問題: シカのAtCoDeerくんは選挙速報を見ています。
-選挙には二人の候補高橋くんと青木くんが出ています。
-速報では、現在の二人の得票数の比が表示されていますが、得票数そのものは表示されていません。
-AtCoDeerくんは N 回画面を見て、 i(1≦i≦N) 回目に見たときに表示されている比は Ti:Ai でした。
-ここで、AtCoDeerくんが選挙速報の画面を1回目に見た段階で既にどちらの候補にも少なくとも一票は入っていたことがわかっています。
-N 回目に画面を見たときの投票数(二人の得票数の和)として考えられるもののうち最小となるものを求めてください。
-ただし、得票数が途中で減ることはありません。
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-1≦N≦1000
-1≦Ti,Ai≦1000(1≦i≦N)
-Ti と Ai は互いに素 (1≦i≦N)
-答えが 10^18 以下になることは保証されている
-
-
-与えられた新しい T, Aについて、以前の投票されている枚数から比rを求める。
-t=T*r
-a=A*r
-ただしrはr=max( ceil(t/T) , ceil(a/A) )
-
-*/
-
-int N;
-int T[1000], A[1000];
-ll ans = 0;
-ll nt, na, r;
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
+/* -----  2019/04/03  Problem: ABC 046 C / Link: http://abc046.contest.atcoder.jp/tasks/abc046_c  ----- */
 
 
-    cin >> N;
-    cin >> T[0] >> A[0];
-    r = 1; nt = T[0]; na = A[0];
 
-    FOR(i, 1, N) {
-        cin >> T[i] >> A[i];
-        r = max((nt + T[i] - 1) / T[i], (na + A[i] - 1) / A[i]);
-        nt = T[i] * r;
-        na = A[i] * r;
-    }
-    ans = nt + na;
-    cout << ans << endl;
 
-    return 0;
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
+
+	int N;
+	int T[1000], A[1000];
+
+	cin >> N;
+	cin >> T[0] >> A[0];
+	LL r = 1, nt = T[0], na = A[0];
+
+	FOR(i, 1, N) {
+		cin >> T[i] >> A[i];
+		r = max((nt + T[i] - 1) / T[i], (na + A[i] - 1) / A[i]);
+		nt = T[i] * r;
+		na = A[i] * r;
+	}
+	LL ans = nt + na;
+	cout << ans << endl;
+
+	return 0;
 }

@@ -1,59 +1,58 @@
-#include<iostream>
-#include<algorithm>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* 2017/01/20 問題 -----  ABC048 C /Link  */
-/* -----解説等-----
-問題: N 個の箱が横一列に並んでいます。 最初、左から i 番目の箱には ai 個のキャンディが入っています。
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-すぬけ君は次の操作を好きな回数だけ行うことができます。
-
-キャンディが 1 個以上入っている箱をひとつ選び、その箱のキャンディを 1 個食べる。
-すぬけ君の目標は次の通りです。
-
-どの隣り合う 2 つの箱を見ても、それらの箱に入っているキャンディの個数の総和が x 以下である。
-目標を達成するために必要な操作回数の最小値を求めてください。
-
-
-取り出す要件として端から順にｘを超えてしまうものを削減していけばよい。
-新しく見つけた要素に対して削減を常に行うようにすれば次回に削減しなくてもよい可能性が存在するので
-この探し方が最小解を求める手段である。Ｏ(N)
-
-*/
-
-int N, x;
-int a[100000];
-ll ans = 0;
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    cin >> N >> x;
-    FOR(i, 0, N) {
-        cin >> a[i];
-    }
-    FOR(i, 0, N - 1) {
-        ll sum = a[i] + a[i + 1];
-        if (sum <= x)continue;
-        
-        ll sub = sum - x;
-        if (sub <= a[i + 1]) a[i + 1] -= sub;
-        else {
-            ll subsub = sub;
-            subsub -= a[i + 1];
-            a[i + 1] = 0;
-            a[i] -= subsub;
-        }
-        ans += sub;
-    }
+/* -----  2019/04/03  Problem: ABC 048 C / Link: http://abc048.contest.atcoder.jp/tasks/abc048_c  ----- */
 
 
-    cout << ans << endl;
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
-    return 0;
+	LL N, x; cin >> N >> x;
+	vector<LL> a(N);
+	for (int i = 0; i < N; ++i) {
+		cin >> a[i];
+	}
+	LL ans = 0LL; {
+
+	}
+	FOR(i, 0, N - 1) {
+		LL b = max(0LL, a[i] + a[i + 1] - x);
+		LL c = min(a[i + 1], b);
+		ans += c;
+		a[i + 1] -= c;
+		b -= c;
+		if (b) {
+			a[i] -= b;
+			ans += b;
+		}
+	}
+
+
+	cout << (ans) << "\n";
+
+	return 0;
 }

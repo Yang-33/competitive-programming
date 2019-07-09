@@ -1,57 +1,62 @@
-#include<iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* 2017/01/25 問題 ----- ABC042 C/Link http://abc042.contest.atcoder.jp/tasks/arc058_a */
-/* -----解説等-----
-問題: いろはちゃんはこだわりもので、嫌いな数字が K 個あり、それぞれ D1,D2,…,DK です。
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-いろはちゃんはお店でお買い物をしていて、 N 円の品物を買おうとしています。
-もちろん、この品物は N 円以上のお金を支払えば買うことができます。
-しかし、先ほど述べたようにいろはちゃんは強いこだわりがあるので、
-自分がお店に支払う金額の 10 進表記にいろはちゃんの嫌いな数字が出現しないような最も少ない金額を支払おうとします。
-
-いろはちゃんが支払う金額を求めてください。
-
-全探索をする。
-各文字について使用可能かをチェックし、ダメなら+1して再度チェックをかけていく
-の動作を繰り返し行えばよい。
-
-
-*/
-
-int N, K;
-bool d[10];
-int ans = 0;
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    cin >> N >> K;
-    FOR(i, 0, K) {
-        int s;
-        cin >> s;
-        d[s] = true;
-    }
-    int x = N;
-    for (;;) {
-        bool flag = true;
-        int t = x;
-        while (t) {
-            if (d[t % 10])flag = false;
-            t /= 10;
-        }
-        if (flag) {
-            cout << x << endl;
-            return 0;
-        }
-            x++;
-    }
+/* -----  2019/04/04  Problem: ABC 042 C / Link: http://abc042.contest.atcoder.jp/tasks/abc042_c  ----- */
 
 
-    return 0;
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
+
+	LL N, K; cin >> N >> K;
+	VI NG(10, 0);
+	FOR(i, 0, K) {
+		int a; cin >> a;
+		NG[a] = 1;
+	}
+	LL ans = 0LL;
+	auto f = [&](LL x) {
+		bool ok = 1;
+		while (x) {
+			ok &= !NG[x % 10];
+			x /= 10;
+		}
+
+		return ok;
+	};
+	FOR(i, N, 1000000) {
+		if (f(i)) {
+			ans = i;
+			break;
+		}
+	}
+
+
+
+	cout << ans << "\n";
+
+	return 0;
 }

@@ -1,60 +1,58 @@
-#include<iostream>
-#include<algorithm>
-#include<climits> //INT_MIN/MAX
+#include <bits/stdc++.h>
 using namespace std;
 
-#define FOR(i,s,e) for(ll (i)=(s);(i)<(e);(i)++)
-typedef long long ll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-/* 2017/01/21 –â‘è ----- ABC044 C /Link http://abc043.contest.atcoder.jp/tasks/arc059_a */
-/* -----‰ğà“™-----
-–â‘è: N ŒÂ‚Ì®” a1,a2,..,aN ‚ª—^‚¦‚ç‚ê‚Ü‚·B‚¦‚ÑŒN‚Í‚±‚ê‚ç‚ğ‘‚«Š·‚¦‚Ä‘S‚Ä“¯‚¶®”‚É‚µ‚æ‚¤‚Æ‚µ‚Ä‚¢‚Ü‚·B
-Šeai(1…i…N)‚Í‚Xˆê‰ñ‚µ‚©‘‚«Š·‚¦‚ç‚ê‚Ü‚¹‚ñ(‘‚«Š·‚¦‚È‚­‚Ä‚à—Ç‚¢)B
-®”x‚ğ®”y‚É‘‚«Š·‚¦‚é‚Æ‚«AƒRƒXƒg‚ª(x?y)^2‚©‚©‚è‚Ü‚·B
-‰¼‚Éai=aj(i‚j)‚¾‚Æ‚µ‚Ä‚àA‚Ğ‚Æ‚Â•ª‚ÌƒRƒXƒg‚Å“¯‚É‘‚«Š·‚¦‚é‚±‚Æ‚Ío—ˆ‚Ü‚¹‚ñ(“üo—Í—á2 ‚ğQÆ)B
-‚¦‚ÑŒN‚ª–Ú“I‚ğ’B¬‚·‚é‚Ì‚É•K—v‚ÈƒRƒXƒg‚Ì‘˜a‚ÌÅ¬’l‚ğ‹‚ß‚Ä‚­‚¾‚³‚¢B
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+int DX[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };    int DY[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
 
-§–ñ
-1…N…100
-?100…ai…100
+/* -----  2019/04/04  Problem: ABC 044 C / Link: http://abc044.contest.atcoder.jp/tasks/abc044_c  ----- */
 
-•½‹Ï’l‚©‚ço‚¹‚é‚©‚È‚Æv‚Á‚½‚ª‚±‚ê‚Íƒf[ƒ^‚ÌU‚ç‚Î‚è•û‚É‚æ‚é‚Ì‚ÅŒµ‚µ‚¢‚©‚È‚ ‚Æ‚¢‚¤‚±‚Æ‚Å‘S’Tõ‚µ‚½B
-Å¬’l‚Ì‘S’TõB
-”Šw“I‚É‰ğ‚±‚¤‚Æ‚µ‚Ä­‚µŠÔ‚ª‚©‚©‚Á‚Ä‚µ‚Ü‚Á‚½‚ªŠî–{‚Í‘S’Tõ‚Å‚ ‚é‚Æ‚¢‚¤–‚É’‰À‚Å‚ ‚è‚½‚¢I
+LL dp[51][51][2503];
 
-‘S’Tõ‚µ‚È‚­‚Ä‚à
-avg = sum / N
-d = sum % N‚Æ‚µ‚Ä
-d > N / 2 ‚È‚çavg++‚Å‹‚ß‚ç‚ê‚éB
-‚Â‚Ü‚èƒf[ƒ^‚Ì”¼•ª‚É‘Î‚µ‚Ä‚P‚ğæ‚Á‚¯‚ç‚ê‚é‚©‚Ç‚¤‚©‚ğ‚İ‚éB
-Š„‚èØ‚ê‚é‚©‚Ç‚¤‚©‚Å‚àê‡•ª‚¯‚Å‚«‚»‚¤B
+int main() {
+	cin.tie(0);
+	ios_base::sync_with_stdio(false);
 
+	LL N, A; cin >> N >> A;
+	vector<LL> a(N);
+	for (int i = 0; i < N; ++i) {
+		cin >> a[i];
+	}
+	// A*kã«ã—ãŸã„
+	dp[0][0][0] = 1;
+	FOR(i, 0, N) {
+		FORR(k, N - 1, 0 - 1) {
+			FOR(p, 0, 2500 - a[i] + 1) {
+				dp[i + 1][k + 1][p + a[i]] += dp[i][k][p];
+				dp[i + 1][k][p] += dp[i][k][p];
+			}
+		}
+	}
+	LL ans = 0LL;
+	FOR(i, 1, N + 1) {
+		ans += dp[N][i][i*A];
+	}
+	DD(de(ans))
+		cout << ans << "\n";
 
-*/
-
-int N;
-int a[100];
-ll ans = INT_MAX;
-
-int main()
-{
-    cin.tie(0);
-    ios_base::sync_with_stdio(false);
-
-    cin >> N;
-    FOR(i, 0, N) {
-        cin >> a[i];
-    }
-
-    FOR(i, -100, 101) {
-        ll minn = 0;
-        FOR(j, 0, N) {
-            minn += (a[j] - i)*(a[j] - i);
-        }
-        ans = min(minn, ans);
-    }
-
-    cout << ans << endl;
-
-    return 0;
+	return 0;
 }
