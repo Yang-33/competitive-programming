@@ -1,0 +1,83 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
+
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+
+/* -----  2019/07/20  Problem: AOJ 0092 / Link: https://onlinejudge.u-aizu.ac.jp/challenges/search/volumes/0092  ----- */
+LL Largest_Square(const vector<vector<bool>> &A) {
+	vector<vector<LL>> a(A.size(), vector<LL>(A[0].size(), 0));
+	LL count;
+	for (int i = 0; i < (int)A[0].size(); i++) {
+		count = 0;
+		for (LL h = 0; h < (int)A.size(); h++) {
+			if (A[h][i]) { count++; }
+			else { count = 0; }
+			a[h][i] = count;
+		}
+	}
+	LL mx = 0;
+	stack<PLL> s;
+	for (int i = 0; i < (int)A.size(); i++) {
+		for (int t = 0; t < (int)A[0].size(); t++) {
+			LL mi = t;
+			while (!s.empty() && s.top().first > a[i][t]) {
+				PLL w = s.top(); s.pop();
+				LL x = min(w.first, t - w.second);
+				mx = max(mx, x*x);
+				mi = w.second;
+			}
+			s.push({ a[i][t],mi });
+		}
+		while (!s.empty()) {
+			PLL w = s.top(); s.pop();
+			LL x = min(w.first, (LL)A[0].size() - w.second);
+			mx = max(mx, x*x);
+		}
+	}
+	return mx;
+}
+
+int main() {
+	int N;
+	while (cin >> N,N) {
+		VS vs(N); {
+			FOR(i, 0, N) {
+				cin >> vs[i];
+			}
+		}
+		vector<vector<bool>>a(N, vector<bool>(N, 0)); {
+			FOR(i, 0, N) {
+				FOR(j, 0, N) {
+					a[i][j] = vs[i][j] == '.';
+				}
+			}
+		}
+
+		LL ret = Largest_Square(a);
+		LL ans = 0;
+		while (ans*ans < ret)ans++;
+		cout << (ans) << "\n";
+	}
+
+	return 0;
+}
