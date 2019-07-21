@@ -1,0 +1,56 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
+
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
+
+/* -----  2019/07/21  Problem: AOJ 0130 / Link: https://onlinejudge.u-aizu.ac.jp/challenges/search/volumes/0130  ----- */
+
+
+int main() {
+	LL T; cin >> T;
+	FOR(_, 0, T) {
+		string s; cin >> s;
+		map<int, char>m;
+		int d = 0;
+		char pre = '!';
+		for (auto c : s) {
+			if (isalpha(c)) {
+				m[d] = c;
+			}
+			if (pre == '<'&&c == '-') {
+				d--;
+			}
+			if (pre == '-'&&c == '>') {
+				d++;
+			}
+			pre = c;
+		}
+		for (auto it : m) {
+			cout << it.second;
+		}
+		cout << "\n";
+	}
+
+
+	return 0;
+}
