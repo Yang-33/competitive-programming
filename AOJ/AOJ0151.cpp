@@ -1,134 +1,95 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
 using namespace std;
 
-typedef long long ll;
-typedef pair<int, int> pii;
-typedef pair<ll, ll> pll;
+using VS = vector<string>;    using LL = long long;
+using VI = vector<int>;       using VVI = vector<VI>;
+using PII = pair<int, int>;   using PLL = pair<LL, LL>;
+using VL = vector<LL>;        using VVL = vector<VL>;
 
-#define FOR(i, s, e) for (ll(i) = (s); (i) < (e); (i)++)
-#define FORR(i, s, e) for (ll(i) = (s); (i) > (e); (i)--)
-#define debug(x) cout << #x << ": " << x << endl
-#define mp make_pair
-#define pb push_back
-const ll MOD = 1000000007;
-const int INF = 1e9;
-const ll LINF = 1e16;
-const double PI = acos(-1.0);
-int dx[8] = { 0, 0, 1, -1, 1, 1, -1, -1 };
-int dy[8] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+#define ALL(a)  begin((a)),end((a))
+#define RALL(a) (a).rbegin(), (a).rend()
+#define SZ(a) int((a).size())
+#define SORT(c) sort(ALL((c)))
+#define RSORT(c) sort(RALL((c)))
+#define UNIQ(c) (c).erase(unique(ALL((c))), end((c)))
+#define FOR(i, s, e) for (int(i) = (s); (i) < (e); (i)++)
+#define FORR(i, s, e) for (int(i) = (s); (i) > (e); (i)--)
+//#pragma GCC optimize ("-O3") 
+#ifdef YANG33
+#include "mydebug.hpp"
+#else
+#define DD(x) 
+#endif
+const int INF = 1e9;                          const LL LINF = 1e16;
+const LL MOD = 1000000007;                    const double PI = acos(-1.0);
 
-/* -----  2017/05/12  Problem:  / Link:   ----- */
-/* ------問題------
-
-
-
------問題ここまで----- */
-/* -----解説等-----
-
-
-
-----解説ここまで---- */
-
-int N;
-string m[300];
-bool masu[300][300];
+/* -----  2019/07/23  Problem: AOJ 0151 / Link: https://onlinejudge.u-aizu.ac.jp/challenges/search/volumes/0151  ----- */
 
 
-ll solve(int n) {
-	FOR(i, 0, 300)FOR(j, 0, 300)masu[i][j] = 0;
-
-	FOR(i, 0, n) {
-		cin >> m[i];
-	}
-	FOR(i, 0, n) {
-		FOR(j, 0, n) {
-			masu[i][j] = m[i][j] - '0';
+// 指定した値の最大の連続区間長を返す
+int max_same_consecutive_element(const vector<int>&a, int num) {
+	int mx = 0;
+	int cnt = 0;
+	for (auto it : a) {
+		if (it == num) {
+			cnt++;
 		}
-	}
-	ll ans = 0;//max
-
-	//yoko
-	ll ren = 0;
-	FOR(i, 0, n) {
-		ren = 0;
-		FOR(j, 0, n) {
-			if (masu[i][j] == 1) {
-				ren++;
-				ans = max(ans, ren);
-			}
-			else ren = 0;
+		else {
+			cnt = 0;
 		}
+		mx = max(mx, cnt);
 	}
-	//tate
-	FOR(i, 0, n) {
-		ren = 0;
-		FOR(j, 0, n) {
-			if (masu[j][i] == 1) {
-				ren++;
-				ans = max(ans, ren);
-			}
-			else ren = 0;
-		}
-	}
-
-	//右下
-	queue<pii>q;
-	FOR(i, 0, n) {
-		q.push(pii(0, i));
-		q.push(pii(i, 0));
-	}
-	while (!q.empty()) {
-
-		pii s = q.front(); q.pop();
-		int y = s.first; int x = s.second;
-		ren = 0;
-		FOR(i, 0, n) {
-			if (0 <= i + x&&i + x < n && 0 <= i + y&&i + y < n) {
-				if (masu[y + i][x + i] == 1) {
-					ren++;
-					ans = max(ans, ren);
-				}
-				else ren = 0;
-			}
-			else break;
-		}
-	}
-
-
-	//左下
-	FOR(i, 0, n) {
-		q.push(pii(0, i));
-		q.push(pii(i, n-1));
-	}
-	while (!q.empty()) {
-
-		pii s = q.front(); q.pop();
-		int y = s.first; int x = s.second;
-		ren = 0;
-		FOR(i, 0, n) {
-			if (0 <= -i + x&&-i + x < n && 0 <= i + y&&i + y < n) {
-				if (masu[y + i][x - i] == 1) {
-					ren++;
-					ans = max(ans, ren);
-				}
-				else ren = 0;
-			}
-			else break;
-		}
-	}
-	return ans;
+	return mx;
 }
-
 int main() {
-	cin.tie(0);
-	ios_base::sync_with_stdio(false);
+	int N;
+	while (cin >> N, N) {
+		vector<string> a(N);
+		for (int i = 0; i < N; ++i) {
+			cin >> a[i];
+			FOR(j, 0, N) {
+				a[i][j] -= '0';
+			}
+		}
+		int ans = 0;
+		// 横
+		FOR(i, 0, N) {
+			VI b;
+			FOR(j, 0, N) {
+				b.push_back(a[i][j]);
+			}
+			ans = max(ans, max_same_consecutive_element(b, 1));
+		}
+		// 縦
+		FOR(j, 0, N) {
+			VI b;
+			FOR(i, 0, N) {
+				b.push_back(a[i][j]);
+			}
+			ans = max(ans, max_same_consecutive_element(b, 1));
+		}
+		// 斜め // 
+		FOR(k, 0, 2 * N - 1) {
+			VI b;
+			FOR(m, 0, N) {
+				if (k - m >= 0 && k - m < N) {
+					b.push_back(a[m][k - m]);
+				}
+			}
+			ans = max(ans, max_same_consecutive_element(b, 1));
+		}
 
+		// 斜め
+		FOR(k, 0, 2 * N - 1) {
+			VI b;
+			FOR(m, 0, N) {
+				if ((N - 1 - k) + m >= 0 && (N - 1 - k) + m < N) {
+					b.push_back(a[(N - 1 - k) + m][m]);
+				}
+			}
+			ans = max(ans, max_same_consecutive_element(b, 1));
+		}
 
-	for (;;) {
-		cin >> N;
-		if (N == 0)break;
-
-		cout << solve(N) << endl;
+		cout << ans << "\n";
 	}
-	return 0;
 }
